@@ -1,10 +1,14 @@
-# Created date: 2022-01-24 
+# Created date: 2022-01-24
+### Generated data for the synthetic data set 
+# Details: 
+#
+
 import numpy as np 
 from tqdm import trange
 import json
 
-seed = 42
-rng = np.random.default_rng(seed=seed)
+# seed = 42
+rng = np.random.default_rng()
 
 NUM_USERS = 10 
 
@@ -18,48 +22,40 @@ def generate_synthetic(alpha, beta, is_iid):
     dimension = 60 
     NUM_CLASSES = 10 
 
-    samples_per_user = rng.lognormal(4, 2, (NUM_USERS)).astype(int) + 50 
+    samples_per_user = rng.lognormal(mean=4, sigma=2, size=NUM_USERS).astype(int) + 50 # shape = (NUM_USERS,)
     print(samples_per_user)
 
-    X_split = [[] for _ in range(NUM_USERS)]
-    y_split = [[] for _ in range(NUM_USERS)]
-
     ### define variables ### 
-    mean_W = rng.normal(loc=0, scale=alpha, size=NUM_USERS)
-    mean_b = mean_W
-    B = rng.normal(loc=0, scale=beta, size=NUM_USERS)
-    mean_x = np.zeros(shape=(NUM_USERS, dimension))
+    mean_W = rng.normal(loc=0, scale=alpha, size=NUM_USERS) # (NUM_USERS, )
+    mean_b = mean_W # (NUM_USERS, )
+    B = rng.normal(loc=0, scale=beta, size=(NUM_USERS, 1)) # (NUM_USERS, 1)
 
-    diagonal = np.zeros(shape=dimension)
-    for j in range(dimension): 
-        diagonal[j] = np.power((j+1), -1.2)
-    cov_x = np.diag(diagonal)
+    diagonal = np.array([np.power((j+1), -1.2) for j in range(dimension)]) # (dimension, )
+    cov_x = np.diag(diagonal) # (dimension, dimension)
 
-    for i in range(NUM_USERS): 
-        if is_iid == 1: # generated from the unit distribution mean = 0, deviation = 1 
-            mean_x[i] = np.ones(shape=dimension) * B[i] # all zeros 
-        else: # generated from different normal distributions 
-            mean_x[i] = rng.normal(loc=B[i], scale=1, size=dimension)
-        print(mean_x[i])
-    
-    if is_iid == 1: 
+    if is_iid: # all users' features follow the same distribution 
+        mean_x = np.tile(B, reps=dimension)
+    else: 
+        mean_x = np.array([rng.normal(loc=B[i], scale=1, size=dimension) for i in range(NUM_USERS)]) 
+    print("mean_x.shape = {}".format(mean_x.shape)) # (users, dimension)
+        
+    if is_iid: # generated from the unit distribution mean = 0, deviation = 1
         W_global = rng.normal(loc=0, scale=1, size=(dimension, NUM_CLASSES))
         b_global = rng.normal(loc=0, scale=1, size=NUM_CLASSES)
     
+    X_split = [[] for _ in range(NUM_USERS)]
+    y_split = [[] for _ in range(NUM_USERS)]
     for i in range(NUM_USERS): 
-        W = rng.normal(loc=mean_W[i], scale=1, size=(dimension, NUM_CLASSES))
-        b = rng.normal(loc=mean_b[i], scale=1, size=NUM_CLASSES)
-
-        if is_iid: 
+        if is_iid: # parameters are identical for all users 
             W = W_global
             b = b_global
-
-        xx = rng.multivariate_normal(mean=mean_x[i], cov=cov_x, size=samples_per_user[i])
-        yy = np.zeros(shape=samples_per_user[i])
-
-        for j in range(samples_per_user[i]): 
-            tmp = np.dot(xx[j], W) + b 
-            yy[j] = np.argmax(softmax(tmp))
+        else: 
+            W = rng.normal(loc=mean_W[i], scale=1, size=(dimension, NUM_CLASSES)) # (dimension, classes)
+            b = rng.normal(loc=mean_b[i], scale=1, size=NUM_CLASSES) # (classes, )
+        
+        xx = rng.multivariate_normal(mean=mean_x[i], cov=cov_x, size=samples_per_user[i]) # (num_samples_i, dimension) 
+        tmp = softmax(np.dot(xx, W) + b) # (samples, classes)
+        yy = np.argmax(tmp, axis=1) # (samples, ) 
         
         X_split[i] = xx.tolist()
         y_split[i] = yy.tolist()
