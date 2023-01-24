@@ -2,7 +2,6 @@
 import numpy as np 
 from tqdm import trange
 import json
-import os 
 
 seed = 42
 rng = np.random.default_rng(seed=seed)
@@ -19,9 +18,8 @@ def generate_synthetic(alpha, beta, is_iid):
     dimension = 60 
     NUM_CLASSES = 10 
 
-    samples_per_user = np.random.lognormal(4, 2, (NUM_USERS)).astype(int) + 50 
+    samples_per_user = rng.lognormal(4, 2, (NUM_USERS)).astype(int) + 50 
     print(samples_per_user)
-    num_samples = np.sum(samples_per_user)
 
     X_split = [[] for _ in range(NUM_USERS)]
     y_split = [[] for _ in range(NUM_USERS)]
