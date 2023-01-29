@@ -1,6 +1,6 @@
-# Created date: 2022-01-24
+### Created date: 2023-01-24
 ### Generated data for the synthetic data set 
-# Details: 
+### Details: 
 #
 
 import numpy as np 
@@ -39,7 +39,7 @@ def generate_synthetic(alpha, beta, is_iid):
         mean_x = np.array([rng.normal(loc=B[i], scale=1, size=dimension) for i in range(NUM_USERS)]) 
     print("mean_x.shape = {}".format(mean_x.shape)) # (users, dimension)
         
-    if is_iid: # generated from the unit distribution mean = 0, deviation = 1
+    if is_iid: # params are generated from the unit distribution mean = 0, deviation = 1
         W_global = rng.normal(loc=0, scale=1, size=(dimension, NUM_CLASSES))
         b_global = rng.normal(loc=0, scale=1, size=NUM_CLASSES)
     
@@ -67,7 +67,7 @@ def generate_synthetic(alpha, beta, is_iid):
 def main(): 
 
     train_path = "data/train/mytrain.json"
-    test_path = "data/train/mytest.json"
+    test_path = "data/test/mytest.json"
 
     X, y = generate_synthetic(alpha=0, beta=0, is_iid=0)
 
