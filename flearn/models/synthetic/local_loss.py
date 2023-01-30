@@ -51,19 +51,39 @@ def set_params(model_params=None):
             param.data = model_params[name] 
     print(serialize_params(model))
 
-def train(): 
-    for epoch in range(20): 
-        optimizer.zero_grad()
-        output = model(x)
+def get_params(): 
+    r"""Get model.parameters()
+    Return: 
+        dict {'state_dict': tensor(param.data)}
+    """
+    return {k: v.data for k, v in zip(model.state_dict(), model.parameters())}
 
+def get_gradients(): 
+    r"""Get model.parameters() gradients 
+    Return: 
+        dict {'state_dict': tensor(param.grad)}
+    """
+    return {k: v.grad for k, v in zip(model.state_dict(), model.parameters())}
+
+def train(): 
+    r""" Solve local surrogate function"""
+    for epoch in range(20):
+        # Compute prediction and loss
+        output = model(x)
         loss = loss_fn(output, y)
+        
+        # Calculate surrogate term and update the loss 
+        # Hint: https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
         surr_term = add_params_grads(serialize_params(model), diff_dict)
         loss = loss + surr_term
-        
-        loss.backward()
-        optimizer.step()
+
+        # Back propagation 
+        optimizer.zero_grad()
+        loss.backward() # Update gradients 
+        optimizer.step()  # update model parameters 
+
         print('Epoch {}: loss {}'.format(epoch, loss.item()))
-    # https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
+        
 
 def test_set_params(): 
     print('test_set_params(): start')
@@ -97,3 +117,6 @@ def test_set_params():
 
 if __name__=='__main__': 
     test_set_params()
+    params = get_params()
+    grads = get_gradients()
+    print(grads)
