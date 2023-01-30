@@ -65,11 +65,6 @@ def train():
         print('Epoch {}: loss {}'.format(epoch, loss.item()))
     # https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
 
-# grads_params_add(diff_dict, serialize_params(model))
-# https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
-
-
-
 def test_set_params(): 
     print('test_set_params(): start')
     # first train 
