@@ -25,11 +25,8 @@ diff_dict = {k: torch.randn_like(v.data) for k, v in zip(model.state_dict(), mod
 
 print(diff_dict)
 
-def serialize_params(model): 
+def get_params(model): 
     return {k: v.data for k, v in zip(model.state_dict(), model.parameters())}
-
-def serialize_gards(model): 
-    return {k: v.grad for k, v in zip(model.state_dict(), model.parameters())}
 
 def add_params_grads(params_dict, grads_dict): 
     sum = 0.0
@@ -49,7 +46,7 @@ def set_params(model_params=None):
         for name, param in zip(model.state_dict(), model.parameters()): 
             print(model_params[name])
             param.data = model_params[name] 
-    print(serialize_params(model))
+    print(get_params())
 
 def get_params(): 
     r"""Get model.parameters()
@@ -74,12 +71,12 @@ def train():
         
         # Calculate surrogate term and update the loss 
         # Hint: https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
-        surr_term = add_params_grads(serialize_params(model), diff_dict)
+        surr_term = add_params_grads(get_params(), diff_dict)
         loss = loss + surr_term
 
         # Back propagation 
         optimizer.zero_grad()
-        loss.backward() # Update gradients 
+        loss.backward() # update gradients 
         optimizer.step()  # update model parameters 
 
         print('Epoch {}: loss {}'.format(epoch, loss.item()))
@@ -89,10 +86,10 @@ def test_set_params():
     print('test_set_params(): start')
     # first train 
     train()
-    print(serialize_params(model))
+    print(get_params())
 
     # save optimal param to dict 
-    pretrained_params_dict = serialize_params(model)
+    pretrained_params_dict = get_params()
 
     # init test_params copy dictionary 
     test_params_dict = {k: torch.zeros_like(v.data) for k, v in zip(model.state_dict(), model.parameters())}
@@ -103,7 +100,7 @@ def test_set_params():
     print('='*20)
     set_params(test_params_dict)
     print('='*20)
-    print(serialize_params(model)) 
+    print(get_params()) 
 
     # load the pretrained params to model.parameters 
     set_params(pretrained_params_dict)
@@ -111,7 +108,7 @@ def test_set_params():
     # continue training 
     train()
 
-    print(serialize_params(model)) 
+    print(get_params()) 
     
     print('test_set_params(): done')
 
