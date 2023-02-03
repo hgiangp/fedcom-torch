@@ -28,6 +28,6 @@ class Model(object):
     def test(self): 
         pass 
 
-    def train_network(self, num_epochs, diff_grads): 
+    def train(self, num_epochs, diff_grads): 
         pass 
     

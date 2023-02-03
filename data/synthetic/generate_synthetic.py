@@ -10,19 +10,19 @@ import json
 # seed = 42
 rng = np.random.default_rng()
 
-NUM_USERS = 10 
+NUM_USERS = 1 
 
 def softmax(x): 
     ex = np.exp(x)
     sum_ex = np.sum(np.exp(x))
     return ex/sum_ex
 
-def generate_synthetic(alpha, beta, is_iid): 
+def generate_synthetic(alpha, beta, iid): 
 
     dimension = 60 
     NUM_CLASSES = 10 
 
-    samples_per_user = rng.lognormal(mean=4, sigma=2, size=NUM_USERS).astype(int) + 50 # shape = (NUM_USERS,)
+    samples_per_user = rng.lognormal(mean=4, sigma=2, size=NUM_USERS).astype(int) +  100# shape = (NUM_USERS,)
     print(samples_per_user)
 
     ### define variables ### 
@@ -33,20 +33,20 @@ def generate_synthetic(alpha, beta, is_iid):
     diagonal = np.array([np.power((j+1), -1.2) for j in range(dimension)]) # (dimension, )
     cov_x = np.diag(diagonal) # (dimension, dimension)
 
-    if is_iid: # all users' features follow the same distribution 
+    if iid: # all users' features follow the same distribution 
         mean_x = np.tile(B, reps=dimension)
     else: 
         mean_x = np.array([rng.normal(loc=B[i], scale=1, size=dimension) for i in range(NUM_USERS)]) 
     print("mean_x.shape = {}".format(mean_x.shape)) # (users, dimension)
         
-    if is_iid: # params are generated from the unit distribution mean = 0, deviation = 1
+    if iid: # params are generated from the unit distribution mean = 0, deviation = 1
         W_global = rng.normal(loc=0, scale=1, size=(dimension, NUM_CLASSES))
         b_global = rng.normal(loc=0, scale=1, size=NUM_CLASSES)
     
     X_split = [[] for _ in range(NUM_USERS)]
     y_split = [[] for _ in range(NUM_USERS)]
     for i in range(NUM_USERS): 
-        if is_iid: # parameters are identical for all users 
+        if iid: # parameters are identical for all users 
             W = W_global
             b = b_global
         else: 
@@ -69,7 +69,7 @@ def main():
     train_path = "data/train/mytrain.json"
     test_path = "data/test/mytest.json"
 
-    X, y = generate_synthetic(alpha=0, beta=0, is_iid=0)
+    X, y = generate_synthetic(alpha=0, beta=0, iid=0)
 
     # Create data structure 
     train_data = {'user': [], 'user_data': {}, 'num_samples': []}    
@@ -81,7 +81,7 @@ def main():
         rng.shuffle(combined)
         X[i][:], y[i][:] = zip(*combined)
         num_samples = len(X[i])
-        train_len = int(0.9 * num_samples)
+        train_len = int(0.8 * num_samples)
         test_len = num_samples - train_len
 
         train_data['user'].append(uname)
