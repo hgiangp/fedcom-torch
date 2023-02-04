@@ -13,6 +13,7 @@ class LinearRegression(nn.Module):
         return outputs
 
 class CustomLogisticRegression(nn.Module): 
+    # https://aaronkub.com/2020/02/12/logistic-regression-with-pytorch.html
     def __init__(self, input_dim=60, output_dim=10): 
         super(CustomLogisticRegression, self).__init__()
         self.linear = nn.Linear(input_dim, output_dim)
@@ -56,7 +57,7 @@ def add_params_grads(params_dict, grads_dict):
 
     return sum
 
-def set_params(model_params=None):
+def set_params(model, model_params=None):
     r"""Set initial params to model parameters()
     Args: 
         model_params: dict {'state_dict': model.parameters().data}

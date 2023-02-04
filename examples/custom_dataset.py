@@ -81,9 +81,3 @@ def load_data():
     traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
     testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
     return traindata_loader, testdata_loader
-    
-
-
-
-
-        
