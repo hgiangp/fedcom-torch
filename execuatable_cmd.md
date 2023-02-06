@@ -15,3 +15,6 @@ python3 custom_model.py | tee log_custom_model
 ```
 python3 network_opt.py | tee log_network_opt
 ```
+```
+python3 net_funcs.py | tee log_net_funcs
+```
