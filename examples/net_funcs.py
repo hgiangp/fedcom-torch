@@ -41,7 +41,7 @@ def calc_trans_time(decs, data_size, uav_gains, bs_gains, powers):
     time_co = (data_size / (bw * np.log2(1 + (powers * gains / N_0)))) + ti_penalty 
     return time_co
 
-def calc_trans_energy(powers, coms_tis): 
+def calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers): 
     r""" Calcualte communications energy
     Args: 
         powers: transmission powers: dtype=np.array, shape=(N, )
@@ -49,6 +49,7 @@ def calc_trans_energy(powers, coms_tis):
     Return: 
         ene_co: dtype=np.array, shape=(N, )
     """
+    coms_tis = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
     ene_co = powers * coms_tis 
     return ene_co
 
@@ -98,21 +99,32 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     
     return bound_eta
 
-def solve_optimal_eta(): 
+def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
     Args: 
     Return:
         Optimal eta 
     """
-    # Initialize 
-    iter, acc = 0, 1e-4 
+    acc = 1e-4 
     zeta = 0.1
-    ti_co = 
+    eta = 1 
+
+    bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
+    af = v * a * calc_comp_energy(num_rounds=1, num_samples=num_samples, freqs=freqs).sum() / math.log(2)
     
-    # Repeat
-
-
-    pass 
+    h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
+    iter = 0 # TODO: remove iter writing log after test with verified params
+    while 1:
+        eta = af / zeta # calculate temporary optimal eta 
+        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta 
+        h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition 
+        print(f"iter = {iter}, h_prev = {h_prev}, h_curr = {h_curr}, h_curr / h_prev={h_curr / h_prev}")
+        if (h_prev != 0) and (h_curr / h_prev < acc): 
+            break
+        h_prev = h_curr   
+        iter += 1 # TODO: remove 
+  
+    return eta  
 
 def test(): 
     # num_rounds = 2
@@ -125,9 +137,12 @@ def test():
     bs_gains = np.random.randint(low=1, high=4, size=num_users)
     data_size = np.random.randint(low=0, high=4, size=num_users)
     powers = np.random.randint(low=2, high=4, size=num_users)
+    freqs = np.random.randint(low=2, high=4, size=num_users)
 
-    x = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples)
-    print(f"x = {x}")
+    # x = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples)
+    # print(f"x = {x}")
+    solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
+
 
 if __name__=='__main__': 
     test()
