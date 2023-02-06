@@ -44,7 +44,7 @@ def test_train():
     test_param = csmodel.get_params()
     # print(test_param)
     diff_dict = {k: torch.randn_like(v) for k, v in zip(test_param.keys(), test_param.values())}
-    
+
     epoches = 100 
     for t in range(epoches): 
         print(f"Epoch {t+1}\n-------------------------------")

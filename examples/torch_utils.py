@@ -1,6 +1,5 @@
 import torch 
 
-# https://www.linkedin.com/pulse/visual-studio-code-auto-format-shortcut-key-billour-ou/?trk=pulse-article_more-articles_related-content-card
 def add_params_grads(params_dict, grads_dict):
     r""" Calculate surrogate term by dot product of
         the previous diff_gradients and current local parameters
