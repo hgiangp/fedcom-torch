@@ -114,6 +114,7 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
     
     h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
     iter = 0 # TODO: remove iter writing log after test with verified params
+    
     while 1:
         eta = af / zeta # calculate temporary optimal eta 
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta 
@@ -124,7 +125,97 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
         h_prev = h_curr   
         iter += 1 # TODO: remove 
   
-    return eta  
+    return eta
+
+def solve_optimal_freq(eta, num_samples): 
+    r""" Find the optimal local cpu freq
+    Args: 
+        eta: optimal eta found from the previous step 
+        num_samples: number of local data samples, dtype=np.array, shape=(N, ) 
+    Return: 
+        Optimal freqs: dtype=np.array, shape=(N, )
+    """
+    t_co_max = tau * (1 - eta) / a - v * math.log2(1/eta) * calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) # (N, )
+    # print(f"t_co_max={t_co_max}") # TODO
+    freqs = a * v * C_n * num_samples * math.log2(1/eta) / (tau * (1 - eta) - a * t_co_max) # (N, )
+    # print(f"a = {a * v * C_n * num_samples * math.log2(1/eta)}") # TODO
+    # print(f"b = {(tau * (1 - eta) - a * t_co_max)}") # TODO
+    return freqs
+
+def solve_optimal_power(eta, num_samples, data_size, gains, ti_penalty): 
+    r""" Find the optimal transmission power (uav, or bs)
+    Args: 
+        data_size: (N, )
+    Return: 
+        power: optimal power (uav/bs), dtype=np.array, shape=(N, )
+    """
+    num_rounds = v * math.log2(1 / eta)
+    t_co = tau * (1 - eta) / a - ti_penalty - \
+        calc_comp_time(num_rounds=num_rounds, num_samples=num_samples, freqs=freq_max) # (N, )
+    
+    opt_powers = N_0 / gains * (2 * np.exp(data_size / (bw * t_co)) - 1) # (N, )
+    return opt_powers
+
+def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains): 
+    num_local_rounds = v * math.log2(eta)
+    num_global_rounds = a / (1 - eta)
+
+    energy = num_global_rounds * (calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers) + \
+        num_local_rounds * calc_comp_energy(num_local_rounds, num_samples, freqs))
+    return energy 
+
+def optimize_network(num_samples, data_size, uav_gains, bs_gains): 
+    r""" Solve the relay-node selection and resource allocation problem
+    Args: 
+    Return: 
+
+    """
+    # Initialize a feasible solution 
+    freqs = np.ones(num_users) * freq_max
+    powers = np.ones(num_users) * power_max
+    
+    tco_uav = calc_trans_time(decs=1, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers) # (N, )
+    tco_bs = calc_trans_time(decs=0, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers) # (N, )
+    decs = np.array([1 if tco_uav[i] < tco_bs[i] else 0 for i in range(num_users)])
+
+    eta = 0.0
+    iter = 0
+
+    obj_prev = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+
+    # Repeat 
+    while 1: 
+        # Tighten the bound of eta 
+        bound_eta = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples)
+
+        # Solve eta
+        eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
+
+        # Solve freqs f
+        freqs = solve_optimal_freq(eta, num_samples)
+
+        # Solve powers p and apply heursitic method for choosing decisions x 
+        uav_powers = solve_optimal_power(eta, num_samples, data_size, uav_gains, delta_t)
+        bs_powers = solve_optimal_power(eta, num_samples, data_size, bs_gains, 0)
+
+        tco_uav = calc_trans_time(decs=1, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=uav_powers)
+        tco_bs = calc_trans_time(decs=0, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=bs_powers)
+
+        decs = np.array([1 if tco_uav[i] < tco_bs[i] else 0 for i in range(num_users)], dtype=int)
+        powers = decs * uav_powers + (1 - decs) * bs_powers
+
+        # Check stop condition
+        obj = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+        print(f"iter = {iter} obj = {obj}")
+
+        if (iter == iter_max) or (obj_prev - obj < acc): 
+            print("Done!")
+            break
+        obj_prev = obj
+        iter += 1 
+
+    # Stop 
+    return (eta, freqs, decs, powers)
 
 def test(): 
     # num_rounds = 2
@@ -141,8 +232,10 @@ def test():
 
     # x = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples)
     # print(f"x = {x}")
-    solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
-
+    # solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
+    eta = 0.9
+    # opt_freqs = solve_optimal_freq(eta, num_samples)
+    # print(f"freqs = {opt_freqs}")
 
 if __name__=='__main__': 
     test()

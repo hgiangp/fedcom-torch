@@ -20,7 +20,8 @@ epsilon_0 = 1e-4 # global accuracy
 s_n = 1e3 # data transmission size 
 bw = 1e6 # bandwidth 
 delta_t = 2 # uav's time penalty 
-N_0 = 2 # -174, TODO # dB, noise density, should be multiplied with bw 
+N_0 = 2 # -174, TODO # dB, noise density, should be multiplied with bw
+power_max = 3 # TODO 
 
 # base station propagation channel params 
 A_d = 3 # attenna gain 
@@ -41,3 +42,7 @@ a_env, b_env = 0.1, 0.2 # evironment constants
 # Calculable params 
 v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr)
 a = 2 * (L_Lipschitz**2) * math.log(1/epsilon_0) / ((gamma_cv**2) * xi_factor)
+
+# Optimization params 
+acc = 1e-4 # TODO
+iter_max = 10 # TODO
