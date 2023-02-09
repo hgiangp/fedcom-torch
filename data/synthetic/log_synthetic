@@ -1,3 +1,7 @@
-[611]
-mean_x.shape = (1, 60)
-0-th users has 611 samples
+[214 138 207 253 568]
+mean_x.shape = (5, 5)
+0-th users has 214 samples
+1-th users has 138 samples
+2-th users has 207 samples
+3-th users has 253 samples
+4-th users has 568 samples

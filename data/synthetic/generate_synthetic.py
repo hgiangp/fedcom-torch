@@ -10,7 +10,9 @@ import json
 # seed = 42
 rng = np.random.default_rng()
 
-NUM_USERS = 1 
+NUM_USERS = 5 # TODO
+dimension = 5 # TODO: 60 
+NUM_CLASSES = 3 # TODO: 10 
 
 def softmax(x): 
     ex = np.exp(x)
@@ -18,10 +20,6 @@ def softmax(x):
     return ex/sum_ex
 
 def generate_synthetic(alpha, beta, iid): 
-
-    dimension = 60 
-    NUM_CLASSES = 10 
-
     samples_per_user = rng.lognormal(mean=4, sigma=2, size=NUM_USERS).astype(int) +  100# shape = (NUM_USERS,)
     print(samples_per_user)
 

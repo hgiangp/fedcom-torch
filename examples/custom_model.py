@@ -1,56 +1,48 @@
-import torch.optim as optim
 import torch.nn as nn 
 import torch 
+class LinearRegression(nn.Module): 
+    def __init__(self, input_dim=2, output_dim=3):
+        super(LinearRegression, self).__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
 
-from model_test import CustomLogisticRegression
+    def forward(self, x): 
+        # x = torch.flatten(x, 1)
+        outputs = self.linear(x)
+        return outputs
 
-from custom_dataset import load_data 
-from torch_utils import * 
+class CustomLogisticRegression(nn.Module): 
+    r""" Custom Logistic Regression: 1 Linear Layer 
+        Loss function: Cross Entropy
+        https://aaronkub.com/2020/02/12/logistic-regression-with-pytorch.html
+        https://discuss.pytorch.org/t/multi-class-cross-entropy-loss-and-softmax-in-pytorch/24920/9
+    """
+    def __init__(self, input_dim=2, output_dim=3): 
+        super(CustomLogisticRegression, self).__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
 
-class CustomModel(object): 
-    def __init__(self):
-        self.model = CustomLogisticRegression()
-        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-2)
-        self.loss_fn = nn.CrossEntropyLoss()
-        self.train_loader, self.test_loader = load_data()
+    def forward(self, x): 
+        outputs = self.linear(x)
+        return outputs
     
     def get_params(self): 
-        r"""Get model.parameters()
-        Return: 
-            dict {'state_dict': tensor(param.data)}
-        """
-        return get_params(self.model)
+        return {k: v.data for k, v in zip(self.state_dict(), self.parameters())}
 
-    def set_params(self, model_params=None):
-        r"""Set initial params to model parameters()
-        Args: 
-            model_params: dict {'state_dict': model.parameters().data}
-        Return: None 
-            set model.parameters = model_params 
-        Hint: https://medium.com/@mrityu.jha/understanding-the-grad-of-autograd-fc8d266fd6cf
-        """
-        set_params(self.model, model_params)
+    def set_params(self, params_dict): 
+        self.load_state_dict(params_dict)
     
-    def get_gradients(self): 
-        r"""Get model.parameters() gradients 
-        Return: 
-            dict {'state_dict': tensor(param.grad)}
-        """
-        return get_gradients(self.model)
-    
-def test_train(): 
-    print("test_train ")
-    csmodel = CustomModel()
-    test_param = csmodel.get_params()
-    # print(test_param)
-    diff_dict = {k: torch.randn_like(v) for k, v in zip(test_param.keys(), test_param.values())}
+    def get_grads(self): 
+        return {k: v.grad for k, v in zip(self.state_dict(), self.parameters())} 
 
-    epoches = 100 
-    for t in range(epoches): 
-        print(f"Epoch {t+1}\n-------------------------------")
-        train_loop(csmodel.train_loader, csmodel.model, csmodel.loss_fn, csmodel.optimizer, diff_dict)
-        test_loop(csmodel.test_loader, csmodel.model, csmodel.loss_fn)
-    print("Done!")
+def test(): 
+    model = CustomLogisticRegression()
+    test_param = model.get_params()
 
-if __name__ == '__main__':
-    test_train() 
+    test_load_dict = {k: torch.randn_like(v) for k, v in zip(test_param.keys(), test_param.values())}
+    print(f"test_load_dict =\n{test_load_dict} ")
+    model.set_params(test_load_dict)
+    print(f"model.get_params()=\n{model.get_params()}")
+
+    print(f"model.get_grads() = {model.get_grads()}")
+
+if __name__=="__main__": 
+    test()

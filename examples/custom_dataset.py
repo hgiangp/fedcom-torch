@@ -54,14 +54,13 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
-def test_load_data(): 
+def test_load_data(user_id): 
     dataset_name = 'synthetic'
     parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     train_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'train')
     test_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'test')
 
     clients, train_dt, test_dt = read_data(train_dir, test_dir) # (clients, train_data, test_data)
-    user_id = 0
     client_id = clients[user_id]
     train_data = train_dt[client_id] # dict{'x': [], 'y': []}
     test_data = test_dt[client_id] # dict{'x': [], 'y': []}
@@ -69,8 +68,7 @@ def test_load_data():
     print(f"len(test_data['y']) = {len(test_data['y'])}")
     return train_data, test_data
 
-def load_data(): 
-    train_dict, test_dict = test_load_data()
+def load_data(train_dict, test_dict): 
     batch_size = 32
 
     # Init CustomDataset 

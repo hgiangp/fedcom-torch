@@ -168,7 +168,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     r""" Solve the relay-node selection and resource allocation problem
     Args: 
     Return: 
-
+        (eta, freqs, decs, powers)
     """
     # Initialize a feasible solution 
     freqs = np.ones(num_users) * freq_max
@@ -186,7 +186,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     # Repeat 
     while 1: 
         # Tighten the bound of eta 
-        bound_eta = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples)
+        bound_eta = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples) # TODO 
 
         # Solve eta
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
