@@ -39,7 +39,7 @@ class BaseFederated(object):
         return averaged_soln
     
     def train(self):
-        num_rounds = 1
+        num_rounds = 5
         for t in range(num_rounds): 
             print(f"Round {t+1}\n-------------------------------")
             # collect num_samples, grads from clients 
