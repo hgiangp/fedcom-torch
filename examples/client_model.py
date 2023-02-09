@@ -6,7 +6,6 @@ import copy
 
 from custom_model import CustomLogisticRegression
 from custom_dataset import load_data, test_load_data
-from torch_utils import add_params_grads
 
 class Client(object): 
     def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None):
@@ -14,15 +13,20 @@ class Client(object):
         self.model = model #CustomLogisticRegression()
         self.optimizer = optim.SGD(self.model.parameters(), lr=1e-2)
         self.loss_fn = nn.CrossEntropyLoss()
+        
         self.train_loader, self.test_loader = load_data(train_data, test_data)
-        print(f"id = {id}, model = {model}")
+        self.num_samples = len(self.train_loader.dataset)
+        
+        self.xi_factor = 1 # TODO
+        self.diff_grads = {} 
+        print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
     
     def get_params(self): 
         r"""Get model.parameters()
         Return: 
             dict {'state_dict': tensor(param.data)}
         """
-        return self.model.get_params()
+        return (self.num_samples, self.model.get_params())
 
     def set_params(self, params_dict=None):
         r"""Set initial params to model parameters()
@@ -39,9 +43,21 @@ class Client(object):
         Return: 
             dict {'state_dict': tensor(param.grad)}
         """
-        return self.model.get_grads()
+        return (self.num_samples, self.model.get_grads())
     
-    def train(self, num_epochs, diff_dict):
+    def dot_diff_grads(self, diff_gards): 
+        r"""diff_grads: dict {'state_dict': grad}"""
+        sum = 0.0
+        local_params = self.get_params()[1]
+
+        for k in local_params.keys():
+            sum += (local_params[k] * diff_gards[k]).sum()
+        
+        return sum
+
+    def train(self, num_epochs):
+        # Calculate diff_grads 
+
         size = len(self.train_loader.dataset)
 
         for t in range(num_epochs): 
@@ -52,7 +68,7 @@ class Client(object):
 
                 # Calculate surrogate term and update the loss
                 # Hint: https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
-                surr_term = add_params_grads(self.get_params(), diff_dict)
+                surr_term = self.dot_diff_grads(self.diff_grads)
                 loss = loss + surr_term
 
                 # Back propagation
@@ -70,6 +86,14 @@ class Client(object):
 
         # soln = get_params(model=model)
         # return (size, soln)
+    
+    def calc_diff_grads(self, glob_grads): 
+        local_grads = self.get_grads()[1] # the second arg
+
+        for k in local_grads.keys(): 
+            self.diff_grads[k] = self.xi_factor * glob_grads[k] - local_grads[k]
+    
+
     def test(self): 
         size = len(self.test_loader.dataset)
         num_batches = len(self.test_loader)
@@ -117,13 +141,6 @@ def test_train():
     posttrain_params2 = client2.get_params()
     print(f"posttrain_params2 =\n{posttrain_params2}")
     print(f"client.get_params() =\n{client.get_params()}")
-    
-    # epoches = 100 
-    # for t in range(epoches): 
-    #     print(f"Epoch {t+1}\n-------------------------------")
-    #     train_loop(csmodel.train_loader, csmodel.model, csmodel.loss_fn, csmodel.optimizer, diff_dict)
-    #     test_loop(csmodel.test_loader, csmodel.model, csmodel.loss_fn)
-    # print("Done!")
 
 def test_test(): 
     print("test_test()")
@@ -146,6 +163,37 @@ def test_test():
     ## Test
     client.test()
 
+def test_diff_grads(): 
+    print("test_diff_grads()")
+    model = CustomLogisticRegression(input_dim=5, output_dim=3)
+
+    user_id = 1
+    train_data, test_data = test_load_data(user_id)
+    client = Client(user_id, train_data, test_data, model)
+    pretrain_params = copy.deepcopy(client.get_params()[1])
+    print(f"pretrain_params =\n{pretrain_params}")
+
+    diff_dict = {k: torch.randn_like(v) for k, v in zip(pretrain_params.keys(), pretrain_params.values())}
+    global_grads = {k: torch.ones_like(v) for k, v in zip(pretrain_params.keys(), pretrain_params.values())}
+
+    num_epochs = 30
+    ## Train 
+    client.train(num_epochs, diff_dict)
+
+    ## Test diff grads
+    diff_grads = client.calc_diff_grads(glob_grads=global_grads)
+    print(diff_grads)
+
+def test_initial_grads(): 
+    model = CustomLogisticRegression(input_dim=5, output_dim=3)
+
+    user_id = 1
+    train_data, test_data = test_load_data(user_id)
+    client = Client(user_id, train_data, test_data, model)
+    print(client.get_grads())
+
 if __name__ == '__main__':
     # test_train() 
-    test_test()
+    # test_test()
+    # test_diff_grads()
+    test_initial_grads()

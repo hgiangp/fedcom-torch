@@ -1,0 +1,9 @@
+['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004']
+5
+dict_keys(['x', 'y'])
+len(train_data['y'] = 110
+len(test_data['y']) = 28
+id = 1, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 110
+(110, {'linear.weight': None, 'linear.bias': None})
