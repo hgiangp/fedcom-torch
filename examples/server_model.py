@@ -38,31 +38,35 @@ class BaseFederated(object):
         
         return averaged_soln
     
-    def train(self): 
-        # collect num_samples, params, grads from clients 
-        wparams = []
-        wgrads = []
-        for c in self.clients: 
-            wparams.append(c.get_params())
-            wgrads.append(c.get_grads())
+    def train(self):
+        num_rounds = 1
+        for t in range(num_rounds): 
+            print(f"Round {t+1}\n-------------------------------")
+            # collect num_samples, grads from clients 
+            wgrads = []
+            for c in self.clients: 
+                wgrads.append(c.get_grads())
 
-        # aggregate the clients params 
-        aparams = self.aggregate(wparams)
+            # aggregate the clients grads
+            agrads = self.aggregate(wgrads)
 
-        # aggregate the clients grads
-        agrads = self.aggregate(wgrads)
+            # broadcast the global params and difference grads 
+            for c in self.clients:
+                c.calc_diff_grads(agrads)
 
-        # broadcast the global params and difference grads 
-        for c in self.clients: 
-            c.set_params(aparams)
-            c.calc_diff_grads(agrads)
+            # clients train the local surrogate models
+            num_epochs = 20 # TODO: network_opt
+            wsolns = [] # buffer for receiving clients' solution
+            for c in self.clients:
+                wsolns.append(c.train(num_epochs)) 
+                
+            # aggregate the global parameters and broadcast to all uses 
+            aparams = self.aggregate(wsolns)
+            for c in self.clients: 
+                c.set_params(aparams)
+        
+        print("Done!")
 
-        # clients train the local surrogate models
-        num_epochs = 10 # TODO: network_opt
-        for c in self.clients: 
-            c.train(num_epochs)
-    
-    
     def test_aggregate(self):
         soln1 = {k: torch.ones_like(v) for k, v in self.latest_model.items()} 
         soln2 = {k: torch.ones_like(v)*2 for k, v in self.latest_model.items()} 
@@ -89,6 +93,7 @@ def test():
     t = BaseFederated(model, dataset)
     # t.test_aggregate()
 
+    t.train()
 
 if __name__=="__main__": 
     test()

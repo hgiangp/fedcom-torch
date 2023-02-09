@@ -17,9 +17,21 @@ class Client(object):
         self.train_loader, self.test_loader = load_data(train_data, test_data)
         self.num_samples = len(self.train_loader.dataset)
         
-        self.xi_factor = 1 # TODO
+        self.xi_factor = 0.1 # TODO
         self.diff_grads = {} 
+
+        self.initial_train()
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
+    
+    def initial_train(self): 
+        r""" Train one epoch for update gradients for the first iteration"""
+        for (X, y) in self.train_loader:
+            output = self.model(X)
+            loss = self.loss_fn(output, y)
+            # Back propagation
+            self.optimizer.zero_grad()
+            loss.backward()  # update gradients
+            self.optimizer.step()  # update model parameters 
     
     def get_params(self): 
         r"""Get model.parameters()
@@ -54,10 +66,9 @@ class Client(object):
             sum += (local_params[k] * diff_gards[k]).sum()
         
         return sum
-
+    
     def train(self, num_epochs):
         # Calculate diff_grads 
-
         size = len(self.train_loader.dataset)
 
         for t in range(num_epochs): 
@@ -82,10 +93,8 @@ class Client(object):
                 # print(f"model.parameters() =\n{self.model.get_params()}")
     
         print("Done!")
-        # print(f"In train():\nself.get_params() =\n{self.get_params()}\nmodel.parameters() =\n{self.model.get_params()}")
-
-        # soln = get_params(model=model)
-        # return (size, soln)
+        wsoln = self.get_params()
+        return wsoln
     
     def calc_diff_grads(self, glob_grads): 
         local_grads = self.get_grads()[1] # the second arg
