@@ -70,6 +70,20 @@ class Client(object):
 
         # soln = get_params(model=model)
         # return (size, soln)
+    def test(self): 
+        size = len(self.test_loader.dataset)
+        num_batches = len(self.test_loader)
+        test_loss, correct = 0, 0 
+        
+        with torch.no_grad(): 
+            for X, y in self.test_loader: 
+                pred = self.model(X)
+                test_loss += self.loss_fn(pred, y).item()
+                correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+        
+        test_loss /= num_batches
+        correct /= size 
+        print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
 
 def test_train(): 
     print("test_train")
@@ -111,6 +125,27 @@ def test_train():
     #     test_loop(csmodel.test_loader, csmodel.model, csmodel.loss_fn)
     # print("Done!")
 
+def test_test(): 
+    print("test_test()")
+    model = CustomLogisticRegression(input_dim=5, output_dim=3)
+
+    user_id = 4
+    train_data, test_data = test_load_data(user_id)
+    client = Client(user_id, train_data, test_data, model)
+    pretrain_params = copy.deepcopy(client.get_params())
+    print(f"pretrain_params =\n{pretrain_params}")
+    diff_dict = {k: torch.randn_like(v) for k, v in zip(pretrain_params.keys(), pretrain_params.values())}
+    num_epochs = 30
+
+    ## Train 
+    client.train(num_epochs, diff_dict)
+    posttrain_params = client.get_params()
+    print(f"pretrain_params =\n{pretrain_params}")
+    print(f"posttrain_params =\n{posttrain_params}")
+
+    ## Test
+    client.test()
 
 if __name__ == '__main__':
-    test_train() 
+    # test_train() 
+    test_test()
