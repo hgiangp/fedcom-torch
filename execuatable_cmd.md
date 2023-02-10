@@ -27,3 +27,6 @@ python3 server_model.py | tee server_model_test.log
 ```
 python3 client_model.py | tee client_model.log 
 ```
+```
+python3 plot_synthetic.py | tee plot_synthetic.log
+```
