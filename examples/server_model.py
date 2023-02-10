@@ -40,6 +40,15 @@ class BaseFederated(object):
         
         return averaged_soln
     
+    def calc_dissimilarity(self, agrads, wgrads):
+        difference = 0
+        for _, grads in wgrads: 
+            for k in grads.keys(): 
+                difference += torch.square(agrads[k] - grads[k]).sum()
+        difference = difference * 1.0 / len(self.clients)
+        
+        return difference
+    
     def train(self):
         num_rounds = 200
         for t in range(num_rounds): 
@@ -51,6 +60,9 @@ class BaseFederated(object):
 
             # aggregate the clients grads
             agrads = self.aggregate(wgrads)
+
+            difference = self.calc_dissimilarity(agrads=agrads, wgrads=wgrads)
+            print('gradient difference: {}'.format(difference))
 
             # broadcast the global params and difference grads 
             for c in self.clients:
