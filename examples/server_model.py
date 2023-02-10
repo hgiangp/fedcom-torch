@@ -61,9 +61,9 @@ class BaseFederated(object):
                 wsolns.append(c.train(num_epochs)) 
                 
             # aggregate the global parameters and broadcast to all uses 
-            aparams = self.aggregate(wsolns)
+            self.latest_model = self.aggregate(wsolns)
             for c in self.clients: 
-                c.set_params(aparams)
+                c.set_params(self.latest_model)
         
         print("Done!")
 

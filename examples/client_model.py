@@ -24,14 +24,16 @@ class Client(object):
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
     
     def initial_train(self): 
-        r""" Train one epoch for update gradients for the first iteration"""
-        for (X, y) in self.train_loader:
-            output = self.model(X)
-            loss = self.loss_fn(output, y)
-            # Back propagation
-            self.optimizer.zero_grad()
-            loss.backward()  # update gradients
-            self.optimizer.step()  # update model parameters 
+        r""" Train one epoch to update gradients for the first iteration"""
+        num_epochs = 5
+        for _ in range(num_epochs): 
+            for _, (X, y) in enumerate(self.train_loader):
+                output = self.model(X)
+                loss = self.loss_fn(output, y)
+                # Back propagation
+                self.optimizer.zero_grad()
+                loss.backward()  # update gradients
+                self.optimizer.step()  # update model parameters
     
     def get_params(self): 
         r"""Get model.parameters()
@@ -103,13 +105,13 @@ class Client(object):
             self.diff_grads[k] = self.xi_factor * glob_grads[k] - local_grads[k]
     
 
-    def test(self): 
-        size = len(self.test_loader.dataset)
-        num_batches = len(self.test_loader)
+    def test(self, dataloader): 
+        size = len(dataloader.dataset)
+        num_batches = len(dataloader)
         test_loss, correct = 0, 0 
         
         with torch.no_grad(): 
-            for X, y in self.test_loader: 
+            for X, y in dataloader: 
                 pred = self.model(X)
                 test_loss += self.loss_fn(pred, y).item()
                 correct += (pred.argmax(1) == y).type(torch.float).sum().item()
@@ -117,6 +119,12 @@ class Client(object):
         test_loss /= num_batches
         correct /= size 
         print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+    
+    def fake_set_grads(self): 
+        params = copy.deepcopy(self.get_params()[1])
+        fake_global_grads = {k: torch.randn_like(v) for k, v in zip(params.keys(), params.values())}
+        self.calc_diff_grads(glob_grads=fake_global_grads)
+    
 
 def test_train(): 
     print("test_train")
@@ -128,14 +136,13 @@ def test_train():
     train_data1, test_data1 = test_load_data(user_id)
     model1 = copy.deepcopy(model)
     client = Client(user_id, train_data1, test_data1, model1)
-    pretrain_params = copy.deepcopy(client.get_params())
-    print(f"pretrain_params =\n{pretrain_params}")
-    diff_dict = {k: torch.randn_like(v) for k, v in zip(pretrain_params.keys(), pretrain_params.values())}
+    
+    client.fake_set_grads()
     num_epochs = 5 
-    client.train(num_epochs, diff_dict)
+    
+    client.train(num_epochs)
     posttrain_params = client.get_params()
     
-    print(f"pretrain_params =\n{pretrain_params}")
     print(f"posttrain_params =\n{posttrain_params}")
 
     print("##########################\n##########################")
@@ -146,7 +153,10 @@ def test_train():
     client2 = Client(user_id, train_data2, test_data2, model2)
     pretrain_params2 = copy.deepcopy(client2.get_params())
     print(f"pretrain_params2 =\n{pretrain_params2}")
-    client2.train(num_epochs, diff_dict)
+    
+    client2.fake_set_grads()
+    client2.train(num_epochs)
+    
     posttrain_params2 = client2.get_params()
     print(f"posttrain_params2 =\n{posttrain_params2}")
     print(f"client.get_params() =\n{client.get_params()}")
@@ -158,19 +168,18 @@ def test_test():
     user_id = 4
     train_data, test_data = test_load_data(user_id)
     client = Client(user_id, train_data, test_data, model)
-    pretrain_params = copy.deepcopy(client.get_params())
-    print(f"pretrain_params =\n{pretrain_params}")
-    diff_dict = {k: torch.randn_like(v) for k, v in zip(pretrain_params.keys(), pretrain_params.values())}
     num_epochs = 30
 
+    # Receive global grads 
+    client.fake_set_grads()
     ## Train 
-    client.train(num_epochs, diff_dict)
-    posttrain_params = client.get_params()
-    print(f"pretrain_params =\n{pretrain_params}")
-    print(f"posttrain_params =\n{posttrain_params}")
+    client.train(num_epochs)
 
     ## Test
-    client.test()
+    print("Test Loss\n-------------------------------")
+    client.test(client.test_loader)
+    print("Train Loss\n-------------------------------") 
+    client.test(client.train_loader)
 
 def test_diff_grads(): 
     print("test_diff_grads()")
@@ -203,6 +212,6 @@ def test_initial_grads():
 
 if __name__ == '__main__':
     # test_train() 
-    # test_test()
+    test_test()
     # test_diff_grads()
-    test_initial_grads()
+    # test_initial_grads()
