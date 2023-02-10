@@ -1,7 +1,8 @@
 import importlib
 import os 
 import copy 
-import torch 
+import torch
+import numpy as np 
 
 from custom_dataset import read_data 
 from client_model import Client
@@ -11,7 +12,8 @@ class BaseFederated(object):
         self.client_model = model(input_dim=5, output_dim=3)
         self.clients = self.setup_clients(self.client_model, dataset)
         self.latest_model = self.client_model.get_params()
-        print(f"self.latest_model =\n{self.latest_model}")
+
+        self.eval_every = 1 # TODO: check params         
         print("BaseFederated generated!")
     
     def setup_clients(self, model, dataset): 
@@ -39,7 +41,7 @@ class BaseFederated(object):
         return averaged_soln
     
     def train(self):
-        num_rounds = 5
+        num_rounds = 200
         for t in range(num_rounds): 
             print(f"Round {t+1}\n-------------------------------")
             # collect num_samples, grads from clients 
@@ -64,16 +66,48 @@ class BaseFederated(object):
             self.latest_model = self.aggregate(wsolns)
             for c in self.clients: 
                 c.set_params(self.latest_model)
+
+            # Test model 
+            if t % self.eval_every == 0: 
+                stats = self.test() # (list num_samples, list total_correct)  
+                stats_train = self.train_error_and_loss() # (list num_samples, list total_correct, list losses)
+                print("At round {} accuracy: {}".format(t, np.sum(stats[1])*1.0/np.sum(stats[0])))
+                print("At round {} training accuracy: {}".format(t, np.sum(stats_train[1])*1.0/np.sum(stats_train[0])))
+                print("At round {} training loss: {}".format(t, np.dot(stats_train[2], stats_train[0])*1.0/np.sum(stats_train[0])))
         
         print("Done!")
+    
+    def test(self):
+        num_samples = []
+        tot_correct = []
 
-    def test_aggregate(self):
-        soln1 = {k: torch.ones_like(v) for k, v in self.latest_model.items()} 
-        soln2 = {k: torch.ones_like(v)*2 for k, v in self.latest_model.items()} 
-        soln3 = {k: torch.ones_like(v)*3 for k, v in self.latest_model.items()} 
-        wsolns = [(1, soln1), (2, soln2), (3, soln3)]
-        soln = self.aggregate(wsolns)
-        print(f"soln=\n{soln}")
+        for c in self.clients: 
+            ns, ct = c.test()
+            num_samples.append(ns)
+            tot_correct.append(ct*1.0)
+
+        return num_samples, tot_correct
+    
+    def train_error_and_loss(self): 
+        num_samples = []
+        tot_correct = []
+        losses = []
+
+        for c in self.clients: 
+            ns, ct, cl = c.train_error_and_loss()
+            num_samples.append(ns)
+            tot_correct.append(ct*1.0)
+            losses.append(cl*1.0)
+        
+        return num_samples, tot_correct, losses
+    
+def test_aggregate(server):
+    soln1 = {k: torch.ones_like(v) for k, v in server.latest_model.items()} 
+    soln2 = {k: torch.ones_like(v)*2 for k, v in server.latest_model.items()} 
+    soln3 = {k: torch.ones_like(v)*3 for k, v in server.latest_model.items()} 
+    wsolns = [(1, soln1), (2, soln2), (3, soln3)]
+    soln = server.aggregate(wsolns)
+    print(f"soln=\n{soln}")
     
 def test(): 
 
@@ -91,7 +125,7 @@ def test():
 
     # TODO: check params 
     t = BaseFederated(model, dataset)
-    # t.test_aggregate()
+    # test_aggregate(t)
 
     t.train()
 

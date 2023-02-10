@@ -16,11 +16,12 @@ class Client(object):
         
         self.train_loader, self.test_loader = load_data(train_data, test_data)
         self.num_samples = len(self.train_loader.dataset)
+        self.test_samples = len(self.test_loader.dataset)
         
         self.xi_factor = 0.1 # TODO
         self.diff_grads = {} 
 
-        self.initial_train()
+        self.initial_train() # for generating the initial grads (train without global grads)
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
     
     def initial_train(self): 
@@ -74,7 +75,7 @@ class Client(object):
         size = len(self.train_loader.dataset)
 
         for t in range(num_epochs): 
-            print(f"Epoch {t+1}\n-------------------------------")
+            # print(f"Epoch {t+1}\n-------------------------------")
             for batch, (X, y) in enumerate(self.train_loader):
                 output = self.model(X)
                 loss = self.loss_fn(output, y)
@@ -90,11 +91,11 @@ class Client(object):
                 self.optimizer.step()  # update model parameters
 
                 # print log
-                loss, current = loss.item(), batch * len(X)
-                print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+                # loss, current = loss.item(), batch * len(X)
+                # print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
                 # print(f"model.parameters() =\n{self.model.get_params()}")
     
-        print("Done!")
+        # print("Done!")
         wsoln = self.get_params()
         return wsoln
     
@@ -105,8 +106,8 @@ class Client(object):
             self.diff_grads[k] = self.xi_factor * glob_grads[k] - local_grads[k]
     
 
-    def test(self, dataloader): 
-        size = len(dataloader.dataset)
+    def common_test(self, dataloader): 
+        size = len(dataloader.dataset) # number of samples of train set or test set 
         num_batches = len(dataloader)
         test_loss, correct = 0, 0 
         
@@ -118,13 +119,25 @@ class Client(object):
         
         test_loss /= num_batches
         correct /= size 
-        print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+        
+        # print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+
+        return  correct, test_loss
+    
+    def test(self): 
+        r"""Evaluate on the test dataset"""
+        tot_correct, _ = self.common_test(self.test_loader)
+        return self.test_samples, tot_correct
+
+    def train_error_and_loss(self): 
+        r"""Evaluate on the train dataset"""
+        tot_correct, loss = self.common_test(self.train_loader)
+        return self.num_samples, tot_correct, loss 
     
     def fake_set_grads(self): 
         params = copy.deepcopy(self.get_params()[1])
         fake_global_grads = {k: torch.randn_like(v) for k, v in zip(params.keys(), params.values())}
         self.calc_diff_grads(glob_grads=fake_global_grads)
-    
 
 def test_train(): 
     print("test_train")
