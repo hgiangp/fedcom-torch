@@ -1,0 +1,23 @@
+['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004']
+5
+dict_keys(['x', 'y'])
+id = f_00000, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 171
+id = f_00001, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 110
+id = f_00002, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 165
+id = f_00003, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 202
+id = f_00004, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 454
+BaseFederated generated!
+{'linear.weight': tensor([[-0.3539,  0.3984,  0.1920,  0.1487, -0.4305],
+        [ 0.0871,  0.1400, -0.0563, -0.2582,  0.3461],
+        [-0.1463, -0.3975, -0.0476, -0.0105, -0.3045]]), 'linear.bias': tensor([0.3008, 0.1064, 0.3929])}
+test_calc_msize() 576

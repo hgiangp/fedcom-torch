@@ -5,7 +5,7 @@ tau = 1 # total time threshold
 
 # Local computation params 
 L_Lipschitz = 1.0 # L-Lipschitz of the loss function
-delta_lr = 0.1 # Learning rate of local surrogate function 
+delta_lr = 0.1 # TODO Learning rate of local surrogate function 
 gamma_cv = 0.1 # gamma-strongly convex of the loss function
 
 # k_switch = 1e-26 # switch capacity, depends on chip's architecture 
@@ -17,7 +17,7 @@ freq_max = 3 # TODO: testback, maximum cpu computation frequency
 # Offloading, global aggregation params 
 xi_factor = 1.0 # global gradient factor 
 epsilon_0 = 1e-4 # global accuracy 
-s_n = 1e3 # data transmission size 
+s_n = 1e3 # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # bandwidth 
 delta_t = 2 # uav's time penalty 
 N_0 = 2 # -174, TODO # dB, noise density, should be multiplied with bw

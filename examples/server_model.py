@@ -11,7 +11,7 @@ class BaseFederated(object):
     def __init__(self, model, dataset):
         self.client_model = model(input_dim=5, output_dim=3)
         self.clients = self.setup_clients(self.client_model, dataset)
-        self.latest_model = self.client_model.get_params()
+        self.latest_model = self.client_model.get_params() # TODO: lastest_model updated 
 
         self.eval_every = 1 # TODO: check params         
         print("BaseFederated generated!")
@@ -113,6 +113,11 @@ class BaseFederated(object):
         
         return num_samples, tot_correct, losses
     
+    def calc_model_size(self): 
+        torch_float = 32 
+        msize = sum(param.numel() for param in self.client_model.parameters()) * torch_float
+        return msize
+    
 def test_aggregate(server):
     soln1 = {k: torch.ones_like(v) for k, v in server.latest_model.items()} 
     soln2 = {k: torch.ones_like(v)*2 for k, v in server.latest_model.items()} 
@@ -120,8 +125,12 @@ def test_aggregate(server):
     wsolns = [(1, soln1), (2, soln2), (3, soln3)]
     soln = server.aggregate(wsolns)
     print(f"soln=\n{soln}")
+
+def test_calc_msize(server): 
+    print(server.latest_model)
+    return server.calc_model_size()
     
-def test(): 
+def test():
 
     # load the client model 
     model_path = '%s' % ('custom_model')
@@ -138,8 +147,8 @@ def test():
     # TODO: check params 
     t = BaseFederated(model, dataset)
     # test_aggregate(t)
-
-    t.train()
+    # t.train()
+    print("test_calc_msize()", test_calc_msize(t))
 
 if __name__=="__main__": 
     test()

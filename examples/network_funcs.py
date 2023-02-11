@@ -1,4 +1,4 @@
-from net_params import * 
+from network_params import * 
 import numpy as np 
 from scipy.special import lambertw
 
