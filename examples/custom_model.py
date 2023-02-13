@@ -33,6 +33,11 @@ class CustomLogisticRegression(nn.Module):
     def get_grads(self): 
         return {k: v.grad for k, v in zip(self.state_dict(), self.parameters())} 
 
+    def get_model_size(self):  
+        torch_float = 32 
+        msize = sum(param.numel() for param in self.parameters()) * torch_float
+        return msize
+
 def test(): 
     model = CustomLogisticRegression()
     test_param = model.get_params()

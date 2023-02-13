@@ -28,10 +28,9 @@ def test_parse_log():
     file_name = './server_model_test.log'
     rounds, acc, loss, sim = parse_log(file_name=file_name)
 
-    # print(f"rounds = \n{rounds[1:30]}")
-    # print(f"acc = \n{acc[1:30]}") 
-    # print(f"loss = \n{loss[1:30]}") 
-    # print(f"sim = \n{sim[1:30]}")
+    print(f"acc = \n{acc[-5:]}") 
+    print(f"loss = \n{loss[-5:]}") 
+    print(f"sim = \n{sim[-5:]}")
 
     rounds = np.asarray(rounds)
     acc = np.asarray(acc) * 100
@@ -50,7 +49,7 @@ def test_parse_log():
     plt.subplot(313)
     plt.plot(rounds, sim)
     plt.ylabel("Dissimilarity")
-    
+    plt.savefig('ploy_synthetic.png')
     plt.show()
 
 

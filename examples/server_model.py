@@ -113,10 +113,9 @@ class BaseFederated(object):
         
         return num_samples, tot_correct, losses
     
-    def calc_model_size(self): 
-        torch_float = 32 
-        msize = sum(param.numel() for param in self.client_model.parameters()) * torch_float
-        return msize
+    def get_model_size(self): 
+        msize = self.client_model.get_model_size()
+        return msize 
     
 def test_aggregate(server):
     soln1 = {k: torch.ones_like(v) for k, v in server.latest_model.items()} 
@@ -128,7 +127,7 @@ def test_aggregate(server):
 
 def test_calc_msize(server): 
     print(server.latest_model)
-    return server.calc_model_size()
+    return server.get_model_size()
     
 def test():
 
