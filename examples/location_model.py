@@ -9,7 +9,7 @@ d = 10
 def init():
     xs = rng.normal(loc=0, scale=d, size=(no_users))
     ys = rng.normal(loc=0, scale=d, size=(no_users))
-    dirs = np.zeros(shape=(no_users))
+    dirs = np.zeros(shape=(no_users), dtype=int)
 
     for i in range(no_users):
         if xs[i] > d: 
@@ -19,7 +19,7 @@ def init():
         elif ys[i] > d: 
             dirs[i] = 1
         elif (-ys[i] < d): 
-            dirs[i] = 4 
+            dirs[i] = 3
         else: 
             dirs[i] = rng.integers(low=0, high=4) 
 
