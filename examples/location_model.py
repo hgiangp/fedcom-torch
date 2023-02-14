@@ -1,11 +1,12 @@
 import numpy as np 
 
-rng = np.random.default_rng()
+seed = 42
+rng = np.random.default_rng(seed=seed)
 no_users = 10 
 d = 10 
 delta = 1
 
-def init():
+def init_location():
     xs = rng.normal(loc=0, scale=d, size=(no_users))
     ys = rng.normal(loc=0, scale=d, size=(no_users))
     dirs = rng.integers(low=0, high=4, size=(no_users)) 
@@ -22,7 +23,7 @@ def init():
 
     return xs, ys, dirs
 
-def update(xs, ys, dirs): 
+def update_location(xs, ys, dirs): 
     delta_xs = np.zeros(no_users, dtype=int)
     delta_ys = np.zeros(no_users, dtype=int)
 
@@ -51,11 +52,11 @@ def update(xs, ys, dirs):
     return xs_new, ys_new, dirs 
 
 def test(): 
-    xs, ys, dirs = init()
+    xs, ys, dirs = init_location()
     print("xs =", xs)
     print("ys =", ys)
     print("dirs =", dirs)
-    xs, ys, dirs = update(xs, ys, dirs)
+    xs, ys, dirs = update_location(xs, ys, dirs)
     print("xs =", xs)
     print("ys =", ys)
     print("dirs =", dirs) 

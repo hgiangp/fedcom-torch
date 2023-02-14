@@ -2,6 +2,8 @@ from network_params import *
 import numpy as np 
 from scipy.special import lambertw
 
+from location_model import init_location
+
 def calc_comp_energy(num_rounds, num_samples, freqs): 
     r""" Calculate local computation energy
     Args: 
@@ -53,18 +55,20 @@ def calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers):
     ene_co = powers * coms_tis 
     return ene_co
 
-def calc_bs_gains(dists): 
+def calc_bs_gains(xs, ys): 
     r""" Calculate propagation channel gains, connect to bs 
     Args: 
         dists: distance: dtype=np.array, shape=(N, )
     Return: 
         bs_gains: dtype=np.array, shape=(N, )
     """
-    # TODO: define location of bstation, calcualte distance based on xs, ys inside function
+    # Calculate the distances to the basestation
+    dists = np.sqrt(((xs - x_bs) ** 2) + ((ys - y_bs) ** 2))
+    print(f"dists_bs = {dists}")
     bs_gains = A_d * np.power((c / (4 * np.pi * f_c * dists)), de_r) 
     return bs_gains 
 
-def cals_uav_gains(xs, ys): 
+def calc_uav_gains(xs, ys): 
     r""" Calculate propagation channel gains, connect to uav
     Args: 
         xs: x location of vehs: dtype=np.array, shape=(N, )
@@ -75,7 +79,7 @@ def cals_uav_gains(xs, ys):
     dists = np.sqrt((xs ** 2) + (ys ** 2) + (z_uav ** 2)) # (N, )
     thetas = 180 / np.pi * np.arctan(z_uav / dists) # (N, )
     pLoSs = 1 / (1 + a_env * np.exp( -b_env * (thetas - a_env))) # (N, )
-
+    print(f"dists_uav =", dists)
     uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
     return uav_gains 
 
@@ -223,7 +227,7 @@ def test():
     # freqs = np.random.randint(low=4, high=8, size=(num_users, ))
     # ene_cp = calc_comp_energy(num_rounds, num_samples, freqs)
     # print(f"ene_cp = {ene_cp}\ndtype={type(ene_cp)}\nsize={ene_cp.shape}") 
-    decs = np.random.randint(low=0, high=2, size=num_users)
+    
     uav_gains = np.random.randint(low=1, high=5, size=num_users)
     bs_gains = np.random.randint(low=1, high=4, size=num_users)
     data_size = np.random.randint(low=0, high=4, size=num_users)
@@ -237,5 +241,35 @@ def test():
     # opt_freqs = solve_optimal_freq(eta, num_samples)
     # print(f"freqs = {opt_freqs}")
 
+def test_with_location():
+    xs, ys, _ =  init_location()
+    print("xs =", xs)
+    print("ys =", ys)
+    uav_gains = calc_uav_gains(xs, ys) 
+    bs_gains = calc_bs_gains(xs, ys)
+    print(f"uav_gains = {uav_gains}")
+    print(f"bs_gains = {bs_gains}")
+
+    num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
+    freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
+    num_rounds = 30
+    cp_ene = calc_comp_energy(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
+    print(f"cp_ene =", cp_ene)
+    cp_time = calc_comp_time(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
+    print(f"cp_time = {cp_time}")
+
+    decs = np.array([1, 0, 1, 0, 0, 1, 1, 0, 1, 0])
+    data_size = np.array([s_n for _ in range(num_users)])
+    powers = np.array([0.1, 0.06, 0.1, 0.05, 0.07, 0.07, 0.1, 0.04, 0.04, 0.05])
+    co_time = calc_trans_time(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
+    print(f"decs = {decs}")
+    print(f"co_time = {co_time}")
+    co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
+    print(f"co_ene = {co_ene}")
+
+    bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
+    print(f"bound_eta = {bound_eta}")
+
 if __name__=='__main__': 
-    test()
+    # test()
+    test_with_location()
