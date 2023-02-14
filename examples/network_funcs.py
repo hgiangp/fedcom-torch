@@ -97,7 +97,11 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     # Calculate communcitions time
     af = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers) # (N, )
     bf = calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
+    print(f"af = {af}")
+    print(f"bf = {bf}")
+    print(f"a = {a}, v = {v}")
     x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
+    print(f"x = {x}")
     bound_eta = np.exp(x.real) # (N, )
     # print("bound_eta =", bound_eta)
     
@@ -221,26 +225,6 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     # Stop 
     return (eta, freqs, decs, powers)
 
-def test(): 
-    # num_rounds = 2
-    num_samples = np.random.randint(low=1, high=3, size=(num_users, ))
-    # freqs = np.random.randint(low=4, high=8, size=(num_users, ))
-    # ene_cp = calc_comp_energy(num_rounds, num_samples, freqs)
-    # print(f"ene_cp = {ene_cp}\ndtype={type(ene_cp)}\nsize={ene_cp.shape}") 
-    
-    uav_gains = np.random.randint(low=1, high=5, size=num_users)
-    bs_gains = np.random.randint(low=1, high=4, size=num_users)
-    data_size = np.random.randint(low=0, high=4, size=num_users)
-    powers = np.random.randint(low=2, high=4, size=num_users)
-    freqs = np.random.randint(low=2, high=4, size=num_users)
-
-    # x = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples)
-    # print(f"x = {x}")
-    # solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
-    eta = 0.9
-    # opt_freqs = solve_optimal_freq(eta, num_samples)
-    # print(f"freqs = {opt_freqs}")
-
 def test_with_location():
     xs, ys, _ =  init_location()
     print("xs =", xs)
@@ -267,9 +251,8 @@ def test_with_location():
     co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     print(f"co_ene = {co_ene}")
 
-    bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
-    print(f"bound_eta = {bound_eta}")
+    # bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
+    # print(f"bound_eta = {bound_eta}")
 
 if __name__=='__main__': 
-    # test()
     test_with_location()

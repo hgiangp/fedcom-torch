@@ -18,8 +18,8 @@ xi_factor = 1.0 # global gradient factor
 epsilon_0 = 1e-4 # global accuracy 
 s_n = 502400 # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
-delta_t = 2 # TODO Based on current results uav's time penalty 
-N_0 = 4*1e-12 # -174, TODO # dB, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12)
+delta_t = 0 # TODO Based on current results uav's time penalty 
+N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)
 power_max = 0.1 # W TODO  
 
 # base station propagation channel params 
