@@ -97,11 +97,11 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     # Calculate communcitions time
     af = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers) # (N, )
     bf = calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
-    print(f"af = {af}")
-    print(f"bf = {bf}")
-    print(f"a = {a}, v = {v}")
+    # print(f"af = {af}")
+    # print(f"bf = {bf}")
+    # print(f"a = {a}, v = {v}")
     x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
-    print(f"x = {x}")
+    # print(f"x = {x}")
     bound_eta = np.exp(x.real) # (N, )
     # print("bound_eta =", bound_eta)
     
@@ -114,24 +114,22 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
         Optimal eta 
     """
     acc = 1e-4 
-    zeta = 0.1
+    zeta = 20
     eta = 1 
 
     bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
     af = v * a * calc_comp_energy(num_rounds=1, num_samples=num_samples, freqs=freqs).sum() / math.log(2)
-    
-    h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
-    iter = 0 # TODO: remove iter writing log after test with verified params
+
+    h_prev = 0
     
     while 1:
-        eta = af / zeta # calculate temporary optimal eta 
-        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta 
-        h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition 
-        print(f"iter = {iter}, h_prev = {h_prev}, h_curr = {h_curr}, h_curr / h_prev={h_curr / h_prev}")
-        if (h_prev != 0) and (h_curr / h_prev < acc): 
+        eta = af / zeta # calculate temporary optimal eta
+        h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
+        if (h_prev != 0) and (abs(h_curr / h_prev) < acc): 
             break
         h_prev = h_curr   
-        iter += 1 # TODO: remove 
+        
+        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta 
   
     return eta
 
@@ -251,8 +249,10 @@ def test_with_location():
     co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     print(f"co_ene = {co_ene}")
 
-    # bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
-    # print(f"bound_eta = {bound_eta}")
+    bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
+    print(f"bound_eta = {bound_eta}")
+    eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
+    print(f"eta = {eta}")
 
 if __name__=='__main__': 
     test_with_location()
