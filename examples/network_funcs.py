@@ -133,6 +133,18 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
   
     return eta
 
+def solve_powers_freqs(eta, num_samples, data_size, gains, ti_penalty): 
+    opt_t_co = (data_size / bw) / (1 + (lambertw(1 / (2 * np.exp(1))).real)) + ti_penalty # optimal communnication time # (N, )
+    print(f"opt_t_co = {opt_t_co}")
+    opt_powers = N_0 / gains * (2 * np.exp((data_size / bw) / (opt_t_co - ti_penalty)) - 1) # optimal power transmission, (N, )
+    
+    num_local_rounds = v * np.log2(1/eta)
+    max_t_cp = (tau * (1 - eta)/a - opt_t_co) / num_local_rounds
+    print(f"max_t_cp = {max_t_cp}")
+    opt_freqs = C_n * num_samples / max_t_cp 
+
+    return opt_powers, opt_freqs  
+
 def solve_optimal_freq(eta, num_samples): 
     r""" Find the optimal local cpu freq
     Args: 
@@ -142,10 +154,11 @@ def solve_optimal_freq(eta, num_samples):
         Optimal freqs: dtype=np.array, shape=(N, )
     """
     t_co_max = tau * (1 - eta) / a - v * math.log2(1/eta) * calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) # (N, )
-    # print(f"t_co_max={t_co_max}") # TODO
+    print(f"t_co_max={t_co_max}") # TODO
     freqs = a * v * C_n * num_samples * math.log2(1/eta) / (tau * (1 - eta) - a * t_co_max) # (N, )
-    # print(f"a = {a * v * C_n * num_samples * math.log2(1/eta)}") # TODO
-    # print(f"b = {(tau * (1 - eta) - a * t_co_max)}") # TODO
+    print(f"a = {a * v * C_n * num_samples * math.log2(1/eta)}") # TODO
+    print(f"b = {(tau * (1 - eta) - a * t_co_max)}") # TODO
+    print(f"freqs = {freqs}")
     return freqs
 
 def solve_optimal_power(eta, num_samples, data_size, gains, ti_penalty): 
@@ -198,15 +211,19 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
 
         # Solve freqs f
-        freqs = solve_optimal_freq(eta, num_samples)
+        # freqs = solve_optimal_freq(eta, num_samples)
 
         # Solve powers p and apply heursitic method for choosing decisions x 
-        uav_powers = solve_optimal_power(eta, num_samples, data_size, uav_gains, delta_t)
-        bs_powers = solve_optimal_power(eta, num_samples, data_size, bs_gains, 0)
+        # uav_powers = solve_optimal_power(eta, num_samples, data_size, uav_gains, delta_t)
+        # bs_powers = solve_optimal_power(eta, num_samples, data_size, bs_gains, 0)
 
-        tco_uav = calc_trans_time(decs=1, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=uav_powers)
-        tco_bs = calc_trans_time(decs=0, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=bs_powers)
+        # tco_uav = calc_trans_time(decs=1, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=uav_powers)
+        # tco_bs = calc_trans_time(decs=0, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=bs_powers)
 
+        uav_powers, uav_freqs = solve_powers_freqs(eta, num_samples, data_size, gains=uav_gains, ti_penalty=delta_t)
+        bs_powers, bs_freqs = solve_powers_freqs(eta, num_samples, data_size, gains=bs_gains, ti_penalty=0)
+
+        
         decs = np.array([1 if tco_uav[i] < tco_bs[i] else 0 for i in range(num_users)], dtype=int)
         powers = decs * uav_powers + (1 - decs) * bs_powers
 
@@ -253,6 +270,19 @@ def test_with_location():
     print(f"bound_eta = {bound_eta}")
     eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
     print(f"eta = {eta}")
+    # opt_freqs = solve_optimal_freq(eta=0.8, num_samples=num_samples)
+    # print(f"opt_freqs = {opt_freqs}")
+
+    opt_powers_uav, opt_freqs_uav = solve_powers_freqs(eta, num_samples, data_size, uav_gains, delta_t)
+
+    print(f"opt_powers_uav = {opt_powers_uav}")
+    print(f"opt_freqs_uav = {opt_freqs_uav}")
+
+    opt_powers_bs, opt_freqs_bs = solve_powers_freqs(eta, num_samples, data_size, bs_gains, 0)
+
+    print(f"opt_powers_bs = {opt_powers_bs}")
+    print(f"opt_freqs_bs = {opt_freqs_bs}")
+
 
 if __name__=='__main__': 
     test_with_location()

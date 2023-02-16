@@ -1,7 +1,7 @@
 import math 
 
 num_users = 10 # number of participating vehicles 
-tau = 60 # total time threshold  
+tau = 120 # total time threshold  
 
 # Local computation params 
 L_Lipschitz = 0.054 # Lipschitz constant of the loss function
@@ -11,7 +11,7 @@ gamma_cv = 0.12 # strongly convex constant of the loss function
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 C_n = 2 * 1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
-freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
+freq_max = 2 * 1e11 # 2GHz -> Hz, maximum cpu computation frequency 
 
 # Offloading, global aggregation params 
 xi_factor = 0.1 # global gradient factor 
