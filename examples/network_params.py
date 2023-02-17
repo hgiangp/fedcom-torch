@@ -47,4 +47,4 @@ a = 2 * (L_Lipschitz**2) * math.log(1/epsilon_0) / ((gamma_cv**2) * xi_factor)
 
 # Optimization params 
 acc = 1e-4 # TODO
-iter_max = 3 # TODO
+iter_max = 10 # TODO

@@ -11,7 +11,7 @@ class BaseFederated(object):
     def __init__(self, model, dataset):
         self.client_model = model(input_dim=5, output_dim=3)
         self.clients = self.setup_clients(self.client_model, dataset)
-        self.latest_model = self.client_model.get_params() # TODO: lastest_model updated 
+        self.latest_model = self.client_model.get_params() # TODO: latest_model updated 
 
         self.eval_every = 1 # TODO: check params         
         print("BaseFederated generated!")
