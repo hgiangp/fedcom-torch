@@ -199,7 +199,6 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         print(f"eta = {eta}")
         print(f"decs = {decs}")
         print(f"freqs = {freqs}")
-        print(f"decs = {decs}")
         print(f"powers = {powers}") 
 
         if (abs(obj_prev - obj) < acc) or iter == iter_max: 
@@ -274,7 +273,6 @@ def test_optimize_network():
     print(f"eta = {eta}")
     print(f"decs = {decs}")
     print(f"freqs = {freqs}")
-    print(f"decs = {decs}")
     print(f"powers = {powers}") 
 
 if __name__=='__main__': 
