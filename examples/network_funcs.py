@@ -150,6 +150,7 @@ def solve_powers_freqs(eta, num_samples, data_size, gains, ti_penalty):
 def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains): 
     num_local_rounds = v * math.log2(eta)
     num_global_rounds = a / (1 - eta)
+    print(f"num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
 
     energy = num_global_rounds * (calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers) + \
         num_local_rounds * calc_comp_energy(num_local_rounds, num_samples, freqs))
@@ -183,12 +184,12 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
 
         decs = np.ones(shape=num_users, dtype=int) # all UAV 
         uav_ene = calc_total_energy(eta, uav_freqs, decs, uav_powers, num_samples, data_size, uav_gains, bs_gains)
+        print(f"uav_ene = {uav_ene}")
         decs = np.zeros(shape=num_users, dtype=int) # all BS
         bs_ene = calc_total_energy(eta, bs_freqs, decs, bs_powers, num_samples, data_size, uav_gains, bs_gains)
-
-        difference = uav_ene - bs_ene
-        print(f"uav_ene = {uav_ene}")
         print(f"bs_ene = {bs_ene}")
+        difference = uav_ene - bs_ene
+        
         print(f"difference = {difference}")
         idx = np.argpartition(difference, max_uav)[:max_uav] # https://stackoverflow.com/questions/34226400/find-the-index-of-the-k-smallest-values-of-a-numpy-array
         decs[idx] = 1
