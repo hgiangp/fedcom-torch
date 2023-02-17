@@ -150,7 +150,7 @@ def solve_powers_freqs(eta, num_samples, data_size, gains, ti_penalty):
 def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains): 
     num_local_rounds = v * math.log2(eta)
     num_global_rounds = a / (1 - eta)
-    print(f"num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+    print(f"eta = {eta}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
 
     energy = num_global_rounds * (calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers) + \
         num_local_rounds * calc_comp_energy(num_local_rounds, num_samples, freqs))
