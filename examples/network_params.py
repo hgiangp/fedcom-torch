@@ -1,24 +1,25 @@
 import math 
 
 num_users = 10 # number of participating vehicles 
-tau = 120 # total time threshold  
+tau = 80 # total time threshold
+max_uav = 5 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
 L_Lipschitz = 0.054 # Lipschitz constant of the loss function
-delta_lr = 0.1 # TODO Learning rate of local surrogate function 
+delta_lr = 0.3 # TODO Learning rate of local surrogate function 
 gamma_cv = 0.12 # strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 C_n = 2 * 1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
-freq_max = 2 * 1e11 # 2GHz -> Hz, maximum cpu computation frequency 
+freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
 
 # Offloading, global aggregation params 
 xi_factor = 0.1 # global gradient factor 
 epsilon_0 = 1e-4 # global accuracy 
 s_n = 502400 # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
-delta_t = 2 # TODO Based on current results uav's time penalty 
+delta_t = 0.1 # TODO Based on current results uav's time penalty 
 N_0 = 4*1e-12 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)
 power_max = 0.1 # W TODO  
 
@@ -46,4 +47,4 @@ a = 2 * (L_Lipschitz**2) * math.log(1/epsilon_0) / ((gamma_cv**2) * xi_factor)
 
 # Optimization params 
 acc = 1e-4 # TODO
-iter_max = 10 # TODO
+iter_max = 3 # TODO
