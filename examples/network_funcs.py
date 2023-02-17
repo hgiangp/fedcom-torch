@@ -196,6 +196,11 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         # Check stop condition
         obj = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
         print(f"iter = {iter} obj = {obj}")
+        print(f"eta = {eta}")
+        print(f"decs = {decs}")
+        print(f"freqs = {freqs}")
+        print(f"decs = {decs}")
+        print(f"powers = {powers}") 
 
         if (abs(obj_prev - obj) < acc) or iter == iter_max: 
             print("Done!")
