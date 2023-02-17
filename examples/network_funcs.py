@@ -187,6 +187,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         bs_ene = calc_total_energy(eta, bs_freqs, decs, bs_powers, num_samples, data_size, uav_gains, bs_gains)
 
         difference = uav_ene - bs_ene
+        print(f"difference = {difference}")
         idx = np.argpartition(difference, max_uav)[:max_uav] # https://stackoverflow.com/questions/34226400/find-the-index-of-the-k-smallest-values-of-a-numpy-array
         decs[idx] = 1
 
