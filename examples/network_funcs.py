@@ -125,7 +125,7 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
     while 1:
         eta = af / zeta # calculate temporary optimal eta
         print(f"eta = {eta}")
-        print(f"af = {af}\tbf={bf}\tzeta = {zeta}")
+        print(f"af = {af}\tbf = {bf}\tzeta = {zeta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
         if (h_prev != 0) and (abs(h_curr - h_prev) < acc): 
             break
@@ -136,7 +136,7 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
     return eta
 
 def solve_powers_freqs(eta, num_samples, data_size, gains, ti_penalty): 
-    opt_t_co = (data_size / bw) / (1 + (lambertw(1 / (2 * np.exp(1))).real)) + ti_penalty # optimal communnication time # (N, )
+    opt_t_co = (data_size / bw) / (1 + (lambertw(1 / (2 * math.exp(1))).real)) + ti_penalty # optimal communnication time # (N, )
     print(f"opt_t_co = {opt_t_co}")
     opt_powers = N_0 / gains * (2 * np.exp((data_size / bw) / (opt_t_co - ti_penalty)) - 1) # optimal power transmission, (N, )
     
@@ -187,6 +187,8 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         bs_ene = calc_total_energy(eta, bs_freqs, decs, bs_powers, num_samples, data_size, uav_gains, bs_gains)
 
         difference = uav_ene - bs_ene
+        print(f"uav_ene = {uav_ene}")
+        print(f"bs_ene = {bs_ene}")
         print(f"difference = {difference}")
         idx = np.argpartition(difference, max_uav)[:max_uav] # https://stackoverflow.com/questions/34226400/find-the-index-of-the-k-smallest-values-of-a-numpy-array
         decs[idx] = 1
