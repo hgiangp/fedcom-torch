@@ -127,7 +127,7 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
         print(f"eta = {eta}")
         print(f"af = {af}\tbf={bf}\tzeta = {zeta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
-        if (h_prev != 0) and (abs(h_curr / h_prev) < acc): 
+        if (h_prev != 0) and (abs(h_curr - h_prev) < acc): 
             break
         h_prev = h_curr   
         
