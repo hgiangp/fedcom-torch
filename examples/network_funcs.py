@@ -95,18 +95,26 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     Return: 
         eta_min, eta_max
     """
-    # Calculate communcitions time
-    af = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers) # (N, )
-    bf = calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
-    # print(f"af = {af}")
-    # print(f"bf = {bf}")
-    # print(f"a = {a}, v = {v}")
-    x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
-    # print(f"x = {x}")
-    bound_eta = np.exp(x.real) # (N, )
-    # print("bound_eta =", bound_eta)
+    # eta_min, eta_max = 0.0, 1.0
     
-    return bound_eta
+    # Find eta_min 
+    af = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers) # (N, )
+    bf = a * calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
+    print(f"af = {af}")
+    print(f"bf = {bf}")
+    print(f"a = {a}, v = {v}")
+    x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
+    print(f"x = {x}")
+    lower_bound_eta = np.exp(x.real) # (N, )
+    print("lower_bound_eta =", lower_bound_eta)
+    eta_min = np.amax(lower_bound_eta)
+
+    # Find eta_max 
+    upper_bound_eta = 1 - af/tau
+    print(f"upper_bound_eta = {upper_bound_eta}")
+    eta_max = np.amin(upper_bound_eta) 
+    
+    return eta_min, eta_max
 
 def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
@@ -135,6 +143,46 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
   
     return eta
 
+def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples): 
+    r"""
+    Method: bisection
+    Args:
+    Return: 
+        eta, T_min
+    """
+    powers = np.ones(shape=num_users) * power_max # (N, )
+    
+    decs = np.ones(shape=num_users, dtype=int)
+    tco_uav = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+    decs = np.zeros(shape=num_users, dtype=int)
+    tco_bs = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+    
+    difference = tco_uav - tco_bs 
+    idx = np.argpartition(difference, max_uav)[:max_uav]
+    idx_uav = idx[np.where(difference[idx] < 0)]
+    decs[idx_uav] = 1 # (N, )
+
+    freqs = np.ones(shape=num_users) * freq_max # (N, )
+
+    t_min, t_max = 10, 200 # seconds 
+    tau = t_min 
+    acc = 1e-4
+
+    iter = 0 
+    while 1:
+        tau = (t_min + t_max) / 2.0 
+        eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
+        if 0 <= eta and eta <= 1: 
+            t_max = tau 
+        else: 
+            tau = t_min
+        print(f"iter = {iter}\ttau = {tau}\tt_max = {t_max}\tt_min={t_min}") 
+        if (t_max - t_min)/t_max < acc: 
+            break
+        iter += 1
+    
+    return eta, tau 
+    
 def solve_powers_freqs(eta, num_samples, data_size, gains, ti_penalty): 
     opt_t_co = (data_size / bw) / (1 + (lambertw(1 / (2 * math.exp(1))).real)) + ti_penalty # optimal communnication time # (N, )
     print(f"opt_t_co = {opt_t_co}")
@@ -234,28 +282,28 @@ def test_with_location():
 
     decs = np.array([1, 0, 1, 0, 0, 1, 1, 0, 1, 0])
     data_size = np.array([s_n for _ in range(num_users)])
-    powers = np.array([0.1, 0.06, 0.1, 0.05, 0.07, 0.07, 0.1, 0.04, 0.04, 0.05])
+    powers = np.array([0.1, 5, 0.1, 5, 5, 0.07, 0.1, 5, 0.04, 5])
 
-    co_time = calc_trans_time(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
-    print(f"decs = {decs}")
-    print(f"co_time = {co_time}")
+    # co_time = calc_trans_time(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
+    # print(f"decs = {decs}")
+    # print(f"co_time = {co_time}")
 
-    co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
-    print(f"co_ene = {co_ene}")
+    # co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
+    # print(f"co_ene = {co_ene}")
 
     bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
     print(f"bound_eta = {bound_eta}")
 
-    eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
-    print(f"eta = {eta}")
+    # eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
+    # print(f"eta = {eta}")
 
-    opt_powers_uav, opt_freqs_uav = solve_powers_freqs(eta, num_samples, data_size, uav_gains, delta_t)
-    print(f"opt_powers_uav = {opt_powers_uav}")
-    print(f"opt_freqs_uav = {opt_freqs_uav}")
+    # opt_powers_uav, opt_freqs_uav = solve_powers_freqs(eta, num_samples, data_size, uav_gains, delta_t)
+    # print(f"opt_powers_uav = {opt_powers_uav}")
+    # print(f"opt_freqs_uav = {opt_freqs_uav}")
 
-    opt_powers_bs, opt_freqs_bs = solve_powers_freqs(eta, num_samples, data_size, bs_gains, 0)
-    print(f"opt_powers_bs = {opt_powers_bs}")
-    print(f"opt_freqs_bs = {opt_freqs_bs}")
+    # opt_powers_bs, opt_freqs_bs = solve_powers_freqs(eta, num_samples, data_size, bs_gains, 0)
+    # print(f"opt_powers_bs = {opt_powers_bs}")
+    # print(f"opt_freqs_bs = {opt_freqs_bs}")
 
 def test_optimize_network(): 
     xs, ys, _ =  init_location()
@@ -279,6 +327,32 @@ def test_optimize_network():
     print(f"freqs = {freqs}")
     print(f"powers = {powers}") 
 
+def test_feasible_solution():
+    xs, ys, _ =  init_location()
+    print("xs =", xs)
+    print("ys =", ys)
+    uav_gains = calc_uav_gains(xs, ys) 
+    bs_gains = calc_bs_gains(xs, ys)
+    print(f"uav_gains = {uav_gains}")
+    print(f"bs_gains = {bs_gains}")
+
+    num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
+    freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
+    num_rounds = 30
+    cp_ene = calc_comp_energy(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
+    print(f"cp_ene =", cp_ene)
+    cp_time = calc_comp_time(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
+    print(f"cp_time = {cp_time}")
+
+    data_size = np.array([s_n for _ in range(num_users)])
+    
+    eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples)
+
+    print(f"eta = {eta}")
+    print(f"t_min = {t_min}")
+
+
 if __name__=='__main__': 
-    # test_with_location()
-    test_optimize_network()
+    test_with_location()
+    # test_optimize_network()
+    # test_feasible_solution()
