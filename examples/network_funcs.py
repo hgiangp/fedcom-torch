@@ -116,14 +116,15 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     
     return eta_min, eta_max
 
-def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
+def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
     Args: 
     Return:
         Optimal eta 
     """
+    eta_min, eta_max = bound_eta
     acc = 1e-4 
-    eta = 1 
+    eta = eta_min
 
     bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
     af = v * a * calc_comp_energy(num_rounds=1, num_samples=num_samples, freqs=freqs).sum() / math.log(2)
@@ -139,8 +140,14 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
             break
         h_prev = h_curr   
         
-        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta 
-  
+        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
+    print(f"eta_pre_check = {eta}")
+    # Check condition 
+    if eta < eta_min: 
+        eta = eta_min 
+    elif eta > eta_max: 
+        eta = eta_max   
+    print(f"eta_post_check = {eta}")
     return eta
 
 def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples): 
@@ -221,10 +228,10 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     iter = 0 
     while 1: 
         # Tighten the bound of eta 
-        # bound_eta = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples) # TODO 
+        bound_eta = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples) # (eta_min, eta_max) 
 
         # Solve eta
-        eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
+        eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta) 
 
         # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
         uav_powers, uav_freqs = solve_powers_freqs(eta, num_samples, data_size, gains=uav_gains, ti_penalty=delta_t)
@@ -294,8 +301,8 @@ def test_with_location():
     bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
     print(f"bound_eta = {bound_eta}")
 
-    # eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
-    # print(f"eta = {eta}")
+    eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples, bound_eta=bound_eta)
+    print(f"eta = {eta}")
 
     # opt_powers_uav, opt_freqs_uav = solve_powers_freqs(eta, num_samples, data_size, uav_gains, delta_t)
     # print(f"opt_powers_uav = {opt_powers_uav}")
