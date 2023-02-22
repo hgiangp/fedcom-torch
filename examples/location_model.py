@@ -3,7 +3,7 @@ import numpy as np
 seed = 42
 rng = np.random.default_rng(seed=seed)
 no_users = 10 
-d = 10 
+d = 20 
 delta = 1
 
 def init_location():

@@ -84,7 +84,7 @@ def calc_uav_gains(xs, ys):
     uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
     return uav_gains 
 
-def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples): 
+def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, tau): 
     r""" Solve Lambert W function to find the boundary of eta (eta_n_min, eta_n_max)
     Args: 
         decs: relay-node selection decisions (decs==1: uav else bs): dtype=np.array, shape=(N, )
@@ -102,7 +102,7 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     bf = a * calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
     print(f"af = {af}")
     print(f"bf = {bf}")
-    print(f"a = {a}, v = {v}")
+    print(f"a = {a}, v = {v}, tau = {tau}")
     x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
     print(f"x = {x}")
     lower_bound_eta = np.exp(x.real) # (N, )
@@ -113,18 +113,17 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples):
     upper_bound_eta = 1 - af/tau
     print(f"upper_bound_eta = {upper_bound_eta}")
     eta_max = np.amin(upper_bound_eta) 
-    
+    print(f"eta_min = {eta_min}\teta_max = {eta_max}")
     return eta_min, eta_max
 
-def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta): 
+def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
     Args: 
     Return:
         Optimal eta 
     """
-    eta_min, eta_max = bound_eta
     acc = 1e-4 
-    eta = eta_min
+    eta = 1.0
 
     bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
     af = v * a * calc_comp_energy(num_rounds=1, num_samples=num_samples, freqs=freqs).sum() / math.log(2)
@@ -141,13 +140,6 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
         h_prev = h_curr   
         
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
-    print(f"eta_pre_check = {eta}")
-    # Check condition 
-    if eta < eta_min: 
-        eta = eta_min 
-    elif eta > eta_max: 
-        eta = eta_max   
-    print(f"eta_post_check = {eta}")
     return eta
 
 def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples): 
@@ -171,22 +163,28 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
 
     freqs = np.ones(shape=num_users) * freq_max # (N, )
 
-    t_min, t_max = 10, 200 # seconds 
+    t_min, t_max = 60, 200 # seconds 
     tau = t_min 
     acc = 1e-4
 
     iter = 0 
+    eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
     while 1:
         tau = (t_min + t_max) / 2.0 
-        eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
-        if 0 <= eta and eta <= 1: 
+        eta_min, eta_max = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, tau)
+        
+        # Check feasible condition for current tau  
+        if eta > eta_min and eta < eta_max: # feasible solution  
             t_max = tau 
         else: 
-            tau = t_min
+            t_min = tau        
+
         print(f"iter = {iter}\ttau = {tau}\tt_max = {t_max}\tt_min={t_min}") 
         if (t_max - t_min)/t_max < acc: 
             break
         iter += 1
+    
+    print(f"eta = {eta}, tau = {tau}")
     
     return eta, tau 
     
@@ -226,9 +224,11 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     print(f"obj_prev = {obj_prev}")
     # Repeat
     iter = 0 
+    eta, tau = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples)
+
     while 1: 
         # Tighten the bound of eta 
-        bound_eta = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples) # (eta_min, eta_max) 
+        eta_min, eta_max = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, tau) # (eta_min, eta_max) # TODO: tau
 
         # Solve eta
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta) 
@@ -360,6 +360,5 @@ def test_feasible_solution():
 
 
 if __name__=='__main__': 
-    test_with_location()
     # test_optimize_network()
-    # test_feasible_solution()
+    test_feasible_solution()
