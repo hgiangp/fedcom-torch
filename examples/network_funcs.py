@@ -101,19 +101,19 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, ta
     # f = f_max, t_co min at p = powers 
     af = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers) # (N, )
     bf = a * calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
-    print(f"af = {af}")
-    print(f"bf = {bf}")
-    print(f"a = {a}, v = {v}, tau = {tau}")
+    # print(f"af = {af}")
+    # print(f"bf = {bf}")
+    # print(f"a = {a}, v = {v}, tau = {tau}")
     x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
-    print(f"x = {x}")
+    # print(f"x = {x}")
     lower_bound_eta = np.exp(x.real) # (N, )
-    print("lower_bound_eta =", lower_bound_eta)
+    # print("lower_bound_eta =", lower_bound_eta)
     eta_min = np.amax(lower_bound_eta)
 
     # Find eta_max
     # f = 0 t_co max = tau / num_global_rounds  
     upper_bound_eta = 1 - af/tau
-    print(f"upper_bound_eta = {upper_bound_eta}")
+    # print(f"upper_bound_eta = {upper_bound_eta}")
     eta_max = np.amin(upper_bound_eta) 
     print(f"eta_min = {eta_min}\teta_max = {eta_max}")
     return eta_min, eta_max
@@ -135,14 +135,15 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     while 1:
         eta = af / zeta # calculate temporary optimal eta
-        print(f"eta = {eta}")
-        print(f"af = {af}\tbf = {bf}\tzeta = {zeta}")
+        # print(f"af = {af}\tbf = {bf}\tzeta = {zeta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
         if abs(h_curr - h_prev) < acc: 
             break
         h_prev = h_curr   
         
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
+    
+    print(f"eta = {eta}")
     return eta
 
 def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples): 
@@ -237,7 +238,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     # Repeat
     iter = 0 
     eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples) # eta = 0.317, t_min = 66.823
-    tau = 80 # > t_min (= t_min + const) e.g t_min + t_min/10 
+    tau = 80 # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
 
     while 1: 
         # Tighten the bound of eta 
