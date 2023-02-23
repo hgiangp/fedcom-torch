@@ -135,7 +135,7 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     while 1:
         eta = af / zeta # calculate temporary optimal eta
-        # print(f"af = {af}\tbf = {bf}\tzeta = {zeta}")
+        print(f"af = {af}\tbf = {bf}\tzeta = {zeta}\teta = {eta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
         if abs(h_curr - h_prev) < acc: 
             break
@@ -183,7 +183,7 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
         else: 
             t_min = tau        
 
-        print(f"iter = {iter}\ttau = {tau}\tt_max = {t_max}\tt_min={t_min}") 
+        print(f"iter = {iter}\ttau = {tau}\tt_max = {t_max}\tt_min = {t_min}") 
         if (t_max - t_min)/t_max < acc: 
             break
         iter += 1
@@ -206,11 +206,12 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, p
 
     t_trans = t_co - decs * delta_t
     x_opt = np.maximum(data_size/bw/t_trans, x_convex)
+    print(f"decs = {decs}\tx_convex = {x_convex}\nx_opt = {x_opt}")
     
     gains = decs * uav_gains + (1 - decs) * bs_gains # (N, )
     opt_powers = N_0/gains * (2 * np.exp(x_opt) - 1)
 
-    print(f"opt_freqs = {opt_freqs}\topt_powers = {opt_powers}")
+    print(f"opt_freqs = {opt_freqs}\nopt_powers = {opt_powers}")
     return opt_freqs, opt_powers
 
 def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains): 
@@ -218,8 +219,11 @@ def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gain
     num_global_rounds = a / (1 - eta)
     print(f"eta = {eta}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
 
-    energy = num_global_rounds * (calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers) + \
-        num_local_rounds * calc_comp_energy(num_local_rounds, num_samples, freqs))
+    ene_coms = calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers)
+    ene_comp = calc_comp_energy(num_local_rounds, num_samples, freqs)
+    print(f"ene_coms = {ene_coms}\nene_comp = {ene_comp}")
+
+    energy = num_global_rounds * (ene_coms + ene_comp)
     return energy
 
 def optimize_network(num_samples, data_size, uav_gains, bs_gains): 
@@ -265,7 +269,13 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         decs[idx_uav] = 1 # (N, )
 
         powers = decs * uav_powers + (1 - decs) * bs_powers
-        freqs = decs * uav_freqs + (1 - decs) * bs_freqs 
+        freqs = decs * uav_freqs + (1 - decs) * bs_freqs
+
+        # LOG TRACE
+        num_local_rounds = v * math.log2(1 / eta)
+        t_cp = calc_comp_time(num_local_rounds, num_samples, freqs)
+        t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+        print(f"t_coms = {t_co}\nt_comp = {t_cp}")
 
         # Check stop condition
         obj = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
