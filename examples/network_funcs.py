@@ -205,6 +205,7 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, p
     x_convex = lambertw(-1/(2 * math.exp(1))).real + 1 
 
     t_trans = t_co - decs * delta_t
+    print(f"t_cp = {t_cp}\nt_trans = {t_trans}")
     x_opt = np.maximum(data_size/bw/t_trans, x_convex)
     print(f"decs = {decs}\tx_convex = {x_convex}\nx_opt = {x_opt}")
     
@@ -343,9 +344,8 @@ def test_optimize_network():
     print(f"bs_gains = {bs_gains}")
 
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
-    freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
     data_size = np.array([s_n for _ in range(num_users)])
-    powers = np.array([0.1, 0.06, 0.1, 0.05, 0.07, 0.07, 0.1, 0.04, 0.04, 0.05])
+    print(f"data_size = {data_size}")
     eta, freqs, decs, powers = optimize_network(num_samples, data_size, uav_gains, bs_gains)
 
     print(f"eta = {eta}")
