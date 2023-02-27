@@ -118,12 +118,16 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, ta
     print(f"eta_min = {eta_min}\teta_max = {eta_max}")
     return eta_min, eta_max
 
-def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
+def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
     Args: 
     Return:
         Optimal eta 
     """
+    # Check bound for feasible solution 
+    # initialize bound_eta = (1e-2, 0.99)
+    eta_min, eta_max = bound_eta
+
     acc = 1e-4
 
     bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
@@ -135,6 +139,14 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     while 1:
         eta = af / zeta # calculate temporary optimal eta
+        
+        # TODO: check complexity? remove if unnescessary 
+        if eta < eta_min: 
+            eta = eta_min 
+        elif eta > eta_max: 
+            eta = eta_max
+        ###
+        
         print(f"af = {af}\tbf = {bf}\tzeta = {zeta}\teta = {eta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
         if abs(h_curr - h_prev) < acc: 
@@ -154,15 +166,15 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
         eta, T_min
     """
     powers = np.ones(shape=num_users) * power_max # (N, )
-    
-    decs = np.ones(shape=num_users, dtype=int)
-    tco_uav = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
-    decs = np.zeros(shape=num_users, dtype=int)
-    tco_bs = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+
+    tco_uav = calc_trans_time(1, data_size, uav_gains, bs_gains, powers)
+    tco_bs = calc_trans_time(0, data_size, uav_gains, bs_gains, powers)
     
     difference = tco_uav - tco_bs 
     idx = np.argpartition(difference, max_uav)[:max_uav]
     idx_uav = idx[np.where(difference[idx] < 0)]
+    
+    decs = np.zeros(shape=num_users, dtype=int)
     decs[idx_uav] = 1 # (N, )
 
     freqs = np.ones(shape=num_users) * freq_max # (N, )
@@ -172,7 +184,9 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
     acc = 1e-4
 
     iter = 0 
-    eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples)
+    bound_eta = (1e-2, 0.99)
+    eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta)
+
     while 1:
         tau = (t_min + t_max) / 2.0 
         eta_min, eta_max = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, tau)
@@ -243,7 +257,18 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     # Repeat
     iter = 0 
     eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples) # eta = 0.317, t_min = 66.823
-    tau = 80 # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
+    tau = 400 # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
+
+    # Test: change initial powers
+    num_local_rounds = v * math.log2(1 / eta)
+    print(f"num_local_rounds = {num_local_rounds}")
+    t_cp = calc_comp_time(num_local_rounds, num_samples, freqs)
+    t_trans = tau * (1 - eta) / a - t_cp - decs * delta_t
+    print(f"decs = {decs}\nt_cp = {t_cp}\nt_trans = {t_trans}")
+
+    gains = decs * uav_gains + (1 - decs) * bs_gains # (N, )
+    powers = N_0/gains * (2 * np.exp(data_size/bw/t_trans) - 1)
+    print(f"initial powers = {powers}")
 
     while 1: 
         # Tighten the bound of eta 
@@ -380,5 +405,5 @@ def test_feasible_solution():
 
 if __name__=='__main__': 
     # test_with_location()
-    test_optimize_network()
-    # test_feasible_solution()
+    # test_optimize_network()
+    test_feasible_solution()
