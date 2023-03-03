@@ -149,23 +149,17 @@ def solve_initial_eta(af, bf, tau):
 
     xs_min = (bf - tau)/af - w0.real # (N, ) # all negative
     xs_max = (bf - tau)/af - w_1.real # (N, ) # all negative 
-    print(f"xs_min = {xs_min}\nxs_max = {xs_max}")
+    # print(f"xs_min = {xs_min}\nxs_max = {xs_max}")
 
     x_min = np.max(xs_min) # 1 
     x_max = np.min(xs_max) # 1 
-    print(f"x_min = {x_min}\tx_max = {x_max}")
+    # print(f"x_min = {x_min}\tx_max = {x_max}")
 
     eta_min = np.exp(x_min)
     eta_max = np.exp(x_max)
     print(f"eta_min = {eta_min}\neta_max = {eta_max}")
 
-    # Solve optimal eta by dinkelbach method with argument related to the total time 
-    af, bf = af.sum(), bf.sum()
-
-    eta_opt = dinkelbach_method(af, bf) 
-    print(f"eta_opt = {eta_opt}")
-
-    return eta_min, eta_opt, eta_max
+    return eta_min, eta_max
 
 def dinkelbach_method(af, bf): 
     r""" TODO 
@@ -262,6 +256,11 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
     af = a * t_cp * v / math.log(2)
     bf = a * t_co
 
+    # Solve optimal eta by dinkelbach method with argument related to the total time 
+    af_opt, bf_opt = af.sum(), bf.sum()
+    eta_opt = dinkelbach_method(af_opt, bf_opt) 
+    print(f"eta_opt = {eta_opt}")
+
     ### Iterative for tau 
     t_min, t_max = 40, 120 # seconds 
     acc = 1e-4
@@ -269,13 +268,15 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
 
     while 1:
         tau = (t_min + t_max) / 2.0 
-        eta_min, eta_opt, eta_max = solve_initial_eta(af, bf, tau)       
+        eta_min, eta_max = solve_initial_eta(af, bf, tau)       
         print(f"iter = {iter}\teta_min = {eta_min}\teta_opt = {eta_opt}\teta_max = {eta_max}") 
 
         # Check feasible condition for current tau  
         if eta_opt > eta_min and eta_opt < eta_max: # feasible solution  
+            print("eta_opt > eta_min and eta_opt < eta_max")
             t_max = tau 
-        else: 
+        else:
+            print("else_branch: infesible")
             t_min = tau 
         print(f"iter = {iter}\tt_min = {t_min}\ttau = {tau}\tt_max = {t_max}")
 
