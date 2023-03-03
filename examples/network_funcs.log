@@ -37,85 +37,71 @@ solve_initial_eta tau = 80.0
 eta_min = 0.009207207077238063
 eta_max = 0.37380594272705503
 iter = 0	eta_min = 0.009207207077238063	eta_opt = 0.08727119779924185	eta_max = 0.37380594272705503
-eta_opt > eta_min and eta_opt < eta_max
 iter = 0	t_min = 40	tau = 80.0	t_max = 80.0
 solve_initial_eta tau = 60.0
 eta_min = 0.16827462455741246
 eta_max = 0.12861206083526958
 iter = 1	eta_min = 0.16827462455741246	eta_opt = 0.08727119779924185	eta_max = 0.12861206083526958
-else_branch: infesible
 iter = 1	t_min = 60.0	tau = 60.0	t_max = 80.0
 solve_initial_eta tau = 70.0
 eta_min = 0.034212006749413285
 eta_max = 0.2481754679172106
 iter = 2	eta_min = 0.034212006749413285	eta_opt = 0.08727119779924185	eta_max = 0.2481754679172106
-eta_opt > eta_min and eta_opt < eta_max
 iter = 2	t_min = 60.0	tau = 70.0	t_max = 70.0
 solve_initial_eta tau = 65.0
 eta_min = 0.08621247654130205
 eta_max = 0.12547713631622767
 iter = 3	eta_min = 0.08621247654130205	eta_opt = 0.08727119779924185	eta_max = 0.12547713631622767
-eta_opt > eta_min and eta_opt < eta_max
 iter = 3	t_min = 60.0	tau = 65.0	t_max = 65.0
 solve_initial_eta tau = 62.5
 eta_min = 0.1493834230736953
 eta_max = 0.1099850751178333
 iter = 4	eta_min = 0.1493834230736953	eta_opt = 0.08727119779924185	eta_max = 0.1099850751178333
-else_branch: infesible
 iter = 4	t_min = 62.5	tau = 62.5	t_max = 65.0
 solve_initial_eta tau = 63.75
 eta_min = 0.14071374462709
 eta_max = 0.10159662516337964
 iter = 5	eta_min = 0.14071374462709	eta_opt = 0.08727119779924185	eta_max = 0.10159662516337964
-else_branch: infesible
 iter = 5	t_min = 63.75	tau = 63.75	t_max = 65.0
 solve_initial_eta tau = 64.375
 eta_min = 0.10650624325774495
 eta_max = 0.09761828690155877
 iter = 6	eta_min = 0.10650624325774495	eta_opt = 0.08727119779924185	eta_max = 0.09761828690155877
-else_branch: infesible
 iter = 6	t_min = 64.375	tau = 64.375	t_max = 65.0
 solve_initial_eta tau = 64.6875
 eta_min = 0.09568126302816678
 eta_max = 0.09568126302816674
 iter = 7	eta_min = 0.09568126302816678	eta_opt = 0.08727119779924185	eta_max = 0.09568126302816674
-else_branch: infesible
 iter = 7	t_min = 64.6875	tau = 64.6875	t_max = 65.0
 solve_initial_eta tau = 64.84375
 eta_min = 0.09019272838453382
 eta_max = 0.11533201031710934
 iter = 8	eta_min = 0.09019272838453382	eta_opt = 0.08727119779924185	eta_max = 0.11533201031710934
-else_branch: infesible
 iter = 8	t_min = 64.84375	tau = 64.84375	t_max = 65.0
 solve_initial_eta tau = 64.921875
 eta_min = 0.08814379383980141
 eta_max = 0.12083528272351628
 iter = 9	eta_min = 0.08814379383980141	eta_opt = 0.08727119779924185	eta_max = 0.12083528272351628
-else_branch: infesible
 iter = 9	t_min = 64.921875	tau = 64.921875	t_max = 65.0
 solve_initial_eta tau = 64.9609375
 eta_min = 0.08716440073753247
 eta_max = 0.1232366310751116
 iter = 10	eta_min = 0.08716440073753247	eta_opt = 0.08727119779924185	eta_max = 0.1232366310751116
-eta_opt > eta_min and eta_opt < eta_max
 iter = 10	t_min = 64.921875	tau = 64.9609375	t_max = 64.9609375
 solve_initial_eta tau = 64.94140625
 eta_min = 0.08765055107237588
 eta_max = 0.1220585406466723
 iter = 11	eta_min = 0.08765055107237588	eta_opt = 0.08727119779924185	eta_max = 0.1220585406466723
-else_branch: infesible
 iter = 11	t_min = 64.94140625	tau = 64.94140625	t_max = 64.9609375
 solve_initial_eta tau = 64.951171875
 eta_min = 0.08740660390460048
 eta_max = 0.12265288270581157
 iter = 12	eta_min = 0.08740660390460048	eta_opt = 0.08727119779924185	eta_max = 0.12265288270581157
-else_branch: infesible
 iter = 12	t_min = 64.951171875	tau = 64.951171875	t_max = 64.9609375
 solve_initial_eta tau = 64.9560546875
 eta_min = 0.08728528609690668
 eta_max = 0.12294604133753916
 iter = 13	eta_min = 0.08728528609690668	eta_opt = 0.08727119779924185	eta_max = 0.12294604133753916
-else_branch: infesible
 iter = 13	t_min = 64.9560546875	tau = 64.9560546875	t_max = 64.9609375
 eta = 0.08727119779924185, tau = 64.9560546875
 num_local_rounds = 79.85656737126833	num_global_rounds = 130.91550362793376

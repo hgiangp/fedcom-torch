@@ -273,10 +273,8 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
 
         # Check feasible condition for current tau  
         if eta_opt > eta_min and eta_opt < eta_max: # feasible solution  
-            print("eta_opt > eta_min and eta_opt < eta_max")
             t_max = tau 
         else:
-            print("else_branch: infesible")
             t_min = tau 
         print(f"iter = {iter}\tt_min = {t_min}\ttau = {tau}\tt_max = {t_max}")
 
