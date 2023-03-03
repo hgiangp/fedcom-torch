@@ -159,24 +159,33 @@ def solve_initial_eta(data_size, uav_gains, bs_gains, num_samples):
     t_cp = calc_comp_time(1, num_samples, freq_max)
     t_co = calc_trans_time(decs_opt, data_size, uav_gains, bs_gains, power_max)
 
-    bf = a * t_cp * v / math.log(2)
-    af = a * t_co
+    af = a * t_cp * v / math.log(2)
+    bf = a * t_co
 
-    w0 = lambertw(- tau/bf * np.exp((af - tau)/bf), k=0) # (N, ) # lambert at 0 branch (-> eta min)
-    w_1 = lambertw(- tau/bf * np.exp((af - tau)/bf), k=-1) # (N, ) # lambert at -1 branch (-> eta max)    
+    tmp = - tau/af * np.exp((bf - tau)/af)
+    w0 = lambertw(tmp, k=0) # (N, ) # lambert at 0 branch (-> eta min) complex number, imaginary part = 0 
+    w_1 = lambertw(tmp, k=-1) # (N, ) # lambert at -1 branch (-> eta max) complex number, imaginary part = 0 
     print(f"w0 = {w0}\nw_1 = {w_1}")
 
-    x_min = (af - tau)/bf - w0 # (N, ) # complex number, imaginary part = 0 
-    x_max = (af - tau)/bf - w_1 # (N, ) # complex number, imaginary part = 0 
+    x_min = (bf - tau)/af - w0.real # (N, )  
+    x_max = (bf - tau)/af - w_1.real # (N, )  
     print(f"x_min = {x_min}\nx_max = {x_max}")
 
-    etas_min = np.exp(x_min.real)
-    etas_max = np.exp(x_max.real)
+    etas_min = np.exp(x_min)
+    etas_max = np.exp(x_max)
 
     eta_min = np.max(etas_min)
     eta_max = np.min(etas_max)
 
     print(f"eta_min = {eta_min}\neta_max = {eta_max}")
+
+    # Solve optimal eta by dinkelbach method with argument related to the total time 
+    af, bf = af.sum(), bf.sum()
+
+    eta_opt = dinkelbach_method(af, bf) 
+    print(f"eta_opt = {eta_opt}")
+
+    # Find t_min 
 
     # Calculate t_min at eta_opt, freq_max, decs_opt, power_max
 
@@ -192,18 +201,40 @@ def solve_initial_eta(data_size, uav_gains, bs_gains, num_samples):
     # print(f"etas = {etas} eta_opt = {eta_opt}")
     # t_total = num_global_rounds * (t_co + num_local_rounds * t_cp)
     # ## TRACELOG
-    return eta_min, eta_max
+    return eta_min, eta_opt, eta_max
 
-def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta): 
+def dinkelbach_method(af, bf): 
+    r""" TODO 
+    Args: 
+        af: ln(eta) coefficient, computation related (time, or energy)
+        bf: free coefficient, communication related 
+    """
+
+    eta = 1.0
+    zeta = af * 2 
+    h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
+
+    while 1:
+        eta = af / zeta # calculate temporary optimal eta
+        
+        print(f"af = {af}\tbf = {bf}\tzeta = {zeta}\teta = {eta}")
+        h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
+        if abs(h_curr - h_prev) < acc: 
+            break
+        h_prev = h_curr   
+        
+        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
+    
+    print(f"eta = {eta}")
+    return eta 
+    
+
+def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
     Args: 
     Return:
         Optimal eta 
     """
-    # Check bound for feasible solution 
-    # initialize bound_eta = (1e-2, 0.99)
-    eta_min, eta_max = bound_eta
-
     acc = 1e-4
 
     bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
@@ -215,13 +246,6 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     while 1:
         eta = af / zeta # calculate temporary optimal eta
-        
-        # TODO: check complexity? remove if unnescessary 
-        if eta < eta_min: 
-            eta = eta_min 
-        elif eta > eta_max: 
-            eta = eta_max
-        ###
         
         print(f"af = {af}\tbf = {bf}\tzeta = {zeta}\teta = {eta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
@@ -444,6 +468,10 @@ def test_with_location():
     print(f"co_ene = {co_ene}")
 
     bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples, tau=80)
+    print(f"bound_eta = {bound_eta}")
+
+    initial_eta = solve_initial_eta(data_size, uav_gains, bs_gains, num_samples)
+    print(f"initial_eta = {initial_eta}")
     print(f"bound_eta = {bound_eta}")
 
     # eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
