@@ -145,18 +145,18 @@ def solve_initial_eta(af, bf, tau):
     tmp = - tau/af * np.exp((bf - tau)/af)
     w0 = lambertw(tmp, k=0) # (N, ) # lambert at 0 branch (-> eta min) complex number, imaginary part = 0 
     w_1 = lambertw(tmp, k=-1) # (N, ) # lambert at -1 branch (-> eta max) complex number, imaginary part = 0 
-    print(f"w0 = {w0}\nw_1 = {w_1}")
+    # print(f"w0 = {w0}\nw_1 = {w_1}")
 
-    x_min = (bf - tau)/af - w0.real # (N, )  
-    x_max = (bf - tau)/af - w_1.real # (N, )  
-    print(f"x_min = {x_min}\nx_max = {x_max}")
+    xs_min = (bf - tau)/af - w0.real # (N, ) # all negative
+    xs_max = (bf - tau)/af - w_1.real # (N, ) # all negative 
+    print(f"xs_min = {xs_min}\nxs_max = {xs_max}")
 
-    etas_min = np.exp(x_min)
-    etas_max = np.exp(x_max)
+    x_min = np.max(xs_min) # 1 
+    x_max = np.min(xs_max) # 1 
+    print(f"x_min = {x_min}\tx_max = {x_max}")
 
-    eta_min = np.max(etas_min)
-    eta_max = np.min(etas_max)
-
+    eta_min = np.exp(x_min)
+    eta_max = np.exp(x_max)
     print(f"eta_min = {eta_min}\neta_max = {eta_max}")
 
     # Solve optimal eta by dinkelbach method with argument related to the total time 
