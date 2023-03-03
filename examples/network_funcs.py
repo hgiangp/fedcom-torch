@@ -116,6 +116,82 @@ def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, ta
     # print(f"upper_bound_eta = {upper_bound_eta}")
     eta_max = np.amin(upper_bound_eta) 
     print(f"eta_min = {eta_min}\teta_max = {eta_max}")
+
+    ## TRACELOG eta_min, eta_max are satisfied tau condition
+    # eta_min 
+    num_local_rounds = v * math.log2(1/eta_min)
+    num_global_rounds = a / (1 - eta_min)
+
+    t_cp = calc_comp_time(num_local_rounds, num_samples, freq_max)
+    t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+    t_total = num_global_rounds * (t_co + t_cp)
+    print(f"eta_min = {eta_min}, tau = {tau}")
+    print(f"t_cp = {t_cp}\nt_co = {t_co}\nt_total = {t_total}")
+
+    ## TRACELOG
+    return eta_min, eta_max
+
+def solve_initial_eta(data_size, uav_gains, bs_gains, num_samples): 
+    r""" Find the optimal local accuracy eta by Dinkelbach method
+    Args: 
+    Return:
+        Optimal eta 
+    """
+    acc = 1e-4
+
+    # Solve optimal decision decs
+    t_co_uav = calc_trans_time(1, data_size, uav_gains, bs_gains, power_max)
+    t_co_bs = calc_trans_time(0, data_size, uav_gains, bs_gains, power_max)
+
+    difference = t_co_uav + delta_t - t_co_bs
+    idx = np.argpartition(difference, max_uav)[:max_uav]
+    idx_uav = idx[np.where(difference[idx] < 0)]
+
+    decs_opt = np.zeros(shape=num_users, dtype=int)
+    decs_opt[idx_uav] = 1
+
+    # TODO: check delta_t 
+    # TRACELOG
+    print(f"t_co_uav = {t_co_uav}\nt_co_bs = {t_co_bs}\ndifference = {difference}\ndecs_opt = {decs_opt}")
+    # TRACELOG 
+
+    # Solve optimal eta for current resource allocation (fixed f_max, p_max, decs)
+    t_cp = calc_comp_time(1, num_samples, freq_max)
+    t_co = calc_trans_time(decs_opt, data_size, uav_gains, bs_gains, power_max)
+
+    bf = a * t_cp * v / math.log(2)
+    af = a * t_co
+
+    w0 = lambertw(- tau/bf * np.exp((af - tau)/bf), k=0) # (N, ) # lambert at 0 branch (-> eta min)
+    w_1 = lambertw(- tau/bf * np.exp((af - tau)/bf), k=-1) # (N, ) # lambert at -1 branch (-> eta max)    
+    print(f"w0 = {w0}\nw_1 = {w_1}")
+
+    x_min = (af - tau)/bf - w0 # (N, ) # complex number, imaginary part = 0 
+    x_max = (af - tau)/bf - w_1 # (N, ) # complex number, imaginary part = 0 
+    print(f"x_min = {x_min}\nx_max = {x_max}")
+
+    etas_min = np.exp(x_min.real)
+    etas_max = np.exp(x_max.real)
+
+    eta_min = np.max(etas_min)
+    eta_max = np.min(etas_max)
+
+    print(f"eta_min = {eta_min}\neta_max = {eta_max}")
+
+    # Calculate t_min at eta_opt, freq_max, decs_opt, power_max
+
+    # ## TRACELOG eta_min, eta_max are satisfied tau condition
+    # eta_mid = (eta_min + eta_max)/2
+    # num_local_rounds = v * math.log2(1/eta_mid)
+    # num_global_rounds = a / (1 - eta_mid)
+
+    # t_min = num_global_rounds * (t_co.sum() + num_local_rounds * t_cp.sum())
+
+    
+    # # eta_min 
+    # print(f"etas = {etas} eta_opt = {eta_opt}")
+    # t_total = num_global_rounds * (t_co + num_local_rounds * t_cp)
+    # ## TRACELOG
     return eta_min, eta_max
 
 def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples, bound_eta): 
@@ -156,6 +232,14 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
     
     print(f"eta = {eta}")
+
+    ## LOGTRACE
+    ene_opt = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+    ene_left = calc_total_energy(eta-0.2, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains) 
+    ene_right = calc_total_energy(eta+0.2, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+    print(f"ene_left = {ene_left}\nene_opt = {ene_opt}\nene_right = {ene_right}")
+    print(f"ene_left = {ene_left.sum()}\tene_opt = {ene_opt.sum()}\tene_right = {ene_right.sum()}")    
+    ## LOGTRACE 
     return eta
 
 def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples): 
@@ -203,7 +287,17 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
         iter += 1
     
     print(f"eta = {eta}, tau = {tau}")
+    # LOGTRACE
+    num_local_rounds = v * math.log2(1/eta)
+    num_global_rounds = a / (1 - eta)
+    t_cp = calc_comp_time(num_local_rounds, num_samples, freq_max)
+    t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, power_max)
     
+    t_total = num_global_rounds * (t_co + t_cp)
+    print(f"num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+    print(f"decs = {decs}")
+    print(f"t_cp = {t_cp}\nt_co = {t_co}\nt_total = {t_total}")
+    ## LOGTRACE
     return eta, tau 
 
 def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, powers, tau): 
@@ -349,15 +443,15 @@ def test_with_location():
     co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     print(f"co_ene = {co_ene}")
 
-    # bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples)
-    # print(f"bound_eta = {bound_eta}")
+    bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples, tau=80)
+    print(f"bound_eta = {bound_eta}")
 
-    eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
-    print(f"eta = {eta}")
+    # eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
+    # print(f"eta = {eta}")
 
-    freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, powers, tau=90)
-    print(f"freqs = {freqs}")
-    print(f"powers = {powers}")
+    # freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, powers, tau=90)
+    # print(f"freqs = {freqs}")
+    # print(f"powers = {powers}")
 
 def test_optimize_network(): 
     xs, ys, _ =  init_location()
@@ -404,6 +498,6 @@ def test_feasible_solution():
 
 
 if __name__=='__main__': 
-    # test_with_location()
+    test_with_location()
     # test_optimize_network()
-    test_feasible_solution()
+    # test_feasible_solution()
