@@ -9,7 +9,7 @@ from client_model import Client
 
 class BaseFederated(object): 
     def __init__(self, model, dataset):
-        self.client_model = model(input_dim=5, output_dim=3)
+        self.client_model = model(input_dim=784, output_dim=10) # (5, 3)
         self.clients = self.setup_clients(self.client_model, dataset)
         self.latest_model = self.client_model.get_params() # TODO: latest_model updated 
 
@@ -50,7 +50,7 @@ class BaseFederated(object):
         return difference
     
     def train(self):
-        num_rounds = 200
+        num_rounds = 100
         for t in range(num_rounds): 
             print(f"Round {t+1}\n-------------------------------")
             # collect num_samples, grads from clients 
@@ -149,5 +149,25 @@ def test():
     # t.train()
     print("test_calc_msize()", test_calc_msize(t))
 
+def test_mnist(): 
+    # load the client model 
+    model_path = '%s' % ('custom_model')
+    mod = importlib.import_module(model_path)
+    model = getattr(mod, 'CustomLogisticRegression')
+
+    # load the dataset 
+    dataset_name = 'mnist'
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    train_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'train')
+    test_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'test')
+    dataset = read_data(train_dir, test_dir)
+
+    # TODO: check params 
+    t = BaseFederated(model, dataset)
+    t.train()
+    print('Done!')
+    # print("test_calc_msize()", test_calc_msize(t))
+
 if __name__=="__main__": 
-    test()
+    # test()
+    test_mnist()
