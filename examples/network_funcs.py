@@ -84,53 +84,6 @@ def calc_uav_gains(xs, ys):
     uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
     return uav_gains 
 
-def find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, tau): 
-    r""" Solve Lambert W function to find the boundary of eta (eta_n_min, eta_n_max)
-    Args: 
-        decs: relay-node selection decisions (decs==1: uav else bs): dtype=np.array, shape=(N, )
-        data_size: data transmission size: dtype=np.array, shape=(N, )
-        uav_gains, bs_gains: propagation channel gains, dtype=np.array, shape=(N, )
-        powers: transmission powers, dtype=np.array, shape=(N, ) 
-        num_samples: number of samples, dtype=np.array, shape=(N, )
-    Return: 
-        eta_min, eta_max
-    """
-    # eta_min, eta_max = 0.0, 1.0
-    
-    # Find eta_min 
-    # f = f_max, t_co min at p = powers 
-    af = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers) # (N, )
-    bf = a * calc_comp_time(num_rounds=1, num_samples=num_samples, freqs=freq_max) * v / math.log(2) # (N, )
-    # print(f"af = {af}")
-    # print(f"bf = {bf}")
-    # print(f"a = {a}, v = {v}, tau = {tau}")
-    x = (af - tau)/bf - lambertw(- tau/bf * np.exp((af - tau)/bf)) # (N, )
-    # print(f"x = {x}")
-    lower_bound_eta = np.exp(x.real) # (N, )
-    # print("lower_bound_eta =", lower_bound_eta)
-    eta_min = np.amax(lower_bound_eta)
-
-    # Find eta_max
-    # f = 0 t_co max = tau / num_global_rounds  
-    upper_bound_eta = 1 - af/tau
-    # print(f"upper_bound_eta = {upper_bound_eta}")
-    eta_max = np.amin(upper_bound_eta) 
-    print(f"eta_min = {eta_min}\teta_max = {eta_max}")
-
-    ## TRACELOG eta_min, eta_max are satisfied tau condition
-    # eta_min 
-    num_local_rounds = v * math.log2(1/eta_min)
-    num_global_rounds = a / (1 - eta_min)
-
-    t_cp = calc_comp_time(num_local_rounds, num_samples, freq_max)
-    t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
-    t_total = num_global_rounds * (t_co + t_cp)
-    print(f"eta_min = {eta_min}, tau = {tau}")
-    print(f"t_cp = {t_cp}\nt_co = {t_co}\nt_total = {t_total}")
-
-    ## TRACELOG
-    return eta_min, eta_max
-
 def solve_initial_eta(af, bf, tau): 
     r""" TODO
     Args:
@@ -161,6 +114,18 @@ def solve_initial_eta(af, bf, tau):
 
     return eta_min, eta_max
 
+def find_bound_eta(num_samples, data_size, uav_gains, bs_gains, decs, freqs, powers, tau):
+    r""" TODO 
+    Args: 
+        af: ln(eta) coefficient, computation related (time)
+        bf: free coefficient, communication related 
+    """ 
+    af = a * calc_comp_time(1, num_samples, freqs) * v / math.log(2)
+    bf = a * calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+
+    eta_min, eta_max = solve_initial_eta(af, bf, tau)
+    return eta_min, eta_max
+
 def dinkelbach_method(af, bf): 
     r""" TODO 
     Args: 
@@ -186,34 +151,17 @@ def dinkelbach_method(af, bf):
     print(f"eta = {eta}")
     return eta 
     
-
 def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
     r""" Find the optimal local accuracy eta by Dinkelbach method
     Args: 
     Return:
         Optimal eta 
     """
-    # TODO: call to dinkelbach_method 
-    acc = 1e-4
 
     bf = a * calc_trans_energy(decs, data_size, uav_gains, bs_gains, powers).sum()
     af = v * a * calc_comp_energy(num_rounds=1, num_samples=num_samples, freqs=freqs).sum() / math.log(2)
-    
-    eta = 1.0
-    zeta = af * 2 
-    h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
 
-    while 1:
-        eta = af / zeta # calculate temporary optimal eta
-        
-        print(f"af = {af}\tbf = {bf}\tzeta = {zeta}\teta = {eta}")
-        h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
-        if abs(h_curr - h_prev) < acc: 
-            break
-        h_prev = h_curr   
-        
-        zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
-    
+    eta = dinkelbach_method(af, bf)
     print(f"eta = {eta}")
 
     ## LOGTRACE
@@ -347,27 +295,18 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     powers = np.ones(num_users) * power_max
     decs = np.random.randint(low=0, high=2, size=num_users) # random initial decisions
     eta = 0.01
+    
     obj_prev = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
     print(f"obj_prev = {obj_prev}")
+
     # Repeat
     iter = 0 
     eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples) # eta = 0.317, t_min = 66.823
-    tau = 400 # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
-
-    # Test: change initial powers
-    num_local_rounds = v * math.log2(1 / eta)
-    print(f"num_local_rounds = {num_local_rounds}")
-    t_cp = calc_comp_time(num_local_rounds, num_samples, freqs)
-    t_trans = tau * (1 - eta) / a - t_cp - decs * delta_t
-    print(f"decs = {decs}\nt_cp = {t_cp}\nt_trans = {t_trans}")
-
-    gains = decs * uav_gains + (1 - decs) * bs_gains # (N, )
-    powers = N_0/gains * (2 * np.exp(data_size/bw/t_trans) - 1)
-    print(f"initial powers = {powers}")
+    tau = int(1.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
 
     while 1: 
         # Tighten the bound of eta 
-        eta_min, eta_max = find_bound_eta(decs, data_size, uav_gains, bs_gains, powers, num_samples, tau) # (eta_min, eta_max) # TODO: tau
+        eta_min, eta_max = find_bound_eta(num_samples, data_size, uav_gains, bs_gains, decs, freqs, powers, tau)
 
         # Solve eta
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
