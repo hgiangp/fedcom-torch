@@ -7,7 +7,7 @@ kappa = 1
 def objective(x): 
     z, t = x[0], x[1]
     f0 = a/b * z * (np.exp(1/z) - 1) + kappa * c / (t**2)
-    print(f"objective = {objective}")
+    print(f"objective = {f0}")
 
     return f0 
 
@@ -17,13 +17,13 @@ def hessian_dual(x):
                     [0, 6 * kappa * c / (t**4), c], 
                     [a, c, 0]])
 
-    print(f"hessian_dual = {hessian_dual}")
+    print(f"hessian_dual = {hess}")
     return hess 
 
 def hessian(x): 
     z, t = x[0], x[1]
     hess = np.array([[a/b * np.exp(1/z) / (z**3), 0],
-                    [0, 6 * kappa * c / (t**4), c]])
+                    [0, 6 * kappa * c / (t**4)]])
     
     print(f"hessian = {hess}")
     return hess 
@@ -39,7 +39,7 @@ def backtracking_line_search(x, dir_x, alpha=0.01, beta=0.8, step_size=1):
     while (objective(x + step_size * dir_x) > (objective(x) + alpha * step_size * np.dot(gradient(x), dir_x))): 
         step_size = beta * step_size
     
-    print(f"step_size = {step_size}")
+    print(f"backtracking_line_search step_size = {step_size}")
     return step_size
 
 class NewtonMethod(object): 
