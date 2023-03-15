@@ -36,7 +36,7 @@ def gradient(x):
     return grad 
 
 def backtracking_line_search(x, dir_x, alpha=0.01, beta=0.8, step_size=1): 
-    print(f"backtracking_line_search dir_x = {dir_x}")
+    print(f"backtracking_line_search x = {x}\tdir_x = {dir_x}")
     print(f"obj1 = {objective(x + step_size * dir_x)}")
     print(f"obj2 = {objective(x) + alpha * step_size * np.dot(gradient(x), dir_x)}")
     while (objective(x + step_size * dir_x) > (objective(x) + alpha * step_size * np.dot(gradient(x), dir_x))): 
