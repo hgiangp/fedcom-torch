@@ -5,6 +5,11 @@ hessian_dual = [[2.71828183 0.         1.        ]
 grad_x = [-1. -2.]	dir_x = [-0.1147015  0.1147015]
 backtracking_line_search dir_x = [-0.1147015  0.1147015]
 objective = 2.6588733323404887
+obj1 = 2.6588733323404887
+objective = 2.718281828459045
+gradient = [-1. -2.]
+obj2 = 2.7171348134626547
+objective = 2.6588733323404887
 objective = 2.718281828459045
 gradient = [-1. -2.]
 backtracking_line_search step_size = 1
@@ -15,6 +20,11 @@ hessian_dual = [[4.45957612 0.         1.        ]
  [1.         1.         0.        ]]
 grad_x = [-1.40090561 -1.44395693]	dir_x = [-0.0051585  0.0051585]
 backtracking_line_search dir_x = [-0.0051585  0.0051585]
+objective = 2.6587624546782833
+obj1 = 2.6587624546782833
+objective = 2.6588733323404887
+gradient = [-1.40090561 -1.44395693]
+obj2 = 2.6588711115374744
 objective = 2.6587624546782833
 objective = 2.6588733323404887
 gradient = [-1.40090561 -1.44395693]
