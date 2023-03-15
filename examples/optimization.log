@@ -2,6 +2,7 @@ gradient = [-1. -2.]
 hessian_dual = [[2.71828183 0.         1.        ]
  [0.         6.         1.        ]
  [1.         1.         0.        ]]
+backtracking_line_search dir_x = [-0.1147015  0.1147015]
 objective = 2.6588733323404887
 objective = 2.718281828459045
 gradient = [-1. -2.]
@@ -11,6 +12,7 @@ gradient = [-1.40090561 -1.44395693]
 hessian_dual = [[4.45957612 0.         1.        ]
  [0.         3.88612628 1.        ]
  [1.         1.         0.        ]]
+backtracking_line_search dir_x = [-0.0051585  0.0051585]
 objective = 2.6587624546782833
 objective = 2.6588733323404887
 gradient = [-1.40090561 -1.44395693]
