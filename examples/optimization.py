@@ -65,7 +65,8 @@ class NewtonMethod(object):
             grad_x = gradient(x) # (N, )
             grad_x_nt = np.append(grad_x, 0) # (N+1, )
             inv_hess_x = np.linalg.inv(hessian_dual(x)) # (N+1, N+1)
-
+            print(f"inv_hess_x = {inv_hess_x}")
+            
             dir_x = - np.dot(inv_hess_x, grad_x_nt)[:dim] # (N, )
             print(f"grad_x = {grad_x}\tdir_x = {dir_x}")
             decrement_x_squared = - np.dot(np.transpose(grad_x), dir_x)  # (1)
