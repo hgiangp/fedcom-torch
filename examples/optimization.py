@@ -69,10 +69,11 @@ class NewtonMethod(object):
             dir_x = - np.dot(inv_hess_x, grad_x_nt)[:dim] # (N, )
             print(f"grad_x = {grad_x}\tdir_x = {dir_x}")
             decrement_x_squared = - np.dot(np.transpose(grad_x), dir_x)  # (1)
-
+            print(f"iter = {iter}\tdecrement_x_squared = {decrement_x_squared}")
+            
             # stopping criterion: quit if lambda^2 \leq epsilon 
             if decrement_x_squared / 2 < acc: 
-                print(f"iter = {iter} converged\tdecrement_x_squared = {decrement_x_squared}")
+                print(f"iter = {iter} converged")
                 break 
             
             # line search: choose stepsize t by backtracking line search 
