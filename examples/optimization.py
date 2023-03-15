@@ -63,6 +63,7 @@ class NewtonMethod(object):
             inv_hess_x = np.linalg.inv(hessian_dual(x)) # (N+1, N+1)
 
             dir_x = - np.dot(inv_hess_x, grad_x_nt)[:dim] # (N, )
+            print(f"grad_x = {grad_x}\tdir_x = {dir_x}")
             decrement_x_squared = - np.dot(np.transpose(grad_x), dir_x)  # (1)
 
             # stopping criterion: quit if lambda^2 \leq epsilon 
