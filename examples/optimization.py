@@ -7,7 +7,7 @@ kappa = 1
 def objective(x): 
     z, t = x[0], x[1]
     f0 = a/b * z * (np.exp(1/z) - 1) + kappa * c / (t**2)
-    print(f"objective = {f0}")
+    print(f"objective x = {x}\tf0 = {f0}")
 
     return f0 
 
@@ -17,7 +17,7 @@ def hessian_dual(x):
                     [0, 6 * kappa * c / (t**4), c], 
                     [a, c, 0]])
 
-    print(f"hessian_dual = {hess}")
+    print(f"hessian_dual x = {x}\thess = {hess}")
     return hess 
 
 def hessian(x): 
@@ -25,14 +25,14 @@ def hessian(x):
     hess = np.array([[a/b * np.exp(1/z) / (z**3), 0],
                     [0, 6 * kappa * c / (t**4)]])
     
-    print(f"hessian = {hess}")
+    print(f"hessian x = {x}\thess = {hess}")
     return hess 
 
 def gradient(x): 
     z, t = x[0], x[1]
     grad = np.array([a/b * ((1 - 1/z) * np.exp(1/z) - 1), -2 * kappa * c / (t**3)])
 
-    print(f"gradient = {grad}")
+    print(f"gradient x = {x}\tgrad = {grad}")
     return grad 
 
 def backtracking_line_search(x, dir_x, alpha=0.01, beta=0.8, step_size=1): 
