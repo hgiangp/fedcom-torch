@@ -1,0 +1,8 @@
+step_size = 1
+iter = 0 step_size = 1 x = [0.8852985 1.1147015]
+step_size = 1
+iter = 1 step_size = 1 x = [0.88014 1.11986]
+iter = 2 converged	decrement_x_squared = 1.0898918010166281e-09
+x_opt = [0.88014 1.11986] obj = 2.6587624546782833
+x_opt+tmp = [0.98014 1.21986] obj = 2.4107091022348905
+x_opt-tmp = [0.78014 1.01986] obj = 2.9922899633344606
