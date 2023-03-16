@@ -2,6 +2,7 @@ import numpy as np
 
 
 a, b, c = 1, 1, 2
+tau = 1
 kappa = 1
 A = np.array([a, c])
 
@@ -11,6 +12,12 @@ def objective(x):
     print(f"objective x = {x}\tf0 = {f0}")
 
     return f0 
+
+def eq_constraints(x): 
+    fi = np.dot(A, x) - tau # broadcasting 
+    print(f"eq_constraints = {fi}")
+
+    return fi 
 
 def hessian_dual(x): 
     z, t = x[0], x[1]
@@ -40,7 +47,7 @@ def dual_optimality(x, v):
     r"""Return optimality dual matrix r = (r_dual, r_pri)"""
     
     r_dual = gradient(x).T + A.T * v # (N, )
-    r_pri = np.array([np.dot(A, x) - b]) # (1, )
+    r_pri = np.array([eq_constraints(x)]) # (1, )
     r = np.concatenate((r_dual, r_pri), axis=0)
 
     print(f"r = {r}")
@@ -70,7 +77,7 @@ def newton_method():
 
     # initiate dual starting point
     x, v = np.array([1, 1]), 1 
-    acc = 1e-10
+    acc = 1e-5
 
     for iter in range(max_iter): 
         # compute primal newton step dir_x_nt, dual newton step dir_v_nt 
@@ -88,8 +95,9 @@ def newton_method():
         print(f"iter = {iter} v = {v} dir_v = {dir_v}")
 
         # check stopping condition
-        equality_satisfied = np.allclose(np.dot(A, x), b) 
+        equality_satisfied = np.allclose(eq_constraints(x), 0, atol=1e-5) 
         norm_residual = np.linalg.norm(dual_optimality(x, v))
+
         print(f"equality_satisfied = {equality_satisfied}\tnorm_residual = {norm_residual}")
 
         if equality_satisfied and norm_residual <= acc: 
@@ -100,10 +108,10 @@ def newton_method():
 
 def test(): 
     x_opt = newton_method()
-    print(f"x_opt = {x_opt} obj = {objective(x_opt)}")
+    print(f"x_opt = {x_opt} obj = {objective(x_opt)} Ax - b = {eq_constraints(x_opt)}")
     tmp = [0.1, 0.1] # broadcasting 
-    print(f"x_opt+tmp = {x_opt+tmp} obj = {objective(x_opt+tmp)}")
-    print(f"x_opt-tmp = {x_opt-tmp} obj = {objective(x_opt-tmp)}")
+    print(f"x_opt+tmp = {x_opt+tmp} obj = {objective(x_opt+tmp)} Ax - b = {np.dot(A, x_opt+tmp) - tau}")
+    print(f"x_opt-tmp = {x_opt-tmp} obj = {objective(x_opt-tmp)} Ax - b = {np.dot(A, x_opt-tmp) - tau}")
     return 
 
 if __name__=='__main__': 
