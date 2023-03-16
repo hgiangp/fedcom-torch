@@ -22,6 +22,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.2621440000000001
 iter = 0 x = [0.67909801 0.89830699] dir_x = [-1.22414393 -0.38792803]
 iter = 0 v = [1.87230204] dir_v = [3.3275682]
+r = [-1.18812191 -1.77344615  1.475712  ]
+equality_statisfied = False	norm_residual = 2.5950858980576017
 hessian_dual x = [0.67909801 0.89830699]	hess = [[13.92256531  0.          1.        ]
  [ 0.         18.42816632  2.        ]
  [ 1.          2.          0.        ]]
@@ -50,6 +52,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.1677721600000001
 iter = 1 x = [0.62026996 0.80392932] dir_x = [-0.3506425  -0.56253475]
 iter = 1 v = [2.89067318] dir_v = [6.06996503]
+r = [-1.17880322 -1.91715837  1.22812861]
+equality_statisfied = False	norm_residual = 2.5638590348490036
 hessian_dual x = [0.62026996 0.80392932]	hess = [[21.0100868   0.          1.        ]
  [ 0.         28.72828936  2.        ]
  [ 1.          2.          0.        ]]
@@ -80,6 +84,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.13421772800000006
 iter = 2 x = [0.57932558 0.7419832 ] dir_x = [-0.30505945 -0.46153458]
 iter = 2 v = [3.90913458] dir_v = [7.58812869]
+r = [-1.17103949 -1.97387446  1.06329198]
+equality_statisfied = False	norm_residual = 2.529447307988192
 hessian_dual x = [0.57932558 0.7419832 ]	hess = [[28.89929027  0.          1.        ]
  [ 0.         39.59177352  2.        ]
  [ 1.          2.          0.        ]]
@@ -112,6 +118,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.10737418240000006
 iter = 3 x = [0.55070804 0.69920692] dir_x = [-0.26652162 -0.39838518]
 iter = 3 v = [4.86190061] dir_v = [8.87332513]
+r = [-1.15249226 -1.97773396  0.94912187]
+equality_statisfied = False	norm_residual = 2.4780037008135927
 hessian_dual x = [0.55070804 0.69920692]	hess = [[36.79992032  0.          1.        ]
  [ 0.         50.20631895  2.        ]
  [ 1.          2.          0.        ]]
@@ -144,6 +152,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.10737418240000006
 iter = 4 x = [0.52514494 0.66103287] dir_x = [-0.2380749  -0.35552348]
 iter = 4 v = [5.92636849] dir_v = [9.91362971]
+r = [-1.14492405 -1.99538298  0.84721069]
+equality_statisfied = False	norm_residual = 2.451564858815766
 hessian_dual x = [0.52514494 0.66103287]	hess = [[46.36195279  0.          1.        ]
  [ 0.         62.84764572  2.        ]
  [ 1.          2.          0.        ]]
@@ -176,6 +186,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.10737418240000006
 iter = 5 x = [0.50237399 0.62693407] dir_x = [-0.212071   -0.31756984]
 iter = 5 v = [7.10500952] dir_v = [10.97694993]
+r = [-1.14536337 -2.02281588  0.75624213]
+equality_statisfied = False	norm_residual = 2.4444924835804835
 hessian_dual x = [0.50237399 0.62693407]	hess = [[57.73018915  0.          1.        ]
  [ 0.         77.6772342   2.        ]
  [ 1.          2.          0.        ]]
@@ -210,6 +222,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 6 x = [0.48617187 0.60255478] dir_x = [-0.18861748 -0.28381233]
 iter = 6 v = [8.13874683] dir_v = [12.03428619]
+r = [-1.12776306 -2.00647153  0.69128143]
+equality_statisfied = False	norm_residual = 2.4032576929047447
 hessian_dual x = [0.48617187 0.60255478]	hess = [[68.06512713  0.          1.        ]
  [ 0.         91.03221396  2.        ]
  [ 1.          2.          0.        ]]
@@ -244,6 +258,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 7 x = [0.47141032 0.58024524] dir_x = [-0.17184701 -0.25971721]
 iter = 7 v = [9.24036745] dir_v = [12.82455193]
+r = [-1.11338705 -1.99432733  0.6319008 ]
+equality_statisfied = False	norm_residual = 2.369867265506737
 hessian_dual x = [0.47141032 0.58024524]	hess = [[ 79.62860592   0.           1.        ]
  [  0.         105.86073332   2.        ]
  [  1.           2.           0.        ]]
@@ -278,6 +294,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 8 x = [0.45796427 0.55982834] dir_x = [-0.1565327  -0.23768405]
 iter = 8 v = [10.40669741] dir_v = [13.57786772]
+r = [-1.10109632 -1.98453231  0.57762094]
+equality_statisfied = False	norm_residual = 2.3418854670877427
 hessian_dual x = [0.45796427 0.55982834]	hess = [[ 92.43159234   0.           1.        ]
  [  0.         122.16920251   2.        ]
  [  1.           2.           0.        ]]
@@ -312,6 +330,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 9 x = [0.44571714 0.54114327] dir_x = [-0.14257532 -0.21752281]
 iter = 9 v = [11.63330229] dir_v = [14.27956022]
+r = [-1.08985303 -1.97536324  0.52800368]
+equality_statisfied = False	norm_residual = 2.317029872727078
 hessian_dual x = [0.44571714 0.54114327]	hess = [[106.46194573   0.           1.        ]
  [  0.         139.93688509   2.        ]
  [  1.           2.           0.        ]]
@@ -346,6 +366,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 10 x = [0.43456138 0.52404356] dir_x = [-0.12987009 -0.1990668 ]
 iter = 10 v = [12.9145834] dir_v = [14.91607525]
+r = [-1.07873688 -1.96526645  0.48264851]
+equality_statisfied = False	norm_residual = 2.293228082410355
 hessian_dual x = [0.43456138 0.52404356]	hess = [[121.6837024    0.           1.        ]
  [  0.         159.11520691   2.        ]
  [  1.           2.           0.        ]]
@@ -380,6 +402,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 11 x = [0.4243984  0.50839546] dir_x = [-0.11831277 -0.18216787]
 iter = 11 v = [14.24391636] dir_v = [15.47547241]
+r = [-1.06695837 -1.95289279  0.44118932]
+equality_statisfied = False	norm_residual = 2.26866446128054
 hessian_dual x = [0.4243984  0.50839546]	hess = [[138.03738323   0.           1.        ]
  [  0.         179.62822957   2.        ]
  [  1.           2.           0.        ]]
@@ -414,6 +438,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 12 x = [0.41513817 0.49407664] dir_x = [-0.10780323 -0.16669304]
 iter = 12 v = [15.6138249] dir_v = [15.94783443]
+r = [-1.05386779 -1.93712371  0.40329144]
+equality_statisfied = False	norm_residual = 2.2418139006446727
 hessian_dual x = [0.41513817 0.49407664]	hess = [[155.44130549   0.           1.        ]
  [  0.         201.37426671   2.        ]
  [  1.           2.           0.        ]]
@@ -448,6 +474,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 13 x = [0.40669878 0.48097509] dir_x = [-0.09824738 -0.15252203]
 iter = 13 v = [17.01618053] dir_v = [16.32556817]
+r = [-1.0389593  -1.9170869   0.36864897]
+equality_statisfied = False	norm_residual = 2.21146120544856
 hessian_dual x = [0.40669878 0.48097509]	hess = [[173.79380825   0.           1.        ]
  [  0.         224.22854139   2.        ]
  [  1.           2.           0.        ]]
@@ -482,6 +510,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 14 x = [0.39900581 0.46898823] dir_x = [-0.08955799 -0.13954549]
 iter = 14 v = [18.44241755] dir_v = [16.60358415]
+r = [-1.02186997 -1.89216125  0.33698227]
+equality_statisfied = False	norm_residual = 2.176706106503157
 hessian_dual x = [0.39900581 0.46898823]	hess = [[192.97624069   0.           1.        ]
  [  0.         248.04671427   2.        ]
  [  1.           2.           0.        ]]
@@ -516,6 +546,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.08589934592000005
 iter = 15 x = [0.3919917  0.45802201] dir_x = [-0.08165503 -0.12766362]
 iter = 15 v = [19.88375282] dir_v = [16.77935102]
+r = [-1.0023738  -1.86197138  0.30803571]
+equality_statisfied = False	norm_residual = 2.136954993038383
 hessian_dual x = [0.3919917  0.45802201]	hess = [[212.85651917   0.           1.        ]
  [  0.         272.66906213   2.        ]
  [  1.           2.           0.        ]]
@@ -548,6 +580,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.10737418240000006
 iter = 16 x = [0.38399603 0.4454823 ] dir_x = [-0.07446545 -0.11678513]
 iter = 16 v = [21.69331181] dir_v = [16.85283129]
+r = [-0.99589599 -1.85817229  0.27496063]
+equality_statisfied = False	norm_residual = 2.1260800569394025
 hessian_dual x = [0.38399603 0.4454823 ]	hess = [[238.78481858   0.           1.        ]
  [  0.         304.69086624   2.        ]
  [  1.           2.           0.        ]]
@@ -580,6 +614,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.10737418240000006
 iter = 17 x = [0.37687848 0.43427924] dir_x = [-0.06628731 -0.10433666]
 iter = 17 v = [23.49980721] dir_v = [16.82429952]
+r = [-0.98124697 -1.83781492  0.24543695]
+equality_statisfied = False	norm_residual = 2.0977722903913083
 hessian_dual x = [0.37687848 0.43427924]	hess = [[265.30299736   0.           1.        ]
  [  0.         337.36885365   2.        ]
  [  1.           2.           0.        ]]
@@ -612,6 +648,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.10737418240000006
 iter = 18 x = [0.37054055 0.4242714 ] dir_x = [-0.05902657 -0.09320519]
 iter = 18 v = [25.28663947] dir_v = [16.64117216]
+r = [-0.95912685 -1.80228428  0.21908336]
+equality_statisfied = False	norm_residual = 2.053326678044254
 hessian_dual x = [0.37054055 0.4242714 ]	hess = [[292.11194114   0.           1.        ]
  [  0.         370.34475562   2.        ]
  [  1.           2.           0.        ]]
@@ -642,6 +680,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.13421772800000006
 iter = 19 x = [0.36348385 0.41309732] dir_x = [-0.05257657 -0.0832534 ]
 iter = 19 v = [27.47671997] dir_v = [16.31737131]
+r = [-0.94756264 -1.78832621  0.18967849]
+equality_statisfied = False	norm_residual = 2.0327231760491693
 hessian_dual x = [0.36348385 0.41309732]	hess = [[326.10361821   0.           1.        ]
  [  0.         412.07068887   2.        ]
  [  1.           2.           0.        ]]
@@ -672,6 +712,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.13421772800000006
 iter = 20 x = [0.35738888 0.4034157 ] dir_x = [-0.04541102 -0.07213373]
 iter = 20 v = [29.59148963] dir_v = [15.75626179]
+r = [-0.92023885 -1.74287298  0.16422028]
+equality_statisfied = False	norm_residual = 1.9777295206330967
 hessian_dual x = [0.35738888 0.4034157 ]	hess = [[359.55417619   0.           1.        ]
  [  0.         453.07497457   2.        ]
  [  1.           2.           0.        ]]
@@ -700,6 +742,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.1677721600000001
 iter = 21 x = [0.35080598 0.39293135] dir_x = [-0.03923715 -0.06249156]
 iter = 21 v = [32.11278953] dir_v = [15.02811852]
+r = [-0.89812294 -1.70849969  0.13666868]
+equality_statisfied = False	norm_residual = 1.9350127512807438
 hessian_dual x = [0.35080598 0.39293135]	hess = [[400.67252869   0.           1.        ]
  [  0.         503.40151049   2.        ]
  [  1.           2.           0.        ]]
@@ -726,6 +770,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.2097152000000001
 iter = 22 x = [0.34397274 0.38201722] dir_x = [-0.03258345 -0.05204262]
 iter = 22 v = [35.03903297] dir_v = [13.95341603]
+r = [-0.87354321 -1.67015834  0.10800718]
+equality_statisfied = False	norm_residual = 1.8879015262503198
 hessian_dual x = [0.34397274 0.38201722]	hess = [[449.79224843   0.           1.        ]
  [  0.         563.44232432   2.        ]
  [  1.           2.           0.        ]]
@@ -750,6 +796,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.2621440000000001
 iter = 23 x = [0.33723754 0.37122811] dir_x = [-0.02569274 -0.04115722]
 iter = 23 v = [38.29746699] dir_v = [12.42993936]
+r = [-0.82859395 -1.59258697  0.07969375]
+equality_statisfied = False	norm_residual = 1.797012040628151
 hessian_dual x = [0.33723754 0.37122811]	hess = [[505.81559605   0.           1.        ]
  [  0.         631.85561436   2.        ]
  [  1.           2.           0.        ]]
@@ -770,6 +818,8 @@ backtracking_line_search terminate!
 backtracking_line_search step_size = 0.40960000000000013
 iter = 24 x = [0.32948931 0.35878094] dir_x = [-0.01891658 -0.03038859]
 iter = 24 v = [42.55603437] dir_v = [10.39689301]
+r = [-0.77394611 -1.49870108  0.04705119]
+equality_statisfied = False	norm_residual = 1.687397796598215
 hessian_dual x = [0.32948931 0.35878094]	hess = [[581.51337518   0.           1.        ]
  [  0.         724.2087858    2.        ]
  [  1.           2.           0.        ]]
@@ -783,6 +833,7 @@ backtracking_line_search step_size = 1
 iter = 25 x = [0.31835043 0.34082479] dir_x = [-0.01113888 -0.01795616]
 iter = 25 v = [49.80738759] dir_v = [7.25135322]
 r = [-0.72147136 -1.41897681  0.        ]
+equality_statisfied = True	norm_residual = 1.591859327462253
 hessian_dual x = [0.31835043 0.34082479]	hess = [[716.94572259   0.           1.        ]
  [  0.         889.31694194   2.        ]
  [  1.           2.           0.        ]]
@@ -796,6 +847,7 @@ backtracking_line_search step_size = 1
 iter = 26 x = [0.31836319 0.34081841] dir_x = [ 1.27576582e-05 -6.37882909e-06]
 iter = 26 v = [50.51971239] dir_v = [0.71232481]
 r = [-1.12538493e-06 -2.12349349e-07  0.00000000e+00]
+equality_statisfied = True	norm_residual = 1.1452438512824023e-06
 iter = 26 converged!
 objective x = [0.31836319 0.34081841]	f0 = 24.26295552525904
 x_opt = [0.31836319 0.34081841] obj = 24.26295552525904

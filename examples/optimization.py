@@ -88,7 +88,11 @@ def newton_method():
         print(f"iter = {iter} v = {v} dir_v = {dir_v}")
 
         # check stopping condition
-        if np.allclose(np.dot(A, x), b) and np.linalg.norm(dual_optimality(x, v)) <= acc: 
+        equality_satisfied = np.allclose(np.dot(A, x), b) 
+        norm_residual = np.linalg.norm(dual_optimality(x, v))
+        print(f"equality_satisfied = {equality_satisfied}\tnorm_residual = {norm_residual}")
+
+        if equality_satisfied and norm_residual <= acc: 
             print(f"iter = {iter} converged!")
             break 
     
