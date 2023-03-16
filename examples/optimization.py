@@ -33,7 +33,7 @@ def gradient(x):
     z, t = x[0], x[1]
     grad = np.array([a/b * ((1 - 1/z) * np.exp(1/z) - 1), -2 * kappa * c / (t**3)])
 
-    print(f"gradient x = {x}\tgrad = {grad}")
+    # print(f"gradient x = {x}\tgrad = {grad}")
     return grad 
 
 def dual_optimality(x, v): 
@@ -41,9 +41,8 @@ def dual_optimality(x, v):
     
     r_dual = gradient(x).T + A.T * v # (N, )
     r_pri = np.array([np.dot(A, x) - b]) # (1, )
-
-    print(f"r_dual = {r_dual}\tr_pri = {r_pri}")
     r = np.concatenate((r_dual, r_pri), axis=0)
+
     print(f"r = {r}")
     return r 
 
@@ -70,7 +69,7 @@ def newton_method():
     dim = 2
 
     # initiate dual starting point
-    x, v = [1, 1], 1 
+    x, v = np.array([1, 1]), 1 
     acc = 1e-5 
 
     for iter in range(max_iter): 
@@ -85,6 +84,8 @@ def newton_method():
         # update primal, dual variable 
         x = x + step_size * dir_x
         v = v + step_size * dir_v 
+        print(f"iter = {iter} x = {x} dir_x = {dir_x}")
+        print(f"iter = {iter} v = {v} dir_v = {dir_v}")
 
         # check stopping condition
         if np.allclose(np.dot(A, x), b) and np.linalg.norm(dual_optimality(x, v)) <= acc: 
