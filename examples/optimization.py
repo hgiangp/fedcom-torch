@@ -18,7 +18,7 @@ def hessian_dual(x):
                     [0, 6 * kappa * c / (t**4), c], 
                     [a, c, 0]])
 
-    print(f"hessian_dual x = {x}\thess = {hess}")
+    print(f"hessian_dual x = {x}\nhess = {hess}")
     return hess 
 
 def hessian(x): 
@@ -26,7 +26,7 @@ def hessian(x):
     hess = np.array([[a/b * np.exp(1/z) / (z**3), 0],
                     [0, 6 * kappa * c / (t**4)]])
     
-    print(f"hessian x = {x}\thess = {hess}")
+    print(f"hessian x = {x}\nhess = {hess}")
     return hess 
 
 def gradient(x): 
@@ -65,12 +65,12 @@ def backtracking_line_search(x, v, dir_x, dir_v, alpha=0.01, beta=0.8):
 def newton_method():
     r"""Infeasible starting point newton method"""
     
-    max_iter = 100 
+    max_iter = 50 
     dim = 2
 
     # initiate dual starting point
     x, v = np.array([1, 1]), 1 
-    acc = 1e-5 
+    acc = 1e-10
 
     for iter in range(max_iter): 
         # compute primal newton step dir_x_nt, dual newton step dir_v_nt 
