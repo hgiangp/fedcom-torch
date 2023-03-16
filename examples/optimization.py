@@ -1,8 +1,9 @@
 import numpy as np 
 
 
-a, b, c = 1, 1, 1
+a, b, c = 1, 1, 2
 kappa = 1
+A = np.array([a, c])
 
 def objective(x): 
     z, t = x[0], x[1]
@@ -35,61 +36,65 @@ def gradient(x):
     print(f"gradient x = {x}\tgrad = {grad}")
     return grad 
 
-def backtracking_line_search(x, dir_x, alpha=0.01, beta=0.8, step_size=1): 
-    print(f"backtracking_line_search x = {x}\tdir_x = {dir_x}")
-    print(f"obj1 = {objective(x + step_size * dir_x)}")
-    print(f"obj2 = {objective(x) + alpha * step_size * np.dot(gradient(x), dir_x)}")
-    while (objective(x + step_size * dir_x) > (objective(x) + alpha * step_size * np.dot(gradient(x), dir_x))): 
-        print(f"obj1 = {objective(x + step_size * dir_x)}")
-        print(f"obj2 = {objective(x) + alpha * step_size * np.dot(gradient(x), dir_x)}")
-        step_size = beta * step_size
+def dual_optimality(x, v): 
+    r"""Return optimality dual matrix r = (r_dual, r_pri)"""
     
+    r_dual = gradient(x).T + A.T * v # (N, )
+    r_pri = np.array([np.dot(A, x) - b]) # (1, )
+
+    print(f"r_dual = {r_dual}\tr_pri = {r_pri}")
+    r = np.concatenate((r_dual, r_pri), axis=0)
+    print(f"r = {r}")
+    return r 
+
+def backtracking_line_search(x, v, dir_x, dir_v, alpha=0.01, beta=0.8):
+    step_size = 1
+
+    print(f"backtracking_line_search x = {x}\tdir_x = {dir_x}")
+    r_dual = np.linalg.norm(dual_optimality(x, v)) # 2-norm default 
+    while 1: 
+        r_dual_new = np.linalg.norm(dual_optimality(x + step_size * dir_x, v + step_size * dir_v)) # 2-norm default 
+        print(f"r_dual_new = {r_dual_new} r_dual = {r_dual}")
+        if r_dual_new <= (1 - alpha * step_size) * r_dual:
+            print("backtracking_line_search terminate!")
+            break 
+        step_size = step_size * beta 
+        
     print(f"backtracking_line_search step_size = {step_size}")
     return step_size
 
-class NewtonMethod(object): 
-    def __init__(self, max_iter=100):
-        self.max_iter = max_iter 
+def newton_method():
+    r"""Infeasible starting point newton method"""
+    
+    max_iter = 100 
+    dim = 2
 
-    def optimize(self): 
-        # initiate feasible starting point 
-        x_max = [1, 1] 
-        x = x_max
-        acc = 1e-5
+    # initiate dual starting point
+    x, v = [1, 1], 1 
+    acc = 1e-5 
 
-        dim = 2
+    for iter in range(max_iter): 
+        # compute primal newton step dir_x_nt, dual newton step dir_v_nt 
+        inv_hess_x = np.linalg.inv(hessian_dual(x)) # (N+1, N+1)
+        dir_xv = - np.dot(inv_hess_x, dual_optimality(x, v)) 
+        dir_x, dir_v = dir_xv[:dim], dir_xv[dim:]
 
-        # repeat 
-        for iter in range(self.max_iter): 
-            # compute newton step dir_x_nt, newton decrement lambda_x 
-            grad_x = gradient(x) # (N, )
-            grad_x_nt = np.append(grad_x, 0) # (N+1, )
-            inv_hess_x = np.linalg.inv(hessian_dual(x)) # (N+1, N+1)
-            print(f"inv_hess_x = {inv_hess_x}")
-            
-            dir_x = - np.dot(inv_hess_x, grad_x_nt)[:dim] # (N, )
-            print(f"grad_x = {grad_x}\tdir_x = {dir_x}")
-            decrement_x_squared = - np.dot(np.transpose(grad_x), dir_x)  # (1)
-            print(f"iter = {iter}\tdecrement_x_squared = {decrement_x_squared}")
-            
-            # stopping criterion: quit if lambda^2 \leq epsilon 
-            if decrement_x_squared / 2 < acc: 
-                print(f"iter = {iter} converged")
-                break 
-            
-            # line search: choose stepsize t by backtracking line search 
-            step_size = backtracking_line_search(x, dir_x)
+        # backtracking line search on r = (r_dual, r_pri)
+        step_size = backtracking_line_search(x, v, dir_x, dir_v)
 
-            # update: x = x + t * dir_x_nt 
-            x = x + step_size * dir_x
-            print(f"iter = {iter} step_size = {step_size} x = {x}")
-        
-        return x
+        # update primal, dual variable 
+        x = x + step_size * dir_x
+        v = v + step_size * dir_v 
+
+        # check stopping condition
+        if np.allclose(np.dot(A, x), b) and np.linalg.norm(dual_optimality(x, v)) <= acc: 
+            print(f"iter = {iter} converged!")
+            break 
+    
+    return x
 
 def test(): 
-    opt = NewtonMethod()
-
-    x_opt = opt.optimize()
+    x_opt = newton_method()
     print(f"x_opt = {x_opt} obj = {objective(x_opt)}")
     tmp = [0.1, 0.1] # broadcasting 
     print(f"x_opt+tmp = {x_opt+tmp} obj = {objective(x_opt+tmp)}")
