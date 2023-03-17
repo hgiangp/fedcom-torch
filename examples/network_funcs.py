@@ -252,7 +252,7 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
 
 def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau): 
     r"""Solve powers, freqs for each users by newton's method"""
-    
+
     gains = decs * uav_gains + (1 - decs) * bs_gains
     num_local_rounds = v * math.log2(1 / eta)
 
@@ -261,13 +261,15 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, t
     opt_bs = gains / N_0 # (N, )
     opt_cs = num_local_rounds * C_n * num_samples # (N, )
     opt_tau = tau * (1-eta)/a # (1, ) equal for all users 
-    
+    print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
+
     # Initiate results 
     opt_powers = np.zeros(shape=num_users)
     opt_freqs = np.zeros(shape=num_users)
 
     for i in range(num_users): 
-        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau[i], kappa=k_switch)
+        print(f"NewtonOptim USER = {i}")
+        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau, kappa=k_switch)
         inv_power, inv_freq = opt.newton_method()
         opt_powers[i], opt_freqs[i] = 1/inv_power, 1/inv_freq
 
@@ -385,19 +387,10 @@ def test_with_location():
     co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     print(f"co_ene = {co_ene}")
 
-    bound_eta = find_bound_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, num_samples=num_samples, tau=80)
-    print(f"bound_eta = {bound_eta}")
-
-    initial_eta = solve_initial_eta(data_size, uav_gains, bs_gains, num_samples)
-    print(f"initial_eta = {initial_eta}")
-    print(f"bound_eta = {bound_eta}")
-
-    # eta = solve_optimal_eta(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers, freqs=freqs, num_samples=num_samples)
-    # print(f"eta = {eta}")
-
-    # freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, powers, tau=90)
-    # print(f"freqs = {freqs}")
-    # print(f"powers = {powers}")
+    eta = 0.1
+    freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
+    print(f"freqs = {freqs}")
+    print(f"powers = {powers}")
 
 def test_optimize_network(): 
     xs, ys, _ =  init_location()
@@ -444,6 +437,6 @@ def test_feasible_solution():
 
 
 if __name__=='__main__': 
-    # test_with_location()
+    test_with_location()
     # test_optimize_network()
-    test_feasible_solution()
+    # test_feasible_solution()
