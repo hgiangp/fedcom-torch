@@ -1,4 +1,5 @@
 import numpy as np 
+
 class NewtonOptim(object):
     def __init__(self, a=1, b=1, c=2, tau=1, kappa=1):
         self.a, self.b, self.c = a, b, c
@@ -14,7 +15,7 @@ class NewtonOptim(object):
         return f0 
 
     def eq_constraints(self, x): 
-        fi = np.dot(self.A, x) - self.tau # broadcasting 
+        fi = np.dot(self.A, x) - self.tau 
         print(f"eq_constraints = {fi}")
 
         return fi 
