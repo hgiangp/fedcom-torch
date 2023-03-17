@@ -3,6 +3,7 @@ import numpy as np
 from scipy.special import lambertw
 
 from location_model import init_location
+from optimization import NewtonOptim
 
 def calc_comp_energy(num_rounds, num_samples, freqs): 
     r""" Calculate local computation energy
@@ -249,25 +250,26 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
     ## LOGTRACE
     return eta_opt, tau 
 
-def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, powers, tau): 
+def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau): 
+    r"""Solve powers, freqs for each users by newton's method"""
     
-    # Update optimal freqs 
-    t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)    
+    gains = decs * uav_gains + (1 - decs) * bs_gains
     num_local_rounds = v * math.log2(1 / eta)
-    
-    t_cp = (tau * (1 - eta)/a - t_co) / num_local_rounds
-    opt_freqs = C_n * num_samples / t_cp
 
-    # Update optimal powers
-    x_convex = lambertw(-1/(2 * math.exp(1))).real + 1 
-
-    t_trans = t_co - decs * delta_t
-    print(f"t_cp = {t_cp}\nt_trans = {t_trans}")
-    x_opt = np.maximum(data_size/bw/t_trans, x_convex)
-    print(f"decs = {decs}\tx_convex = {x_convex}\nx_opt = {x_opt}")
+    # Calculate opt coefficient for optimizer 
+    opt_as = data_size / bw * math.log(2) # (N, )
+    opt_bs = gains / N_0 # (N, )
+    opt_cs = num_local_rounds * C_n * num_samples # (N, )
+    opt_tau = tau * (1-eta)/a # (1, ) equal for all users 
     
-    gains = decs * uav_gains + (1 - decs) * bs_gains # (N, )
-    opt_powers = N_0/gains * (2 * np.exp(x_opt) - 1)
+    # Initiate results 
+    opt_powers = np.zeros(shape=num_users)
+    opt_freqs = np.zeros(shape=num_users)
+
+    for i in range(num_users): 
+        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau[i], kappa=k_switch)
+        inv_power, inv_freq = opt.newton_method()
+        opt_powers[i], opt_freqs[i] = 1/inv_power, 1/inv_freq
 
     print(f"opt_freqs = {opt_freqs}\nopt_powers = {opt_powers}")
     return opt_freqs, opt_powers

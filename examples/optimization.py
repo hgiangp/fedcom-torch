@@ -105,11 +105,13 @@ class NewtonOptim(object):
                 print(f"iter = {iter} converged!")
                 break 
         
-        return x
+        return x[0], x[1]
 
 def test(): 
     opt = NewtonOptim()
-    x_opt = opt.newton_method()
+    inv_power, inv_freq = opt.newton_method()
+    print(f"inv_power = {inv_power}\tinv_freq = {inv_freq}")
+    x_opt = np.array([inv_power, inv_freq])
     print(f"x_opt = {x_opt} obj = {opt.objective(x_opt)} Ax - b = {opt.eq_constraints(x_opt)}")
     tmp = [0.1, 0.1] # broadcasting 
     print(f"x_opt+tmp = {x_opt+tmp} obj = {opt.objective(x_opt+tmp)} Ax - b = {opt.eq_constraints(x_opt+tmp)}")

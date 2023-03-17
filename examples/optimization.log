@@ -1247,6 +1247,7 @@ eq_constraints = 0.0
 r = [-1.12538493e-06 -2.12349349e-07  0.00000000e+00]
 equality_satisfied = True	norm_residual = 1.1452438512824023e-06
 iter = 26 converged!
+inv_power = 0.31836318670028413	inv_freq = 0.3408184066498579
 objective x = [0.31836319 0.34081841]	f0 = 24.26295552525904
 eq_constraints = 0.0
 x_opt = [0.31836319 0.34081841] obj = 24.26295552525904 Ax - b = 0.0
