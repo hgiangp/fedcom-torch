@@ -10,7 +10,7 @@ delta_lr = 0.1 # TODO Learning rate of local surrogate function
 gamma_cv = 0.45 # strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
-C_n = 5 * 1e3 # TODO: testback # number of cpu cycles per sample 
+C_n = 1e3 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
 
