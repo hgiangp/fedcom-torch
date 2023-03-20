@@ -263,6 +263,9 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, t
     opt_tau = tau * (1-eta)/a # (1, ) equal for all users 
     print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
 
+    # Normalization variables for faster convergence 
+    norm_factor = 1e9
+
     # Initiate results 
     opt_powers = np.zeros(shape=num_users)
     opt_freqs = np.zeros(shape=num_users)
@@ -271,6 +274,8 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, t
         print(f"NewtonOptim USER = {i}")
         opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau, kappa=k_switch)
         inv_power, inv_freq = opt.newton_method()
+
+        # Update results 
         opt_powers[i], opt_freqs[i] = 1/inv_power, 1/inv_freq
 
     print(f"opt_freqs = {opt_freqs}\nopt_powers = {opt_powers}")
@@ -368,6 +373,10 @@ def test_with_location():
     print(f"uav_gains = {uav_gains}")
     print(f"bs_gains = {bs_gains}")
 
+    bs_gains_n0 = bs_gains / N_0
+    uav_gains_n0 = uav_gains / N_0 
+    print(f"bs_gains_n0 = {bs_gains_n0}\nuav_gains_n0 = {uav_gains_n0}")
+
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
     freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
     num_rounds = 30
@@ -387,13 +396,10 @@ def test_with_location():
     # co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     # print(f"co_ene = {co_ene}")
 
-    # eta = 0.02
-    # freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
-    # print(f"freqs = {freqs}")
-    # print(f"powers = {powers}")
-    bs_gains_n0 = bs_gains / N_0
-    uav_gains_n0 = uav_gains / N_0 
-    print(f"bs_gains_n0 = {bs_gains_n0}\nuav_gains_n0 = {uav_gains_n0}")
+    eta = 0.02
+    freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
+    print(f"freqs = {freqs}")
+    print(f"powers = {powers}")
 
 def test_optimize_network(): 
     xs, ys, _ =  init_location()

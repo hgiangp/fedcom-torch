@@ -1,11 +1,13 @@
 import numpy as np 
 
 class NewtonOptim(object):
-    def __init__(self, a=1, b=1, c=2, tau=1, kappa=1):
-        self.a, self.b, self.c = a, b, c
-        self.kappa = kappa 
+    def __init__(self, a=1, b=1, c=2, tau=1, kappa=1, norm_factor=1):
+        self.a, self.b = a, b
+        self.c = c / norm_factor
+        self.kappa = kappa * (norm_factor**3)
         self.tau = tau 
         self.A = np.array([a, c]) 
+        print(f"a = {self.a}\tb = {self.b}\tc = {self.c}\tkappa = {self.kappa}\ttau = {self.tau}")
          
     def objective(self, x): 
         z, t = x[0], x[1]
@@ -107,9 +109,9 @@ class NewtonOptim(object):
         
         return x[0], x[1]
 
-def test(a, b, c, kappa, tau, nom_factor):
+def test(a, b, c, kappa, tau, norm_factor):
     ## Newton optimization 
-    opt = NewtonOptim(a, b, c, tau, kappa)
+    opt = NewtonOptim(a, b, c, tau, kappa, norm_factor)
     inv_ln_power, inv_freq = opt.newton_method()
 
     ## Results 
@@ -122,23 +124,31 @@ def test(a, b, c, kappa, tau, nom_factor):
 
     # Original problem solutions 
     power = 1/b * np.exp(1/inv_ln_power)
-    freq = nom_factor * 1/inv_freq 
+    # freq = norm_factor * 1/inv_freq 
+    freq = 1e9 * 1/inv_freq
     print("power = {:3f}\tfreq = {:.3e}".format(power, freq))
     return 
 
 if __name__=='__main__':  
     ## Normalized parameters 
-    print("Normalized parameters") 
-    nom_factor = 1e9 
-    a, b, c = 0.348, 40, 0.26
-    kappa = 0.1 
-    tau = 0.82
-    test(a, b, c, kappa, tau, nom_factor)
+    # a, b, c = 0.348, 40, 2.6 * 1e8 
+    # kappa = 1e-28 
+    # tau = 0.82
+    # print("Normalized parameters") 
+    # norm_factor = 1e9 
+    # test(a, b, c, kappa, tau, norm_factor)
 
     ## Non-normalized parameters
-    print("Non-normalized parameters") 
-    nom_factor = 1 
-    a, b, c = 0.348, 40, 2.6 * 1e8 
-    kappa = 1e-28 
-    tau = 0.82
-    test(a, b, c, kappa, tau, nom_factor)
+    a, b, c = 0.348, 40, 0.26 
+    kappa = 0.1
+    tau = 0.82 
+    norm_factor = 1
+    test(a, b, c, kappa, tau, norm_factor)
+
+    ## Normalized parameters 
+    # a, b, c = 0.348, 40, 2.6 * 1e8
+    # kappa = 1e-28 
+    # tau = 0.82
+    # print("Normalized parameters") 
+    # norm_factor = 1e9 
+    # test(a, b, c, kappa, tau, norm_factor)
