@@ -272,11 +272,12 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, t
 
     for i in range(num_users): 
         print(f"NewtonOptim USER = {i}")
-        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau, kappa=k_switch)
-        inv_power, inv_freq = opt.newton_method()
+        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau, kappa=k_switch, norm_factor=norm_factor)
+        inv_ln_power, inv_freq = opt.newton_method()
 
         # Update results 
-        opt_powers[i], opt_freqs[i] = 1/inv_power, 1/inv_freq
+        opt_freqs[i] = norm_factor * 1/inv_freq
+        opt_powers[i]  = 1/opt_bs[i] * np.exp(1/inv_ln_power)
 
     print(f"opt_freqs = {opt_freqs}\nopt_powers = {opt_powers}")
     return opt_freqs, opt_powers
@@ -398,8 +399,6 @@ def test_with_location():
 
     eta = 0.02
     freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
-    print(f"freqs = {freqs}")
-    print(f"powers = {powers}")
 
 def test_optimize_network(): 
     xs, ys, _ =  init_location()
