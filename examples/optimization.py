@@ -107,12 +107,12 @@ class NewtonOptim(object):
         
         return x[0], x[1]
 
-def test(): 
-    a, b, c = 0.348, 40, 0.26
-    kappa = 0.1 
-    tau = 0.82
+def test(a, b, c, kappa, tau, nom_factor):
+    ## Newton optimization 
     opt = NewtonOptim(a, b, c, tau, kappa)
     inv_ln_power, inv_freq = opt.newton_method()
+
+    ## Results 
     print(f"inv_power = {inv_ln_power}\tinv_freq = {inv_freq}")
     x_opt = np.array([inv_ln_power, inv_freq])
     print(f"x_opt = {x_opt} obj = {opt.objective(x_opt)} Ax - b = {opt.eq_constraints(x_opt)}")
@@ -120,10 +120,25 @@ def test():
     print(f"x_opt+tmp = {x_opt+tmp} obj = {opt.objective(x_opt+tmp)} Ax - b = {opt.eq_constraints(x_opt+tmp)}")
     print(f"x_opt-tmp = {x_opt-tmp} obj = {opt.objective(x_opt-tmp)} Ax - b = {opt.eq_constraints(x_opt-tmp)}")
 
+    # Original problem solutions 
     power = 1/b * np.exp(1/inv_ln_power)
-    freq = 1e9 * 1/inv_freq 
+    freq = nom_factor * 1/inv_freq 
     print("power = {:3f}\tfreq = {:.3e}".format(power, freq))
     return 
 
-if __name__=='__main__': 
-    test()
+if __name__=='__main__':  
+    ## Normalized parameters 
+    print("Normalized parameters") 
+    nom_factor = 1e9 
+    a, b, c = 0.348, 40, 0.26
+    kappa = 0.1 
+    tau = 0.82
+    test(a, b, c, kappa, tau, nom_factor)
+
+    ## Non-normalized parameters
+    print("Non-normalized parameters") 
+    nom_factor = 1 
+    a, b, c = 0.348, 40, 2.6 * 1e8 
+    kappa = 1e-28 
+    tau = 0.82
+    test(a, b, c, kappa, tau, nom_factor)
