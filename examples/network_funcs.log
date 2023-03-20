@@ -18,1010 +18,1070 @@ bs_gains_n0 = [14.9032972  18.42595674 12.32608668 13.84405057 20.21863965 14.37
  14.21546617 12.35418879 15.73949231 15.50125395]
 uav_gains_n0 = [60.38465474 58.25491905 61.19654706 57.09981513 52.89036198 56.43316557
  62.35978228 59.97576207 60.63865009 60.7519019 ]
-cp_ene = [0.00351   0.001188  0.0198    0.0005454 0.0021792 0.00084   0.0143775
- 0.0101088 0.0008532 0.0033   ]
-cp_time = [0.0351  0.055   0.02475 0.202   0.3405  0.0672  0.0426  0.0585  0.316
- 0.033  ]
+cp_ene = [0.001755   0.000594   0.0099     0.0002727  0.0010896  0.00042
+ 0.00718875 0.0050544  0.0004266  0.00165   ]
+cp_time = [0.01755  0.0275   0.012375 0.101    0.17025  0.0336   0.0213   0.02925
+ 0.158    0.0165  ]
 opt_as = [0.34823714 0.34823714 0.34823714 0.34823714 0.34823714 0.34823714
  0.34823714 0.34823714 0.34823714 0.34823714]
 opt_bs = [60.38465474 18.42595674 61.19654706 13.84405057 20.21863965 56.43316557
  62.35978228 12.35418879 60.63865009 15.50125395]
-opt_cs = [1.49876425e+08 1.40909460e+08 2.11364189e+08 2.58761007e+08
- 5.81571769e+08 1.43471450e+08 2.72851953e+08 2.99752850e+08
- 4.04794447e+08 1.40909460e+08]
+opt_cs = [7.49382126e+07 7.04547298e+07 1.05682095e+08 1.29380504e+08
+ 2.90785885e+08 7.17357248e+07 1.36425977e+08 1.49876425e+08
+ 2.02397224e+08 7.04547298e+07]
 opt_tau = 0.820149906087769
 NewtonOptim USER = 0
-a = 0.34823714351331647	b = 60.38465474121367	c = 0.1498764251299878	kappa = 0.09999999999999999	tau = 0.820149906087769
+a = 0.34823714351331647	b = 60.38465474121367	c = 0.0749382125649939	kappa = 0.09999999999999999	tau = 0.820149906087769
 hessian_dual x = [1 1]
 hess = [[0.01567628 0.         0.34823714]
+ [0.         0.04496293 0.07493821]
+ [0.34823714 0.07493821 0.        ]]
+eq_constraints = -0.3969745500094587
+r = [ 0.34247016  0.05995057 -0.39697455]
+backtracking_line_search x = [1 1]	dir_x = [1.05709605 0.38504308]
+eq_constraints = -0.3969745500094587
+r = [ 0.34247016  0.05995057 -0.39697455]
+eq_constraints = 0.0
+r = [-0.01175265 -0.00796586  0.        ]
+r_dual_new = 0.014197873410251511 r_dual = 0.5277013137798033
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [2.05709605 1.38504308] dir_x = [1.05709605 0.38504308]
+iter = 0 v = [-0.03102585] dir_v = [-1.03102585]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.01175265 -0.00796586  0.        ]
+equality_satisfied = True	norm_residual = 0.014197873410251511
+hessian_dual x = [2.05709605 1.38504308]
+hess = [[0.00107722 0.         0.34823714]
+ [0.         0.01221804 0.07493821]
+ [0.34823714 0.07493821 0.        ]]
+eq_constraints = 0.0
+r = [-0.01175265 -0.00796586  0.        ]
+backtracking_line_search x = [2.05709605 1.38504308]	dir_x = [-0.09536701  0.44316957]
+eq_constraints = 0.0
+r = [-0.01175265 -0.00796586  0.        ]
+eq_constraints = 0.0
+r = [-8.93723457e-06 -2.22657584e-03  0.00000000e+00]
+r_dual_new = 0.0022265937805981445 r_dual = 0.014197873410251511
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.96172904 1.82821264] dir_x = [-0.09536701  0.44316957]
+iter = 1 v = [0.00301814] dir_v = [0.03404398]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-8.93723457e-06 -2.22657584e-03  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.0022265937805981445
+hessian_dual x = [1.96172904 1.82821264]
+hess = [[0.00127179 0.         0.34823714]
+ [0.         0.00402483 0.07493821]
+ [0.34823714 0.07493821 0.        ]]
+eq_constraints = 0.0
+r = [-8.93723457e-06 -2.22657584e-03  0.00000000e+00]
+backtracking_line_search x = [1.96172904 1.82821264]	dir_x = [-0.11722867  0.5447605 ]
+eq_constraints = 0.0
+r = [-8.93723457e-06 -2.22657584e-03  0.00000000e+00]
+eq_constraints = 0.0
+r = [-1.72211446e-05 -8.61463457e-04  0.00000000e+00]
+r_dual_new = 0.0008616355703531857 r_dual = 0.0022265937805981445
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.84450037 2.37297315] dir_x = [-0.11722867  0.5447605 ]
+iter = 2 v = [0.00347193] dir_v = [0.00045379]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.72211446e-05 -8.61463457e-04  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.0008616355703531857
+hessian_dual x = [1.84450037 2.37297315]
+hess = [[0.0015804  0.         0.34823714]
+ [0.         0.00141802 0.07493821]
+ [0.34823714 0.07493821 0.        ]]
+eq_constraints = 0.0
+r = [-1.72211446e-05 -8.61463457e-04  0.00000000e+00]
+backtracking_line_search x = [1.84450037 2.37297315]	dir_x = [-0.12378116  0.57520985]
+eq_constraints = 0.0
+r = [-1.72211446e-05 -8.61463457e-04  0.00000000e+00]
+eq_constraints = 0.0
+r = [-2.59563547e-05 -2.78901657e-04  0.00000000e+00]
+r_dual_new = 0.0002801068845481673 r_dual = 0.0008616355703531857
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.72071921 2.948183  ] dir_x = [-0.12378116  0.57520985]
+iter = 3 v = [0.00408313] dir_v = [0.00061121]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-2.59563547e-05 -2.78901657e-04  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.0002801068845481673
+hessian_dual x = [1.72071921 2.948183  ]
+hess = [[0.002024   0.         0.34823714]
+ [0.         0.00059516 0.07493821]
+ [0.34823714 0.07493821 0.        ]]
+eq_constraints = 0.0
+r = [-2.59563547e-05 -2.78901657e-04  0.00000000e+00]
+backtracking_line_search x = [1.72071921 2.948183  ]	dir_x = [-0.08537731  0.39674754]
+eq_constraints = 0.0
+r = [-2.59563547e-05 -2.78901657e-04  0.00000000e+00]
+eq_constraints = 0.0
+r = [-1.66515327e-05 -5.17174501e-05  0.00000000e+00]
+r_dual_new = 5.4332018088850155e-05 r_dual = 0.0002801068845481673
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 4 x = [1.6353419  3.34493054] dir_x = [-0.08537731  0.39674754]
+iter = 4 v = [0.00465389] dir_v = [0.00057076]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.66515327e-05 -5.17174501e-05  0.00000000e+00]
+equality_satisfied = True	norm_residual = 5.4332018088850155e-05
+hessian_dual x = [1.6353419  3.34493054]
+hess = [[0.00243047 0.         0.34823714]
+ [0.         0.00035918 0.07493821]
+ [0.34823714 0.07493821 0.        ]]
+eq_constraints = 0.0
+r = [-1.66515327e-05 -5.17174501e-05  0.00000000e+00]
+backtracking_line_search x = [1.6353419  3.34493054]	dir_x = [-0.02195797  0.10203848]
+eq_constraints = 0.0
+r = [-1.66515327e-05 -5.17174501e-05  0.00000000e+00]
+eq_constraints = 1.1102230246251565e-16
+r = [-1.32221818e-06 -2.12733064e-06  1.11022302e-16]
+r_dual_new = 2.5047547884535807e-06 r_dual = 5.4332018088850155e-05
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 5 x = [1.61338392 3.44696902] dir_x = [-0.02195797  0.10203848]
+iter = 5 v = [0.00485496] dir_v = [0.00020107]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-1.32221818e-06 -2.12733064e-06  1.11022302e-16]
+equality_satisfied = True	norm_residual = 2.5047547884535807e-06
+iter = 5 converged!
+NewtonOptim USER = 1
+a = 0.34823714351331647	b = 18.42595674089475	c = 0.07045472976196007	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.05137354 0.         0.34823714]
+ [0.         0.04227284 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = -0.4014580328124925
+r = [ 0.32933787  0.05636378 -0.40145803]
+backtracking_line_search x = [1 1]	dir_x = [1.05138894 0.50139077]
+eq_constraints = -0.4014580328124925
+r = [ 0.32933787  0.05636378 -0.40145803]
+eq_constraints = 0.0
+r = [-0.03824226 -0.01126777  0.        ]
+r_dual_new = 0.03986769315271284 r_dual = 0.5223110785099359
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [2.05138894 1.50139077] dir_x = [1.05138894 0.50139077]
+iter = 0 v = [-0.10083446] dir_v = [-1.10083446]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.03824226 -0.01126777  0.        ]
+equality_satisfied = True	norm_residual = 0.03986769315271284
+hessian_dual x = [2.05138894 1.50139077]
+hess = [[0.00356458 0.         0.34823714]
+ [0.         0.00831929 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = 0.0
+r = [-0.03824226 -0.01126777  0.        ]
+backtracking_line_search x = [2.05138894 1.50139077]	dir_x = [-0.08438278  0.41707944]
+eq_constraints = 0.0
+r = [-0.03824226 -0.01126777  0.        ]
+eq_constraints = 0.0
+r = [-2.30296960e-05 -1.30190955e-03  0.00000000e+00]
+r_dual_new = 0.001302113220433677 r_dual = 0.03986769315271284
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.96700616 1.91847021] dir_x = [-0.08438278  0.41707944]
+iter = 1 v = [0.009846] dir_v = [0.11068046]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-2.30296960e-05 -1.30190955e-03  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.001302113220433677
+hessian_dual x = [1.96700616 1.91847021]
+hess = [[0.00412874 0.         0.34823714]
+ [0.         0.00312062 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = 0.0
+r = [-2.30296960e-05 -1.30190955e-03  0.00000000e+00]
+backtracking_line_search x = [1.96700616 1.91847021]	dir_x = [-0.07978344  0.39434625]
+eq_constraints = 0.0
+r = [-2.30296960e-05 -1.30190955e-03  0.00000000e+00]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.50039408e-05 -3.73980221e-04 -1.11022302e-16]
+r_dual_new = 0.0003748151581955378 r_dual = 0.001302113220433677
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.88722272 2.31281645] dir_x = [-0.07978344  0.39434625]
+iter = 2 v = [0.01085805] dir_v = [0.00101205]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-2.50039408e-05 -3.73980221e-04 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.0003748151581955378
+hessian_dual x = [1.88722272 2.31281645]
+hess = [[0.00477638 0.         0.34823714]
+ [0.         0.0014774  0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.50039408e-05 -3.73980221e-04 -1.11022302e-16]
+backtracking_line_search x = [1.88722272 2.31281645]	dir_x = [-0.04461671  0.22052738]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.50039408e-05 -3.73980221e-04 -1.11022302e-16]
+eq_constraints = 1.1102230246251565e-16
+r = [-9.23164048e-06 -5.35026231e-05  1.11022302e-16]
+r_dual_new = 5.4293221192480005e-05 r_dual = 0.0003748151581955378
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.842606   2.53334383] dir_x = [-0.04461671  0.22052738]
+iter = 3 v = [0.01154181] dir_v = [0.00068376]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-9.23164048e-06 -5.35026231e-05  1.11022302e-16]
+equality_satisfied = True	norm_residual = 5.4293221192480005e-05
+hessian_dual x = [1.842606   2.53334383]
+hess = [[0.00519809 0.         0.34823714]
+ [0.         0.00102632 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-9.23164048e-06 -5.35026231e-05  1.11022302e-16]
+backtracking_line_search x = [1.842606   2.53334383]	dir_x = [-0.00843089  0.04167141]
+eq_constraints = 1.1102230246251565e-16
+r = [-9.23164048e-06 -5.35026231e-05  1.11022302e-16]
+eq_constraints = 0.0
+r = [-3.57752847e-07 -1.36936645e-06  0.00000000e+00]
+r_dual_new = 1.4153273711392013e-06 r_dual = 5.4293221192480005e-05
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 4 x = [1.83417512 2.57501524] dir_x = [-0.00843089  0.04167141]
+iter = 4 v = [0.01169417] dir_v = [0.00015236]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-3.57752847e-07 -1.36936645e-06  0.00000000e+00]
+equality_satisfied = True	norm_residual = 1.4153273711392013e-06
+iter = 4 converged!
+NewtonOptim USER = 2
+a = 0.34823714351331647	b = 61.19654706281678	c = 0.10568209464294012	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.0154683  0.         0.34823714]
+ [0.         0.06340926 0.10568209]
+ [0.34823714 0.10568209 0.        ]]
+eq_constraints = -0.3662306679315125
+r = [ 0.34254667  0.08454568 -0.36623067]
+backtracking_line_search x = [1 1]	dir_x = [0.93770891 0.37551864]
+eq_constraints = -0.3662306679315125
+r = [ 0.34254667  0.08454568 -0.36623067]
+eq_constraints = 0.0
+r = [-0.009891   -0.01079636  0.        ]
+r_dual_new = 0.01464217333201643 r_dual = 0.5085381958449465
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [1.93770891 1.37551864] dir_x = [0.93770891 0.37551864]
+iter = 0 v = [-0.02531118] dir_v = [-1.02531118]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.009891   -0.01079636  0.        ]
+equality_satisfied = True	norm_residual = 0.01464217333201643
+hessian_dual x = [1.93770891 1.37551864]
+hess = [[0.00131042 0.         0.34823714]
+ [0.         0.01771278 0.10568209]
+ [0.34823714 0.10568209 0.        ]]
+eq_constraints = 0.0
+r = [-0.009891   -0.01079636  0.        ]
+backtracking_line_search x = [1.93770891 1.37551864]	dir_x = [-0.1326441   0.43708067]
+eq_constraints = 0.0
+r = [-0.009891   -0.01079636  0.        ]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.33879095e-05 -3.16965734e-03 -1.11022302e-16]
+r_dual_new = 0.003169743621671474 r_dual = 0.01464217333201643
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.80506481 1.81259931] dir_x = [-0.1326441   0.43708067]
+iter = 1 v = [0.00359101] dir_v = [0.0289022]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-2.33879095e-05 -3.16965734e-03 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.003169743621671474
+hessian_dual x = [1.80506481 1.81259931]
+hess = [[0.00168371 0.         0.34823714]
+ [0.         0.00587416 0.10568209]
+ [0.34823714 0.10568209 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.33879095e-05 -3.16965734e-03 -1.11022302e-16]
+backtracking_line_search x = [1.80506481 1.81259931]	dir_x = [-0.15918558  0.52453855]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.33879095e-05 -3.16965734e-03 -1.11022302e-16]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.86729854e-05 -1.18774530e-03  1.11022302e-16]
+r_dual_new = 0.0011887421724031636 r_dual = 0.003169743621671474
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.64587923 2.33713787] dir_x = [-0.15918558  0.52453855]
+iter = 2 v = [0.00442783] dir_v = [0.00083682]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-4.86729854e-05 -1.18774530e-03  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.0011887421724031636
+hessian_dual x = [1.64587923 2.33713787]
+hess = [[0.00234327 0.         0.34823714]
+ [0.         0.00212528 0.10568209]
+ [0.34823714 0.10568209 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.86729854e-05 -1.18774530e-03  1.11022302e-16]
+backtracking_line_search x = [1.64587923 2.33713787]	dir_x = [-0.15205374  0.50103814]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.86729854e-05 -1.18774530e-03  1.11022302e-16]
+eq_constraints = -1.1102230246251565e-16
+r = [-6.94833237e-05 -3.33670545e-04 -1.11022302e-16]
+r_dual_new = 0.0003408283512783043 r_dual = 0.0011887421724031636
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.49382549 2.838176  ] dir_x = [-0.15205374  0.50103814]
+iter = 3 v = [0.00559076] dir_v = [0.00116293]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-6.94833237e-05 -3.33670545e-04 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.0003408283512783043
+hessian_dual x = [1.49382549 2.838176  ]
+hess = [[0.00333407 0.         0.34823714]
+ [0.         0.00097723 0.10568209]
+ [0.34823714 0.10568209 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-6.94833237e-05 -3.33670545e-04 -1.11022302e-16]
+backtracking_line_search x = [1.49382549 2.838176  ]	dir_x = [-0.0738635   0.24339048]
+eq_constraints = -1.1102230246251565e-16
+r = [-6.94833237e-05 -3.33670545e-04 -1.11022302e-16]
+eq_constraints = 1.1102230246251565e-16
+r = [-2.42706600e-05 -3.56324325e-05  1.11022302e-16]
+r_dual_new = 4.311305121755988e-05 r_dual = 0.0003408283512783043
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 4 x = [1.41996198 3.08156648] dir_x = [-0.0738635   0.24339048]
+iter = 4 v = [0.00649747] dir_v = [0.00090671]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-2.42706600e-05 -3.56324325e-05  1.11022302e-16]
+equality_satisfied = True	norm_residual = 4.311305121755988e-05
+hessian_dual x = [1.41996198 3.08156648]
+hess = [[0.00401946 0.         0.34823714]
+ [0.         0.00070318 0.10568209]
+ [0.34823714 0.10568209 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-2.42706600e-05 -3.56324325e-05  1.11022302e-16]
+backtracking_line_search x = [1.41996198 3.08156648]	dir_x = [-0.007992    0.02633476]
+eq_constraints = 1.1102230246251565e-16
+r = [-2.42706600e-05 -3.56324325e-05  1.11022302e-16]
+eq_constraints = 0.0
+r = [-3.37967805e-07 -3.12056299e-07  0.00000000e+00]
+r_dual_new = 4.6000149026006584e-07 r_dual = 4.311305121755988e-05
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 5 x = [1.41196998 3.10790124] dir_x = [-0.007992    0.02633476]
+iter = 5 v = [0.00665941] dir_v = [0.00016194]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-3.37967805e-07 -3.12056299e-07  0.00000000e+00]
+equality_satisfied = True	norm_residual = 4.6000149026006584e-07
+iter = 5 converged!
+NewtonOptim USER = 3
+a = 0.34823714351331647	b = 13.844050569048349	c = 0.12938050374469032	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.06837643 0.         0.34823714]
+ [0.         0.0776283  0.1293805 ]
+ [0.34823714 0.1293805  0.        ]]
+eq_constraints = -0.34253225882976224
+r = [ 0.32308286  0.1035044  -0.34253226]
+backtracking_line_search x = [1 1]	dir_x = [0.8064515  0.47685617]
+eq_constraints = -0.34253225882976224
+r = [ 0.32308286  0.1035044  -0.34253226]
+eq_constraints = 0.0
+r = [-0.03560891 -0.01917455  0.        ]
+r_dual_new = 0.040443272274972526 r_dual = 0.48210377055148296
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [1.8064515  1.47685617] dir_x = [0.8064515  0.47685617]
+iter = 0 v = [-0.0861137] dir_v = [-1.0861137]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.03560891 -0.01917455  0.        ]
+equality_satisfied = True	norm_residual = 0.040443272274972526
+hessian_dual x = [1.8064515  1.47685617]
+hess = [[0.00742243 0.         0.34823714]
+ [0.         0.01631801 0.1293805 ]
+ [0.34823714 0.1293805  0.        ]]
+eq_constraints = 0.0
+r = [-0.03560891 -0.01917455  0.        ]
+backtracking_line_search x = [1.8064515  1.47685617]	dir_x = [-0.12735503  0.34278543]
+eq_constraints = 0.0
+r = [-0.03560891 -0.01917455  0.        ]
+eq_constraints = 1.1102230246251565e-16
+r = [-1.33013589e-04 -1.85524102e-03  1.11022302e-16]
+r_dual_new = 0.00186000318906791 r_dual = 0.040443272274972526
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.67909647 1.8196416 ] dir_x = [-0.12735503  0.34278543]
+iter = 1 v = [0.01885556] dir_v = [0.10496927]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-1.33013589e-04 -1.85524102e-03  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.00186000318906791
+hessian_dual x = [1.67909647 1.8196416 ]
+hess = [[0.00963902 0.         0.34823714]
+ [0.         0.00708071 0.1293805 ]
+ [0.34823714 0.1293805  0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-1.33013589e-04 -1.85524102e-03  1.11022302e-16]
+backtracking_line_search x = [1.67909647 1.8196416 ]	dir_x = [-0.07976449  0.214692  ]
+eq_constraints = 1.1102230246251565e-16
+r = [-1.33013589e-04 -1.85524102e-03  1.11022302e-16]
+eq_constraints = -1.1102230246251565e-16
+r = [-7.09849007e-05 -2.98881544e-04 -1.11022302e-16]
+r_dual_new = 0.0003071954317778403 r_dual = 0.00186000318906791
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.59933198 2.0343336 ] dir_x = [-0.07976449  0.214692  ]
+iter = 2 v = [0.02144536] dir_v = [0.0025898]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-7.09849007e-05 -2.98881544e-04 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.0003071954317778403
+hessian_dual x = [1.59933198 2.0343336 ]
+hess = [[0.01149062 0.         0.34823714]
+ [0.         0.00453243 0.1293805 ]
+ [0.34823714 0.1293805  0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-7.09849007e-05 -2.98881544e-04 -1.11022302e-16]
+backtracking_line_search x = [1.59933198 2.0343336 ]	dir_x = [-0.01654727  0.0445382 ]
+eq_constraints = -1.1102230246251565e-16
+r = [-7.09849007e-05 -2.98881544e-04 -1.11022302e-16]
+eq_constraints = 0.0
+r = [-3.62580767e-06 -8.52678075e-06  0.00000000e+00]
+r_dual_new = 9.26566086170878e-06 r_dual = 0.0003071954317778403
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.5827847  2.07887181] dir_x = [-0.01654727  0.0445382 ]
+iter = 3 v = [0.02219521] dir_v = [0.00074984]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-3.62580767e-06 -8.52678075e-06  0.00000000e+00]
+equality_satisfied = True	norm_residual = 9.26566086170878e-06
+iter = 3 converged!
+NewtonOptim USER = 4
+a = 0.34823714351331647	b = 20.218639653888598	c = 0.290785884653908	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.04681852 0.         0.34823714]
+ [0.         0.17447153 0.29078588]
+ [0.34823714 0.29078588 0.        ]]
+eq_constraints = -0.1811268779205446
+r = [ 0.33101357  0.23262871 -0.18112688]
+backtracking_line_search x = [1 1]	dir_x = [0.26165883 0.30953206]
+eq_constraints = -0.1811268779205446
+r = [ 0.33101357  0.23262871 -0.18112688]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.35930434e-03 -2.17446812e-02  1.11022302e-16]
+r_dual_new = 0.0221773464145112 r_dual = 0.44327536340394835
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [1.26165883 1.30953206] dir_x = [0.26165883 0.30953206]
+iter = 0 v = [0.01428076] dir_v = [-0.98571924]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-4.35930434e-03 -2.17446812e-02  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.0221773464145112
+hessian_dual x = [1.26165883 1.30953206]
+hess = [[0.01894621 0.         0.34823714]
+ [0.         0.05932804 0.29078588]
+ [0.34823714 0.29078588 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.35930434e-03 -2.17446812e-02  1.11022302e-16]
+backtracking_line_search x = [1.26165883 1.30953206]	dir_x = [-0.20840951  0.24958548]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.35930434e-03 -2.17446812e-02  1.11022302e-16]
+eq_constraints = -1.1102230246251565e-16
+r = [-1.69228587e-03 -4.25508775e-03 -1.11022302e-16]
+r_dual_new = 0.004579257932913403 r_dual = 0.0221773464145112
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.05324931 1.55911754] dir_x = [-0.20840951  0.24958548]
+iter = 1 v = [0.03813771] dir_v = [0.02385695]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-1.69228587e-03 -4.25508775e-03 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.004579257932913403
+hessian_dual x = [1.05324931 1.55911754]
+hess = [[0.03809495 0.         0.34823714]
+ [0.         0.02952631 0.29078588]
+ [0.34823714 0.29078588 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-1.69228587e-03 -4.25508775e-03 -1.11022302e-16]
+backtracking_line_search x = [1.05324931 1.55911754]	dir_x = [-0.0423104   0.05066976]
+eq_constraints = -1.1102230246251565e-16
+r = [-1.69228587e-03 -4.25508775e-03 -1.11022302e-16]
+eq_constraints = 0.0
+r = [-1.37354983e-04 -9.22213357e-05  0.00000000e+00]
+r_dual_new = 0.0001654423347672129 r_dual = 0.004579257932913403
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.01093892 1.60978731] dir_x = [-0.0423104   0.05066976]
+iter = 2 v = [0.04762578] dir_v = [0.00948807]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.37354983e-04 -9.22213357e-05  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.0001654423347672129
+hessian_dual x = [1.01093892 1.60978731]
+hess = [[0.0448274  0.         0.34823714]
+ [0.         0.02598068 0.29078588]
+ [0.34823714 0.29078588 0.        ]]
+eq_constraints = 0.0
+r = [-1.37354983e-04 -9.22213357e-05  0.00000000e+00]
+backtracking_line_search x = [1.01093892 1.60978731]	dir_x = [ 0.00032786 -0.00039263]
+eq_constraints = 0.0
+r = [-1.37354983e-04 -9.22213357e-05  0.00000000e+00]
+eq_constraints = 0.0
+r = [-9.50157790e-09 -4.97807555e-09  0.00000000e+00]
+r_dual_new = 1.0726659258678273e-08 r_dual = 0.0001654423347672129
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.01126677 1.60939467] dir_x = [ 0.00032786 -0.00039263]
+iter = 3 v = [0.047978] dir_v = [0.00035223]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-9.50157790e-09 -4.97807555e-09  0.00000000e+00]
+equality_satisfied = True	norm_residual = 1.0726659258678273e-08
+iter = 3 converged!
+NewtonOptim USER = 5
+a = 0.34823714351331647	b = 56.43316557395817	c = 0.07173572484854117	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.01677394 0.         0.34823714]
+ [0.         0.04304143 0.07173572]
+ [0.34823714 0.07173572 0.        ]]
+eq_constraints = -0.4001770377259114
+r = [ 0.34206635  0.05738858 -0.40017704]
+backtracking_line_search x = [1 1]	dir_x = [1.06889236 0.38961084]
+eq_constraints = -0.4001770377259114
+r = [ 0.34206635  0.05738858 -0.40017704]
+eq_constraints = 0.0
+r = [-0.01275998 -0.00776897  0.        ]
+r_dual_new = 0.01493901019330466 r_dual = 0.5295701102606469
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [2.06889236 1.38961084] dir_x = [1.06889236 0.38961084]
+iter = 0 v = [-0.0337665] dir_v = [-1.0337665]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.01275998 -0.00776897  0.        ]
+equality_satisfied = True	norm_residual = 0.01493901019330466
+hessian_dual x = [2.06889236 1.38961084]
+hess = [[0.00112991 0.         0.34823714]
+ [0.         0.01154287 0.07173572]
+ [0.34823714 0.07173572 0.        ]]
+eq_constraints = 0.0
+r = [-0.01275998 -0.00776897  0.        ]
+backtracking_line_search x = [2.06889236 1.38961084]	dir_x = [-0.09135816  0.44349317]
+eq_constraints = 0.0
+r = [-0.01275998 -0.00776897  0.        ]
+eq_constraints = 0.0
+r = [-8.5156692e-06 -2.1016708e-03  0.0000000e+00]
+r_dual_new = 0.0021016880491392578 r_dual = 0.01493901019330466
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.9775342  1.83310401] dir_x = [-0.09135816  0.44349317]
+iter = 1 v = [0.00317157] dir_v = [0.03693808]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-8.5156692e-06 -2.1016708e-03  0.0000000e+00]
+equality_satisfied = True	norm_residual = 0.0021016880491392578
+hessian_dual x = [1.9775342  1.83310401]
+hess = [[0.00132307 0.         0.34823714]
+ [0.         0.00381187 0.07173572]
+ [0.34823714 0.07173572 0.        ]]
+eq_constraints = 0.0
+r = [-8.5156692e-06 -2.1016708e-03  0.0000000e+00]
+backtracking_line_search x = [1.9775342  1.83310401]	dir_x = [-0.11183408  0.54289242]
+eq_constraints = 0.0
+r = [-8.5156692e-06 -2.1016708e-03  0.0000000e+00]
+eq_constraints = 0.0
+r = [-1.60669815e-05 -8.09867064e-04  0.00000000e+00]
+r_dual_new = 0.0008100264252027194 r_dual = 0.0021016880491392578
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.86570012 2.37599643] dir_x = [-0.11183408  0.54289242]
+iter = 2 v = [0.00362092] dir_v = [0.00044935]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.60669815e-05 -8.09867064e-04  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.0008100264252027194
+hessian_dual x = [1.86570012 2.37599643]
+hess = [[0.00162403 0.         0.34823714]
+ [0.         0.00135053 0.07173572]
+ [0.34823714 0.07173572 0.        ]]
+eq_constraints = 0.0
+r = [-1.60669815e-05 -8.09867064e-04  0.00000000e+00]
+backtracking_line_search x = [1.86570012 2.37599643]	dir_x = [-0.11705168  0.56822095]
+eq_constraints = 0.0
+r = [-1.60669815e-05 -8.09867064e-04  0.00000000e+00]
+eq_constraints = 0.0
+r = [-2.33597824e-05 -2.59936456e-04  0.00000000e+00]
+r_dual_new = 0.00026098398514587135 r_dual = 0.0008100264252027194
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.74864844 2.94421737] dir_x = [-0.11705168  0.56822095]
+iter = 3 v = [0.00421294] dir_v = [0.00059202]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-2.33597824e-05 -2.59936456e-04  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.00026098398514587135
+hessian_dual x = [1.74864844 2.94421737]
+hess = [[0.00204453 0.         0.34823714]
+ [0.         0.00057281 0.07173572]
+ [0.34823714 0.07173572 0.        ]]
+eq_constraints = 0.0
+r = [-2.33597824e-05 -2.59936456e-04  0.00000000e+00]
+backtracking_line_search x = [1.74864844 2.94421737]	dir_x = [-0.07968107  0.38680738]
+eq_constraints = 0.0
+r = [-2.33597824e-05 -2.59936456e-04  0.00000000e+00]
+eq_constraints = 0.0
+r = [-1.42787359e-05 -4.75895818e-05  0.00000000e+00]
+r_dual_new = 4.968551691819416e-05 r_dual = 0.00026098398514587135
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 4 x = [1.66896737 3.33102475] dir_x = [-0.07968107  0.38680738]
+iter = 4 v = [0.00474783] dir_v = [0.00053489]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.42787359e-05 -4.75895818e-05  0.00000000e+00]
+equality_satisfied = True	norm_residual = 4.968551691819416e-05
+hessian_dual x = [1.66896737 3.33102475]
+hess = [[0.00241665 0.         0.34823714]
+ [0.         0.0003496  0.07173572]
+ [0.34823714 0.07173572 0.        ]]
+eq_constraints = 0.0
+r = [-1.42787359e-05 -4.75895818e-05  0.00000000e+00]
+backtracking_line_search x = [1.66896737 3.33102475]	dir_x = [-0.02034131  0.09874578]
+eq_constraints = 0.0
+r = [-1.42787359e-05 -4.75895818e-05  0.00000000e+00]
+eq_constraints = 1.1102230246251565e-16
+r = [-1.09945352e-06 -1.94994202e-06  1.11022302e-16]
+r_dual_new = 2.23854236287415e-06 r_dual = 4.968551691819416e-05
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 5 x = [1.64862606 3.42977053] dir_x = [-0.02034131  0.09874578]
+iter = 5 v = [0.00493] dir_v = [0.00018217]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-1.09945352e-06 -1.94994202e-06  1.11022302e-16]
+equality_satisfied = True	norm_residual = 2.23854236287415e-06
+iter = 5 converged!
+NewtonOptim USER = 6
+a = 0.34823714351331647	b = 62.35978228010526	c = 0.13642597672088633	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.01517976 0.         0.34823714]
+ [0.         0.08185559 0.13642598]
+ [0.34823714 0.13642598 0.        ]]
+eq_constraints = -0.3354867858535663
+r = [ 0.34265282  0.10914078 -0.33548679]
+backtracking_line_search x = [1 1]	dir_x = [0.81993256 0.36617522]
+eq_constraints = -0.3354867858535663
+r = [ 0.34265282  0.10914078 -0.33548679]
+eq_constraints = 0.0
+r = [-0.008088   -0.01338889  0.        ]
+r_dual_new = 0.0156421849371915 r_dual = 0.4918069227855577
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 0 x = [1.81993256 1.36617522] dir_x = [0.81993256 0.36617522]
+iter = 0 v = [-0.01970513] dir_v = [-1.01970513]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.008088   -0.01338889  0.        ]
+equality_satisfied = True	norm_residual = 0.0156421849371915
+hessian_dual x = [1.81993256 1.36617522]
+hess = [[0.00160486 0.         0.34823714]
+ [0.         0.02349756 0.13642598]
+ [0.34823714 0.13642598 0.        ]]
+eq_constraints = 0.0
+r = [-0.008088   -0.01338889  0.        ]
+backtracking_line_search x = [1.81993256 1.36617522]	dir_x = [-0.16863004  0.43044033]
+eq_constraints = 0.0
+r = [-0.008088   -0.01338889  0.        ]
+eq_constraints = 0.0
+r = [-5.19741938e-05 -4.11872426e-03  0.00000000e+00]
+r_dual_new = 0.004119052183070463 r_dual = 0.0156421849371915
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 1 x = [1.65130253 1.79661555] dir_x = [-0.16863004  0.43044033]
+iter = 1 v = [0.00429755] dir_v = [0.02400268]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-5.19741938e-05 -4.11872426e-03  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.004119052183070463
+hessian_dual x = [1.65130253 1.79661555]
+hess = [[0.00227244 0.         0.34823714]
+ [0.         0.00785647 0.13642598]
+ [0.34823714 0.13642598 0.        ]]
+eq_constraints = 0.0
+r = [-5.19741938e-05 -4.11872426e-03  0.00000000e+00]
+backtracking_line_search x = [1.65130253 1.79661555]	dir_x = [-0.19567755  0.49948105]
+eq_constraints = 0.0
+r = [-5.19741938e-05 -4.11872426e-03  0.00000000e+00]
+eq_constraints = 0.0
+r = [-0.00011668 -0.00147315  0.        ]
+r_dual_new = 0.001477766241882633 r_dual = 0.004119052183070463
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 2 x = [1.45562498 2.29609661] dir_x = [-0.19567755  0.49948105]
+iter = 2 v = [0.0057237] dir_v = [0.00142615]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.00011668 -0.00147315  0.        ]
+equality_satisfied = True	norm_residual = 0.001477766241882633
+hessian_dual x = [1.45562498 2.29609661]
+hess = [[0.00359897 0.         0.34823714]
+ [0.         0.00294502 0.13642598]
+ [0.34823714 0.13642598 0.        ]]
+eq_constraints = 0.0
+r = [-0.00011668 -0.00147315  0.        ]
+backtracking_line_search x = [1.45562498 2.29609661]	dir_x = [-0.15989618  0.40814654]
+eq_constraints = 0.0
+r = [-0.00011668 -0.00147315  0.        ]
+eq_constraints = 0.0
+r = [-0.00014142 -0.0003277   0.        ]
+r_dual_new = 0.0003569150119560482 r_dual = 0.001477766241882633
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 3 x = [1.29572879 2.70424315] dir_x = [-0.15989618  0.40814654]
+iter = 3 v = [0.00771126] dir_v = [0.00198756]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-0.00014142 -0.0003277   0.        ]
+equality_satisfied = True	norm_residual = 0.0003569150119560482
+hessian_dual x = [1.29572879 2.70424315]
+hess = [[0.00555395 0.         0.34823714]
+ [0.         0.00153061 0.13642598]
+ [0.34823714 0.13642598 0.        ]]
+eq_constraints = 0.0
+r = [-0.00014142 -0.0003277   0.        ]
+backtracking_line_search x = [1.29572879 2.70424315]	dir_x = [-0.04476481  0.1142654 ]
+eq_constraints = 0.0
+r = [-0.00014142 -0.0003277   0.        ]
+eq_constraints = 0.0
+r = [-1.71789166e-05 -1.38015657e-05  0.00000000e+00]
+r_dual_new = 2.2036297107353267e-05 r_dual = 0.0003569150119560482
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 4 x = [1.25096399 2.81850855] dir_x = [-0.04476481  0.1142654 ]
+iter = 4 v = [0.00883131] dir_v = [0.00112006]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.71789166e-05 -1.38015657e-05  0.00000000e+00]
+equality_satisfied = True	norm_residual = 2.2036297107353267e-05
+hessian_dual x = [1.25096399 2.81850855]
+hess = [[0.0063446  0.         0.34823714]
+ [0.         0.00129709 0.13642598]
+ [0.34823714 0.13642598 0.        ]]
+eq_constraints = 0.0
+r = [-1.71789166e-05 -1.38015657e-05  0.00000000e+00]
+backtracking_line_search x = [1.25096399 2.81850855]	dir_x = [-0.00121997  0.00311405]
+eq_constraints = 0.0
+r = [-1.71789166e-05 -1.38015657e-05  0.00000000e+00]
+eq_constraints = 0.0
+r = [-1.43630178e-08 -8.90910573e-09  0.00000000e+00]
+r_dual_new = 1.690172909499262e-08 r_dual = 2.2036297107353267e-05
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 5 x = [1.24974402 2.8216226 ] dir_x = [-0.00121997  0.00311405]
+iter = 5 v = [0.00890287] dir_v = [7.15578728e-05]
+eq_constraints = 0.0
+eq_constraints = 0.0
+r = [-1.43630178e-08 -8.90910573e-09  0.00000000e+00]
+equality_satisfied = True	norm_residual = 1.690172909499262e-08
+iter = 5 converged!
+NewtonOptim USER = 7
+a = 0.34823714351331647	b = 12.354188787029695	c = 0.1498764251299878	kappa = 0.09999999999999999	tau = 0.820149906087769
+hessian_dual x = [1 1]
+hess = [[0.07662233 0.         0.34823714]
  [0.         0.08992586 0.14987643]
  [0.34823714 0.14987643 0.        ]]
 eq_constraints = -0.3220363374444648
-r = [ 0.34247016  0.11990114 -0.32203634]
-backtracking_line_search x = [1 1]	dir_x = [0.7683676  0.36338069]
+r = [ 0.32004936  0.11990114 -0.32203634]
+backtracking_line_search x = [1 1]	dir_x = [0.72494432 0.46427448]
 eq_constraints = -0.3220363374444648
-r = [ 0.34247016  0.11990114 -0.32203634]
+r = [ 0.32004936  0.11990114 -0.32203634]
 eq_constraints = 1.1102230246251565e-16
-r = [-7.63415962e-03 -1.45300505e-02  1.11022302e-16]
-r_dual_new = 0.016413493269901613 r_dual = 0.4851489445449109
+r = [-3.43943348e-02 -2.13226301e-02  1.11022302e-16]
+r_dual_new = 0.04046757742687448 r_dual = 0.46959054690738367
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 0 x = [1.7683676  1.36338069] dir_x = [0.7683676  0.36338069]
-iter = 0 v = [-0.01802842] dir_v = [-1.01802842]
+iter = 0 x = [1.72494432 1.46427448] dir_x = [0.72494432 0.46427448]
+iter = 0 v = [-0.07856469] dir_v = [-1.07856469]
 eq_constraints = 1.1102230246251565e-16
 eq_constraints = 1.1102230246251565e-16
-r = [-7.63415962e-03 -1.45300505e-02  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.016413493269901613
-hessian_dual x = [1.7683676  1.36338069]
-hess = [[0.00183578 0.         0.34823714]
- [0.         0.02602651 0.14987643]
+r = [-3.43943348e-02 -2.13226301e-02  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.04046757742687448
+hessian_dual x = [1.72494432 1.46427448]
+hess = [[0.00980638 0.         0.34823714]
+ [0.         0.01956116 0.14987643]
  [0.34823714 0.14987643 0.        ]]
 eq_constraints = 1.1102230246251565e-16
-r = [-7.63415962e-03 -1.45300505e-02  1.11022302e-16]
-backtracking_line_search x = [1.7683676  1.36338069]	dir_x = [-0.18354459  0.42646496]
+r = [-3.43943348e-02 -2.13226301e-02  1.11022302e-16]
+backtracking_line_search x = [1.72494432 1.46427448]	dir_x = [-0.13125998  0.30498191]
 eq_constraints = 1.1102230246251565e-16
-r = [-7.63415962e-03 -1.45300505e-02  1.11022302e-16]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.43537688e-05 -4.49915189e-03 -1.11022302e-16]
-r_dual_new = 0.004499766236106872 r_dual = 0.016413493269901613
+r = [-3.43943348e-02 -2.13226301e-02  1.11022302e-16]
+eq_constraints = 0.0
+r = [-0.00019905 -0.00183058  0.        ]
+r_dual_new = 0.0018413679094440266 r_dual = 0.04046757742687448
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 1 x = [1.58482301 1.78984565] dir_x = [-0.18354459  0.42646496]
-iter = 1 v = [0.00486147] dir_v = [0.02288988]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-7.43537688e-05 -4.49915189e-03 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.004499766236106872
-hessian_dual x = [1.58482301 1.78984565]
-hess = [[0.00272295 0.         0.34823714]
- [0.         0.00876238 0.14987643]
- [0.34823714 0.14987643 0.        ]]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.43537688e-05 -4.49915189e-03 -1.11022302e-16]
-backtracking_line_search x = [1.58482301 1.78984565]	dir_x = [-0.20747267  0.48206173]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.43537688e-05 -4.49915189e-03 -1.11022302e-16]
-eq_constraints = 0.0
-r = [-0.00016917 -0.00155242  0.        ]
-r_dual_new = 0.0015616082498640755 r_dual = 0.004499766236106872
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [1.37735034 2.27190739] dir_x = [-0.20747267  0.48206173]
-iter = 2 v = [0.00669726] dir_v = [0.00183579]
+iter = 1 x = [1.59368434 1.76925639] dir_x = [-0.13125998  0.30498191]
+iter = 1 v = [0.02389859] dir_v = [0.10246328]
 eq_constraints = 0.0
 eq_constraints = 0.0
-r = [-0.00016917 -0.00155242  0.        ]
-equality_satisfied = True	norm_residual = 0.0015616082498640755
-hessian_dual x = [1.37735034 2.27190739]
-hess = [[0.0045617  0.         0.34823714]
- [0.         0.00337538 0.14987643]
+r = [-0.00019905 -0.00183058  0.        ]
+equality_satisfied = True	norm_residual = 0.0018413679094440266
+hessian_dual x = [1.59368434 1.76925639]
+hess = [[0.01304258 0.         0.34823714]
+ [0.         0.00917744 0.14987643]
  [0.34823714 0.14987643 0.        ]]
 eq_constraints = 0.0
-r = [-0.00016917 -0.00155242  0.        ]
-backtracking_line_search x = [1.37735034 2.27190739]	dir_x = [-0.15088906  0.35058999]
+r = [-0.00019905 -0.00183058  0.        ]
+backtracking_line_search x = [1.59368434 1.76925639]	dir_x = [-0.0647773   0.15050975]
 eq_constraints = 0.0
-r = [-0.00016917 -0.00155242  0.        ]
+r = [-0.00019905 -0.00183058  0.        ]
 eq_constraints = 0.0
-r = [-0.00017073 -0.00028914  0.        ]
-r_dual_new = 0.0003357885871659993 r_dual = 0.0015616082498640755
+r = [-6.65961681e-05 -2.05488602e-04  0.00000000e+00]
+r_dual_new = 0.00021601068284700552 r_dual = 0.0018413679094440266
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 3 x = [1.22646129 2.62249737] dir_x = [-0.15088906  0.35058999]
-iter = 3 v = [0.00915959] dir_v = [0.00246233]
+iter = 2 x = [1.52890704 1.91976614] dir_x = [-0.0647773   0.15050975]
+iter = 2 v = [0.02689629] dir_v = [0.0029977]
 eq_constraints = 0.0
 eq_constraints = 0.0
-r = [-0.00017073 -0.00028914  0.        ]
-equality_satisfied = True	norm_residual = 0.0003357885871659993
-hessian_dual x = [1.22646129 2.62249737]
-hess = [[0.00706465 0.         0.34823714]
- [0.         0.00190118 0.14987643]
+r = [-6.65961681e-05 -2.05488602e-04  0.00000000e+00]
+equality_satisfied = True	norm_residual = 0.00021601068284700552
+hessian_dual x = [1.52890704 1.91976614]
+hess = [[0.01516957 0.         0.34823714]
+ [0.         0.00662051 0.14987643]
  [0.34823714 0.14987643 0.        ]]
 eq_constraints = 0.0
-r = [-0.00017073 -0.00028914  0.        ]
-backtracking_line_search x = [1.22646129 2.62249737]	dir_x = [-0.02891716  0.06718889]
+r = [-6.65961681e-05 -2.05488602e-04  0.00000000e+00]
+backtracking_line_search x = [1.52890704 1.91976614]	dir_x = [-0.00807004  0.01875069]
 eq_constraints = 0.0
-r = [-0.00017073 -0.00028914  0.        ]
+r = [-6.65961681e-05 -2.05488602e-04  0.00000000e+00]
 eq_constraints = 0.0
-r = [-9.56566281e-06 -6.27624812e-06  0.00000000e+00]
-r_dual_new = 1.1440856416763826e-05 r_dual = 0.0003357885871659993
+r = [-1.19068196e-06 -2.38607250e-06  0.00000000e+00]
+r_dual_new = 2.6666581166965486e-06 r_dual = 0.00021601068284700552
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 4 x = [1.19754412 2.68968626] dir_x = [-0.02891716  0.06718889]
-iter = 4 v = [0.01023651] dir_v = [0.00107692]
+iter = 3 x = [1.520837   1.93851683] dir_x = [-0.00807004  0.01875069]
+iter = 3 v = [0.02743907] dir_v = [0.00054278]
 eq_constraints = 0.0
 eq_constraints = 0.0
-r = [-9.56566281e-06 -6.27624812e-06  0.00000000e+00]
-equality_satisfied = True	norm_residual = 1.1440856416763826e-05
-hessian_dual x = [1.19754412 2.68968626]
-hess = [[0.00773977 0.         0.34823714]
- [0.         0.00171822 0.14987643]
- [0.34823714 0.14987643 0.        ]]
-eq_constraints = 0.0
-r = [-9.56566281e-06 -6.27624812e-06  0.00000000e+00]
-backtracking_line_search x = [1.19754412 2.68968626]	dir_x = [-0.00029485  0.00068509]
-eq_constraints = 0.0
-r = [-9.56566281e-06 -6.27624812e-06  0.00000000e+00]
-eq_constraints = 0.0
-r = [-1.07787936e-09 -5.99402898e-10  0.00000000e+00]
-r_dual_new = 1.2333319662694405e-09 r_dual = 1.1440856416763826e-05
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 5 x = [1.19724927 2.69037135] dir_x = [-0.00029485  0.00068509]
-iter = 5 v = [0.01027054] dir_v = [3.4022113e-05]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-1.07787936e-09 -5.99402898e-10  0.00000000e+00]
-equality_satisfied = True	norm_residual = 1.2333319662694405e-09
-iter = 5 converged!
-NewtonOptim USER = 1
-a = 0.34823714351331647	b = 18.42595674089475	c = 0.14090945952392014	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.05137354 0.         0.34823714]
- [0.         0.08454568 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = -0.33100330305053244
-r = [ 0.32933787  0.11272757 -0.3310033 ]
-backtracking_line_search x = [1 1]	dir_x = [0.77511646 0.43346246]
-eq_constraints = -0.33100330305053244
-r = [ 0.32933787  0.11272757 -0.3310033 ]
-eq_constraints = 0.0
-r = [-0.02532468 -0.01803326  0.        ]
-r_dual_new = 0.0310891984932015 r_dual = 0.4803479214391313
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [1.77511646 1.43346246] dir_x = [0.77511646 0.43346246]
-iter = 0 v = [-0.06007748] dir_v = [-1.06007748]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.02532468 -0.01803326  0.        ]
-equality_satisfied = True	norm_residual = 0.0310891984932015
-hessian_dual x = [1.77511646 1.43346246]
-hess = [[0.00593501 0.         0.34823714]
- [0.         0.02002378 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = 0.0
-r = [-0.02532468 -0.01803326  0.        ]
-backtracking_line_search x = [1.77511646 1.43346246]	dir_x = [-0.15005526  0.37083964]
-eq_constraints = 0.0
-r = [-0.02532468 -0.01803326  0.        ]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.54483279e-04 -2.65563488e-03  1.11022302e-16]
-r_dual_new = 0.002660124377914705 r_dual = 0.0310891984932015
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [1.6250612 1.8043021] dir_x = [-0.15005526  0.37083964]
-iter = 1 v = [0.01520244] dir_v = [0.07527992]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-1.54483279e-04 -2.65563488e-03  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.002660124377914705
-hessian_dual x = [1.6250612 1.8043021]
-hess = [[0.00814862 0.         0.34823714]
- [0.         0.00797727 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.54483279e-04 -2.65563488e-03  1.11022302e-16]
-backtracking_line_search x = [1.6250612 1.8043021]	dir_x = [-0.11268633  0.27848779]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.54483279e-04 -2.65563488e-03  1.11022302e-16]
-eq_constraints = -1.1102230246251565e-16
-r = [-1.29287099e-04 -5.42902156e-04 -1.11022302e-16]
-r_dual_new = 0.0005580841375457582 r_dual = 0.002660124377914705
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [1.51237488 2.0827899 ] dir_x = [-0.11268633  0.27848779]
-iter = 2 v = [0.01828287] dir_v = [0.00308043]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-1.29287099e-04 -5.42902156e-04 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.0005580841375457582
-hessian_dual x = [1.51237488 2.0827899 ]
-hess = [[0.01058345 0.         0.34823714]
- [0.         0.00449272 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = -1.1102230246251565e-16
-r = [-1.29287099e-04 -5.42902156e-04 -1.11022302e-16]
-backtracking_line_search x = [1.51237488 2.0827899 ]	dir_x = [-0.03188626  0.07880224]
-eq_constraints = -1.1102230246251565e-16
-r = [-1.29287099e-04 -5.42902156e-04 -1.11022302e-16]
-eq_constraints = 0.0
-r = [-1.34824395e-05 -2.51916197e-05  0.00000000e+00]
-r_dual_new = 2.857260715003056e-05 r_dual = 0.0005580841375457582
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [1.48048862 2.16159214] dir_x = [-0.03188626  0.07880224]
-iter = 3 v = [0.01962321] dir_v = [0.00134033]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-1.34824395e-05 -2.51916197e-05  0.00000000e+00]
-equality_satisfied = True	norm_residual = 2.857260715003056e-05
-hessian_dual x = [1.48048862 2.16159214]
-hess = [[0.01144393 0.         0.34823714]
- [0.         0.00387254 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = 0.0
-r = [-1.34824395e-05 -2.51916197e-05  0.00000000e+00]
-backtracking_line_search x = [1.48048862 2.16159214]	dir_x = [-0.00138976  0.0034346 ]
-eq_constraints = 0.0
-r = [-1.34824395e-05 -2.51916197e-05  0.00000000e+00]
-eq_constraints = 1.1102230246251565e-16
-r = [-2.74785847e-08 -4.21556960e-08  1.11022302e-16]
-r_dual_new = 5.032072459843828e-08 r_dual = 2.857260715003056e-05
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 4 x = [1.47909885 2.16502674] dir_x = [-0.00138976  0.0034346 ]
-iter = 4 v = [0.01970759] dir_v = [8.43873536e-05]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-2.74785847e-08 -4.21556960e-08  1.11022302e-16]
-equality_satisfied = True	norm_residual = 5.032072459843828e-08
-iter = 4 converged!
-NewtonOptim USER = 2
-a = 0.34823714351331647	b = 61.19654706281678	c = 0.21136418928588024	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.0154683  0.         0.34823714]
- [0.         0.12681851 0.21136419]
- [0.34823714 0.21136419 0.        ]]
-eq_constraints = -0.2605485732885724
-r = [ 0.34254667  0.16909135 -0.26054857]
-backtracking_line_search x = [1 1]	dir_x = [0.53822062 0.34594394]
-eq_constraints = -0.2605485732885724
-r = [ 0.34254667  0.16909135 -0.26054857]
-eq_constraints = 1.1102230246251565e-16
-r = [-4.51096581e-03 -1.89365195e-02  1.11022302e-16]
-r_dual_new = 0.019466396228770538 r_dual = 0.46240206248282584
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [1.53822062 1.34594394] dir_x = [0.53822062 0.34594394]
-iter = 0 v = [-0.00756636] dir_v = [-1.00756636]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-4.51096581e-03 -1.89365195e-02  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.019466396228770538
-hessian_dual x = [1.53822062 1.34594394]
-hess = [[0.00299521 0.         0.34823714]
- [0.         0.03864335 0.21136419]
- [0.34823714 0.21136419 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-4.51096581e-03 -1.89365195e-02  1.11022302e-16]
-backtracking_line_search x = [1.53822062 1.34594394]	dir_x = [-0.24736092  0.40754425]
-eq_constraints = 1.1102230246251565e-16
-r = [-4.51096581e-03 -1.89365195e-02  1.11022302e-16]
-eq_constraints = 1.1102230246251565e-16
-r = [-2.91278495e-04 -6.25227856e-03  1.11022302e-16]
-r_dual_new = 0.006259059862402776 r_dual = 0.019466396228770538
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [1.29085971 1.75348819] dir_x = [-0.24736092  0.40754425]
-iter = 1 v = [0.00751492] dir_v = [0.01508129]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-2.91278495e-04 -6.25227856e-03  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.006259059862402776
-hessian_dual x = [1.29085971 1.75348819]
-hess = [[0.00574049 0.         0.34823714]
- [0.         0.0134144  0.21136419]
- [0.34823714 0.21136419 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-2.91278495e-04 -6.25227856e-03  1.11022302e-16]
-backtracking_line_search x = [1.29085971 1.75348819]	dir_x = [-0.23745932  0.39123069]
-eq_constraints = 1.1102230246251565e-16
-r = [-2.91278495e-04 -6.25227856e-03  1.11022302e-16]
-eq_constraints = 0.0
-r = [-0.0006737  -0.00169246  0.        ]
-r_dual_new = 0.0018216147683862204 r_dual = 0.006259059862402776
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [1.05340038 2.14471887] dir_x = [-0.23745932  0.39123069]
-iter = 2 v = [0.01226574] dir_v = [0.00475082]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.0006737  -0.00169246  0.        ]
-equality_satisfied = True	norm_residual = 0.0018216147683862204
-hessian_dual x = [1.05340038 2.14471887]
-hess = [[0.01257901 0.         0.34823714]
- [0.         0.00599379 0.21136419]
- [0.34823714 0.21136419 0.        ]]
-eq_constraints = 0.0
-r = [-0.0006737  -0.00169246  0.        ]
-backtracking_line_search x = [1.05340038 2.14471887]	dir_x = [-0.07330347  0.12077254]
-eq_constraints = 0.0
-r = [-0.0006737  -0.00169246  0.        ]
-eq_constraints = 0.0
-r = [-1.43858013e-04 -7.44736596e-05  0.00000000e+00]
-r_dual_new = 0.0001619921410781822 r_dual = 0.0018216147683862204
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [0.98009692 2.26549141] dir_x = [-0.07330347  0.12077254]
-iter = 3 v = [0.01684822] dir_v = [0.00458247]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-1.43858013e-04 -7.44736596e-05  0.00000000e+00]
-equality_satisfied = True	norm_residual = 0.0001619921410781822
-hessian_dual x = [0.98009692 2.26549141]
-hess = [[0.01676698 0.         0.34823714]
- [0.         0.0048143  0.21136419]
- [0.34823714 0.21136419 0.        ]]
-eq_constraints = 0.0
-r = [-1.43858013e-04 -7.44736596e-05  0.00000000e+00]
-backtracking_line_search x = [0.98009692 2.26549141]	dir_x = [ 0.00070914 -0.00116836]
-eq_constraints = 0.0
-r = [-1.43858013e-04 -7.44736596e-05  0.00000000e+00]
-eq_constraints = 0.0
-r = [-1.72715089e-08 -5.80668950e-09  0.00000000e+00]
-r_dual_new = 1.8221489077588772e-08 r_dual = 0.0001619921410781822
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 4 x = [0.98080606 2.26432305] dir_x = [ 0.00070914 -0.00116836]
-iter = 4 v = [0.01722718] dir_v = [0.00037896]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-1.72715089e-08 -5.80668950e-09  0.00000000e+00]
-equality_satisfied = True	norm_residual = 1.8221489077588772e-08
-iter = 4 converged!
-NewtonOptim USER = 3
-a = 0.34823714351331647	b = 13.844050569048349	c = 0.25876100748938063	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.06837643 0.         0.34823714]
- [0.         0.1552566  0.25876101]
- [0.34823714 0.25876101 0.        ]]
-eq_constraints = -0.2131517550850719
-r = [ 0.32308286  0.20700881 -0.21315176]
-backtracking_line_search x = [1 1]	dir_x = [0.36508168 0.33241776]
-eq_constraints = -0.2131517550850719
-r = [ 0.32308286  0.20700881 -0.21315176]
-eq_constraints = 0.0
-r = [-0.01096747 -0.02173585  0.        ]
-r_dual_new = 0.024346099943670624 r_dual = 0.43894060219499564
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [1.36508168 1.33241776] dir_x = [0.36508168 0.33241776]
-iter = 0 v = [0.00054934] dir_v = [-0.99945066]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.01096747 -0.02173585  0.        ]
-equality_satisfied = True	norm_residual = 0.024346099943670624
-hessian_dual x = [1.36508168 1.33241776]
-hess = [[0.02057223 0.         0.34823714]
- [0.         0.04925932 0.25876101]
- [0.34823714 0.25876101 0.        ]]
-eq_constraints = 0.0
-r = [-0.01096747 -0.02173585  0.        ]
-backtracking_line_search x = [1.36508168 1.33241776]	dir_x = [-0.16654254  0.22413075]
-eq_constraints = 0.0
-r = [-0.01096747 -0.02173585  0.        ]
-eq_constraints = 0.0
-r = [-0.00097184 -0.00288527  0.        ]
-r_dual_new = 0.0030445455068067893 r_dual = 0.024346099943670624
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [1.19853913 1.55654852] dir_x = [-0.16654254  0.22413075]
-iter = 1 v = [0.04188216] dir_v = [0.04133282]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00097184 -0.00288527  0.        ]
-equality_satisfied = True	norm_residual = 0.0030445455068067893
-hessian_dual x = [1.19853913 1.55654852]
-hess = [[0.03365181 0.         0.34823714]
- [0.         0.0264484  0.25876101]
- [0.34823714 0.25876101 0.        ]]
-eq_constraints = 0.0
-r = [-0.00097184 -0.00288527  0.        ]
-backtracking_line_search x = [1.19853913 1.55654852]	dir_x = [-0.03569578  0.04803892]
-eq_constraints = 0.0
-r = [-0.00097184 -0.00288527  0.        ]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.21960432e-05 -7.45697813e-05 -1.11022302e-16]
-r_dual_new = 0.00010379268248935329 r_dual = 0.0030445455068067893
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [1.16284335 1.60458743] dir_x = [-0.03569578  0.04803892]
-iter = 2 v = [0.04812235] dir_v = [0.00624019]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-7.21960432e-05 -7.45697813e-05 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.00010379268248935329
-hessian_dual x = [1.16284335 1.60458743]
-hess = [[0.03780286 0.         0.34823714]
- [0.         0.02342052 0.25876101]
- [0.34823714 0.25876101 0.        ]]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.21960432e-05 -7.45697813e-05 -1.11022302e-16]
-backtracking_line_search x = [1.16284335 1.60458743]	dir_x = [-0.00035102  0.0004724 ]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.21960432e-05 -7.45697813e-05 -1.11022302e-16]
-eq_constraints = 1.1102230246251565e-16
-r = [-7.73462082e-09 -6.51123154e-09  1.11022302e-16]
-r_dual_new = 1.0110415198100106e-08 r_dual = 0.00010379268248935329
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [1.16249233 1.60505983] dir_x = [-0.00035102  0.0004724 ]
-iter = 3 v = [0.04836777] dir_v = [0.00024542]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-7.73462082e-09 -6.51123154e-09  1.11022302e-16]
-equality_satisfied = True	norm_residual = 1.0110415198100106e-08
-iter = 3 converged!
-NewtonOptim USER = 4
-a = 0.34823714351331647	b = 20.218639653888598	c = 0.581571769307816	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.04681852 0.         0.34823714]
- [0.         0.34894306 0.58157177]
- [0.34823714 0.58157177 0.        ]]
-eq_constraints = 0.10965900673336337
-r = [0.33101357 0.46525742 0.10965901]
-backtracking_line_search x = [1 1]	dir_x = [-0.53406092  0.13123203]
-eq_constraints = 0.10965900673336337
-r = [0.33101357 0.46525742 0.10965901]
-eq_constraints = 0.0
-r = [-0.14383362 -0.00982674  0.        ]
-r_dual_new = 0.1441689152466296 r_dual = 0.5814288835482821
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [0.46593908 1.13123203] dir_x = [-0.53406092  0.13123203]
-iter = 0 v = [0.12126078] dir_v = [-0.87873922]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.14383362 -0.00982674  0.        ]
-equality_satisfied = True	norm_residual = 0.1441689152466296
-hessian_dual x = [0.46593908 1.13123203]
-hess = [[1.45619656 0.         0.34823714]
- [0.         0.21308251 0.58157177]
- [0.34823714 0.58157177 0.        ]]
-eq_constraints = 0.0
-r = [-0.14383362 -0.00982674  0.        ]
-backtracking_line_search x = [0.46593908 1.13123203]	dir_x = [ 0.09001034 -0.05389695]
-eq_constraints = 0.0
-r = [-0.14383362 -0.00982674  0.        ]
-eq_constraints = 0.0
-r = [-0.04535347 -0.0011879   0.        ]
-r_dual_new = 0.04536902330146786 r_dual = 0.1441689152466296
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [0.55594942 1.07733508] dir_x = [ 0.09001034 -0.05389695]
-iter = 1 v = [0.15790499] dir_v = [0.0366442]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.04535347 -0.0011879   0.        ]
-equality_satisfied = True	norm_residual = 0.04536902330146786
-hessian_dual x = [0.55594942 1.07733508]
-hess = [[0.60561071 0.         0.34823714]
- [0.         0.25903078 0.58157177]
- [0.34823714 0.58157177 0.        ]]
-eq_constraints = 0.0
-r = [-0.04535347 -0.0011879   0.        ]
-backtracking_line_search x = [0.55594942 1.07733508]	dir_x = [ 0.06391287 -0.03827014]
-eq_constraints = 0.0
-r = [-0.04535347 -0.0011879   0.        ]
-eq_constraints = 1.1102230246251565e-16
-r = [-8.60312378e-03 -7.48323921e-04  1.11022302e-16]
-r_dual_new = 0.008635608108431022 r_dual = 0.04536902330146786
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [0.61986229 1.03906493] dir_x = [ 0.06391287 -0.03827014]
-iter = 2 v = [0.17699299] dir_v = [0.019088]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-8.60312378e-03 -7.48323921e-04  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.008635608108431022
-hessian_dual x = [0.61986229 1.03906493]
-hess = [[0.36296779 0.         0.34823714]
- [0.         0.29935314 0.58157177]
- [0.34823714 0.58157177 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-8.60312378e-03 -7.48323921e-04  1.11022302e-16]
-backtracking_line_search x = [0.61986229 1.03906493]	dir_x = [ 0.0173401  -0.01038301]
-eq_constraints = 1.1102230246251565e-16
-r = [-8.60312378e-03 -7.48323921e-04  1.11022302e-16]
-eq_constraints = 0.0
-r = [-3.84634223e-04 -6.31683284e-05  0.00000000e+00]
-r_dual_new = 0.0003897867658793354 r_dual = 0.008635608108431022
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [0.63720239 1.02868192] dir_x = [ 0.0173401  -0.01038301]
-iter = 3 v = [0.18362418] dir_v = [0.00663119]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-3.84634223e-04 -6.31683284e-05  0.00000000e+00]
-equality_satisfied = True	norm_residual = 0.0003897867658793354
-hessian_dual x = [0.63720239 1.02868192]
-hess = [[0.31978301 0.         0.34823714]
- [0.         0.31162346 0.58157177]
- [0.34823714 0.58157177 0.        ]]
-eq_constraints = 0.0
-r = [-3.84634223e-04 -6.31683284e-05  0.00000000e+00]
-backtracking_line_search x = [0.63720239 1.02868192]	dir_x = [ 0.0008037  -0.00048125]
-eq_constraints = 0.0
-r = [-3.84634223e-04 -6.31683284e-05  0.00000000e+00]
-eq_constraints = -1.1102230246251565e-16
-r = [-7.38784923e-07 -1.40428248e-07 -1.11022302e-16]
-r_dual_new = 7.520128027777131e-07 r_dual = 0.0003897867658793354
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 4 x = [0.6380061  1.02820067] dir_x = [ 0.0008037  -0.00048125]
-iter = 4 v = [0.18399066] dir_v = [0.00036648]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-7.38784923e-07 -1.40428248e-07 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 7.520128027777131e-07
-iter = 4 converged!
-NewtonOptim USER = 5
-a = 0.34823714351331647	b = 56.43316557395817	c = 0.14347144969708234	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.01677394 0.         0.34823714]
- [0.         0.08608287 0.14347145]
- [0.34823714 0.14347145 0.        ]]
-eq_constraints = -0.3284413128773702
-r = [ 0.34206635  0.11477716 -0.32844131]
-backtracking_line_search x = [1 1]	dir_x = [0.79180178 0.36736593]
-eq_constraints = -0.3284413128773702
-r = [ 0.34206635  0.11477716 -0.32844131]
-eq_constraints = 0.0
-r = [-0.00851683 -0.01415346  0.        ]
-r_dual_new = 0.01651837358398988 r_dual = 0.4879107330901078
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [1.79180178 1.36736593] dir_x = [0.79180178 0.36736593]
-iter = 0 v = [-0.02041956] dir_v = [-1.02041956]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00851683 -0.01415346  0.        ]
-equality_satisfied = True	norm_residual = 0.01651837358398988
-hessian_dual x = [1.79180178 1.36736593]
-hess = [[0.00187434 0.         0.34823714]
- [0.         0.02462508 0.14347145]
- [0.34823714 0.14347145 0.        ]]
-eq_constraints = 0.0
-r = [-0.00851683 -0.01415346  0.        ]
-backtracking_line_search x = [1.79180178 1.36736593]	dir_x = [-0.17581916  0.42675225]
-eq_constraints = 0.0
-r = [-0.00851683 -0.01415346  0.        ]
-eq_constraints = -1.1102230246251565e-16
-r = [-6.78774656e-05 -4.25367130e-03 -1.11022302e-16]
-r_dual_new = 0.004254212840998652 r_dual = 0.01651837358398988
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [1.61598262 1.79411818] dir_x = [-0.17581916  0.42675225]
-iter = 1 v = [0.00498374] dir_v = [0.0254033]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-6.78774656e-05 -4.25367130e-03 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.004254212840998652
-hessian_dual x = [1.61598262 1.79411818]
-hess = [[0.00271506 0.         0.34823714]
- [0.         0.00830831 0.14347145]
- [0.34823714 0.14347145 0.        ]]
-eq_constraints = -1.1102230246251565e-16
-r = [-6.78774656e-05 -4.25367130e-03 -1.11022302e-16]
-backtracking_line_search x = [1.61598262 1.79411818]	dir_x = [-0.19853257  0.48188274]
-eq_constraints = -1.1102230246251565e-16
-r = [-6.78774656e-05 -4.25367130e-03 -1.11022302e-16]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.48521873e-04 -1.46869728e-03  1.11022302e-16]
-r_dual_new = 0.0014761878107020989 r_dual = 0.004254212840998652
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [1.41745004 2.27600092] dir_x = [-0.19853257  0.48188274]
-iter = 2 v = [0.00672653] dir_v = [0.0017428]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-1.48521873e-04 -1.46869728e-03  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.0014761878107020989
-hessian_dual x = [1.41745004 2.27600092]
-hess = [[0.00438742 0.         0.34823714]
- [0.         0.00320795 0.14347145]
- [0.34823714 0.14347145 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.48521873e-04 -1.46869728e-03  1.11022302e-16]
-backtracking_line_search x = [1.41745004 2.27600092]	dir_x = [-0.14670726  0.35609117]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.48521873e-04 -1.46869728e-03  1.11022302e-16]
-eq_constraints = 0.0
-r = [-0.00014813 -0.00028215  0.        ]
-r_dual_new = 0.00031867026716737303 r_dual = 0.0014761878107020989
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [1.27074279 2.63209209] dir_x = [-0.14670726  0.35609117]
-iter = 3 v = [0.00900138] dir_v = [0.00227485]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00014813 -0.00028215  0.        ]
-equality_satisfied = True	norm_residual = 0.00031867026716737303
-hessian_dual x = [1.27074279 2.63209209]
-hess = [[0.0066059  0.         0.34823714]
- [0.         0.00179355 0.14347145]
- [0.34823714 0.14347145 0.        ]]
-eq_constraints = 0.0
-r = [-0.00014813 -0.00028215  0.        ]
-backtracking_line_search x = [1.27074279 2.63209209]	dir_x = [-0.0312546   0.07586186]
-eq_constraints = 0.0
-r = [-0.00014813 -0.00028215  0.        ]
-eq_constraints = 0.0
-r = [-1.00245284e-05 -7.48200985e-06  0.00000000e+00]
-r_dual_new = 1.2508862494224454e-05 r_dual = 0.00031867026716737303
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 4 x = [1.23948819 2.70795395] dir_x = [-0.0312546   0.07586186]
-iter = 4 v = [0.01001963] dir_v = [0.00101825]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-1.00245284e-05 -7.48200985e-06  0.00000000e+00]
-equality_satisfied = True	norm_residual = 1.2508862494224454e-05
-hessian_dual x = [1.23948819 2.70795395]
-hess = [[0.00726099 0.         0.34823714]
- [0.         0.00160085 0.14347145]
- [0.34823714 0.14347145 0.        ]]
-eq_constraints = 0.0
-r = [-1.00245284e-05 -7.48200985e-06  0.00000000e+00]
-backtracking_line_search x = [1.23948819 2.70795395]	dir_x = [-0.00048741  0.00118305]
-eq_constraints = 0.0
-r = [-1.00245284e-05 -7.48200985e-06  0.00000000e+00]
-eq_constraints = 0.0
-r = [-2.65067002e-09 -1.65360510e-09  0.00000000e+00]
-r_dual_new = 3.124173709663917e-09 r_dual = 1.2508862494224454e-05
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 5 x = [1.23900078 2.709137  ] dir_x = [-0.00048741  0.00118305]
-iter = 5 v = [0.01005858] dir_v = [3.89493304e-05]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-2.65067002e-09 -1.65360510e-09  0.00000000e+00]
-equality_satisfied = True	norm_residual = 3.124173709663917e-09
-iter = 5 converged!
-NewtonOptim USER = 6
-a = 0.34823714351331647	b = 62.35978228010526	c = 0.27285195344177265	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.01517976 0.         0.34823714]
- [0.         0.16371117 0.27285195]
- [0.34823714 0.27285195 0.        ]]
-eq_constraints = -0.19906080913267998
-r = [ 0.34265282  0.21828156 -0.19906081]
-backtracking_line_search x = [1 1]	dir_x = [0.31354284 0.32938575]
-eq_constraints = -0.19906080913267998
-r = [ 0.34265282  0.21828156 -0.19906081]
-eq_constraints = 0.0
-r = [-0.00190552 -0.02258132  0.        ]
-r_dual_new = 0.0226615749384688 r_dual = 0.45241905577523583
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [1.31354284 1.32938575] dir_x = [0.31354284 0.32938575]
-iter = 0 v = [0.00236855] dir_v = [-0.99763145]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00190552 -0.02258132  0.        ]
-equality_satisfied = True	norm_residual = 0.0226615749384688
-hessian_dual x = [1.31354284 1.32938575]
-hess = [[0.00527553 0.         0.34823714]
- [0.         0.05241725 0.27285195]
- [0.34823714 0.27285195 0.        ]]
-eq_constraints = 0.0
-r = [-0.00190552 -0.02258132  0.        ]
-backtracking_line_search x = [1.31354284 1.32938575]	dir_x = [-0.29688068  0.37890467]
-eq_constraints = 0.0
-r = [-0.00190552 -0.02258132  0.        ]
-eq_constraints = 0.0
-r = [-0.00104304 -0.00757997  0.        ]
-r_dual_new = 0.007651402185286308 r_dual = 0.0226615749384688
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [1.01666217 1.70829042] dir_x = [-0.29688068  0.37890467]
-iter = 1 v = [0.01233798] dir_v = [0.00996943]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00104304 -0.00757997  0.        ]
-equality_satisfied = True	norm_residual = 0.007651402185286308
-hessian_dual x = [1.01666217 1.70829042]
-hess = [[0.01421076 0.         0.34823714]
- [0.         0.01922346 0.27285195]
- [0.34823714 0.27285195 0.        ]]
-eq_constraints = 0.0
-r = [-0.00104304 -0.00757997  0.        ]
-backtracking_line_search x = [1.01666217 1.70829042]	dir_x = [-0.18959626  0.24197906]
-eq_constraints = 0.0
-r = [-0.00104304 -0.00757997  0.        ]
-eq_constraints = 0.0
-r = [-0.00146256 -0.00106179  0.        ]
-r_dual_new = 0.0018073449823671935 r_dual = 0.007651402185286308
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [0.82706591 1.95026948] dir_x = [-0.18959626  0.24197906]
-iter = 2 v = [0.02307017] dir_v = [0.0107322]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00146256 -0.00106179  0.        ]
-equality_satisfied = True	norm_residual = 0.0018073449823671935
-hessian_dual x = [0.82706591 1.95026948]
-hess = [[0.03307141 0.         0.34823714]
- [0.         0.01131618 0.27285195]
- [0.34823714 0.27285195 0.        ]]
-eq_constraints = 0.0
-r = [-0.00146256 -0.00106179  0.        ]
-backtracking_line_search x = [0.82706591 1.95026948]	dir_x = [ 0.00208556 -0.00266177]
-eq_constraints = 0.0
-r = [-0.00146256 -0.00106179  0.        ]
-eq_constraints = 0.0
-r = [-3.64344567e-07 -8.24069050e-08  0.00000000e+00]
-r_dual_new = 3.7354767009177864e-07 r_dual = 0.0018073449823671935
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [0.82915146 1.94760771] dir_x = [ 0.00208556 -0.00266177]
-iter = 3 v = [0.02707202] dir_v = [0.00400185]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-3.64344567e-07 -8.24069050e-08  0.00000000e+00]
-equality_satisfied = True	norm_residual = 3.7354767009177864e-07
-iter = 3 converged!
-NewtonOptim USER = 7
-a = 0.34823714351331647	b = 12.354188787029695	c = 0.2997528502599756	kappa = 0.09999999999999999	tau = 0.820149906087769
-hessian_dual x = [1 1]
-hess = [[0.07662233 0.         0.34823714]
- [0.         0.17985171 0.29975285]
- [0.34823714 0.29975285 0.        ]]
-eq_constraints = -0.17215991231447703
-r = [ 0.32004936  0.23980228 -0.17215991]
-backtracking_line_search x = [1 1]	dir_x = [0.245942   0.28861701]
-eq_constraints = -0.17215991231447703
-r = [ 0.32004936  0.23980228 -0.17215991]
-eq_constraints = 1.1102230246251565e-16
-r = [-6.42918595e-03 -1.99746999e-02  1.11022302e-16]
-r_dual_new = 0.020983876428185746 r_dual = 0.435402991162175
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 0 x = [1.245942   1.28861701] dir_x = [0.245942   0.28861701]
-iter = 0 v = [0.02682979] dir_v = [-0.97317021]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-6.42918595e-03 -1.99746999e-02  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.020983876428185746
-hessian_dual x = [1.245942   1.28861701]
-hess = [[0.0325188  0.         0.34823714]
- [0.         0.06522576 0.29975285]
- [0.34823714 0.29975285 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-6.42918595e-03 -1.99746999e-02  1.11022302e-16]
-backtracking_line_search x = [1.245942   1.28861701]	dir_x = [-0.13916385  0.16167326]
-eq_constraints = 1.1102230246251565e-16
-r = [-6.42918595e-03 -1.99746999e-02  1.11022302e-16]
-eq_constraints = -1.1102230246251565e-16
-r = [-1.17761936e-03 -2.18123874e-03 -1.11022302e-16]
-r_dual_new = 0.0024788283149581496 r_dual = 0.020983876428185746
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 1 x = [1.10677815 1.45029027] dir_x = [-0.13916385  0.16167326]
-iter = 1 v = [0.05828717] dir_v = [0.03145738]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-1.17761936e-03 -2.18123874e-03 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.0024788283149581496
-hessian_dual x = [1.10677815 1.45029027]
-hess = [[0.05131855 0.         0.34823714]
- [0.         0.04065321 0.29975285]
- [0.34823714 0.29975285 0.        ]]
-eq_constraints = -1.1102230246251565e-16
-r = [-1.17761936e-03 -2.18123874e-03 -1.11022302e-16]
-backtracking_line_search x = [1.10677815 1.45029027]	dir_x = [-0.01277403  0.0148402 ]
-eq_constraints = -1.1102230246251565e-16
-r = [-1.17761936e-03 -2.18123874e-03 -1.11022302e-16]
-eq_constraints = 0.0
-r = [-1.50643195e-05 -1.21392861e-05  0.00000000e+00]
-r_dual_new = 1.9346730691946738e-05 r_dual = 0.0024788283149581496
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 2 x = [1.09400412 1.46513048] dir_x = [-0.01277403  0.0148402 ]
-iter = 2 v = [0.0635513] dir_v = [0.00526413]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-1.50643195e-05 -1.21392861e-05  0.00000000e+00]
-equality_satisfied = True	norm_residual = 1.9346730691946738e-05
-hessian_dual x = [1.09400412 1.46513048]
-hess = [[0.05370083 0.         0.34823714]
- [0.         0.03903097 0.29975285]
- [0.34823714 0.29975285 0.        ]]
-eq_constraints = 0.0
-r = [-1.50643195e-05 -1.21392861e-05  0.00000000e+00]
-backtracking_line_search x = [1.09400412 1.46513048]	dir_x = [ 9.03872873e-06 -1.05007211e-05]
-eq_constraints = 0.0
-r = [-1.50643195e-05 -1.21392861e-05  0.00000000e+00]
-eq_constraints = 0.0
-r = [-7.84819085e-12 -5.87498106e-12  0.00000000e+00]
-r_dual_new = 9.803545378920608e-12 r_dual = 1.9346730691946738e-05
-backtracking_line_search terminate!
-backtracking_line_search step_size = 1
-iter = 3 x = [1.09401316 1.46511998] dir_x = [ 9.03872873e-06 -1.05007211e-05]
-iter = 3 v = [0.06359316] dir_v = [4.18649546e-05]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-7.84819085e-12 -5.87498106e-12  0.00000000e+00]
-equality_satisfied = True	norm_residual = 9.803545378920608e-12
+r = [-1.19068196e-06 -2.38607250e-06  0.00000000e+00]
+equality_satisfied = True	norm_residual = 2.6666581166965486e-06
 iter = 3 converged!
 NewtonOptim USER = 8
-a = 0.34823714351331647	b = 60.638650087600205	c = 0.40479444735962516	kappa = 0.09999999999999999	tau = 0.820149906087769
+a = 0.34823714351331647	b = 60.638650087600205	c = 0.20239722367981258	kappa = 0.09999999999999999	tau = 0.820149906087769
 hessian_dual x = [1 1]
 hess = [[0.01561062 0.         0.34823714]
- [0.         0.24287667 0.40479445]
- [0.34823714 0.40479445 0.        ]]
-eq_constraints = -0.06711831521482736
-r = [ 0.34249432  0.32383556 -0.06711832]
-backtracking_line_search x = [1 1]	dir_x = [-0.14977607  0.29465796]
-eq_constraints = -0.06711831521482736
-r = [ 0.34249432  0.32383556 -0.06711832]
-eq_constraints = 0.0
-r = [-0.00094161 -0.02791443  0.        ]
-r_dual_new = 0.027930310147226564 r_dual = 0.476105760457862
+ [0.         0.12143833 0.20239722]
+ [0.34823714 0.20239722 0.        ]]
+eq_constraints = -0.26951553889463997
+r = [ 0.34249432  0.16191778 -0.26951554]
+backtracking_line_search x = [1 1]	dir_x = [0.5713712  0.34853673]
+eq_constraints = -0.26951553889463997
+r = [ 0.34249432  0.16191778 -0.26951554]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.97357146e-03 -1.83524408e-02  1.11022302e-16]
+r_dual_new = 0.01901442864750035 r_dual = 0.4649283290951648
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 0 x = [0.85022393 1.29465796] dir_x = [-0.14977607  0.29465796]
-iter = 0 v = [0.02320523] dir_v = [-0.97679477]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00094161 -0.02791443  0.        ]
-equality_satisfied = True	norm_residual = 0.027930310147226564
-hessian_dual x = [0.85022393 1.29465796]
-hess = [[0.03029184 0.         0.34823714]
- [0.         0.08645012 0.40479445]
- [0.34823714 0.40479445 0.        ]]
-eq_constraints = 0.0
-r = [-0.00094161 -0.02791443  0.        ]
-backtracking_line_search x = [0.85022393 1.29465796]	dir_x = [-0.24474509  0.21054966]
-eq_constraints = 0.0
-r = [-0.00094161 -0.02791443  0.        ]
-eq_constraints = 0.0
-r = [-0.00882164 -0.00463397  0.        ]
-r_dual_new = 0.009964686987300865 r_dual = 0.027930310147226564
+iter = 0 x = [1.5713712  1.34853673] dir_x = [0.5713712  0.34853673]
+iter = 0 v = [-0.00912204] dir_v = [-1.00912204]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-4.97357146e-03 -1.83524408e-02  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.01901442864750035
+hessian_dual x = [1.5713712  1.34853673]
+hess = [[0.00279685 0.         0.34823714]
+ [0.         0.03672017 0.20239722]
+ [0.34823714 0.20239722 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.97357146e-03 -1.83524408e-02  1.11022302e-16]
+backtracking_line_search x = [1.5713712  1.34853673]	dir_x = [-0.2385896  0.4105084]
+eq_constraints = 1.1102230246251565e-16
+r = [-4.97357146e-03 -1.83524408e-02  1.11022302e-16]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.42028730e-04 -6.00487189e-03 -1.11022302e-16]
+r_dual_new = 0.006009747440433437 r_dual = 0.01901442864750035
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 1 x = [0.60547884 1.50520762] dir_x = [-0.24474509  0.21054966]
-iter = 1 v = [0.04719861] dir_v = [0.02399339]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00882164 -0.00463397  0.        ]
-equality_satisfied = True	norm_residual = 0.009964686987300865
-hessian_dual x = [0.60547884 1.50520762]
-hess = [[0.13492831 0.         0.34823714]
- [0.         0.04731514 0.40479445]
- [0.34823714 0.40479445 0.        ]]
-eq_constraints = 0.0
-r = [-0.00882164 -0.00463397  0.        ]
-backtracking_line_search x = [0.60547884 1.50520762]	dir_x = [ 0.02845101 -0.02447588]
-eq_constraints = 0.0
-r = [-0.00882164 -0.00463397  0.        ]
-eq_constraints = 0.0
-r = [-3.83205493e-04 -3.87087852e-05  0.00000000e+00]
-r_dual_new = 0.0003851555788493159 r_dual = 0.009964686987300865
+iter = 1 x = [1.3327816  1.75904512] dir_x = [-0.2385896  0.4105084]
+iter = 1 v = [0.00707632] dir_v = [0.01619836]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-2.42028730e-04 -6.00487189e-03 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.006009747440433437
+hessian_dual x = [1.3327816  1.75904512]
+hess = [[0.00513694 0.         0.34823714]
+ [0.         0.01268376 0.20239722]
+ [0.34823714 0.20239722 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.42028730e-04 -6.00487189e-03 -1.11022302e-16]
+backtracking_line_search x = [1.3327816  1.75904512]	dir_x = [-0.23637581  0.40669944]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.42028730e-04 -6.00487189e-03 -1.11022302e-16]
+eq_constraints = 1.1102230246251565e-16
+r = [-5.65224768e-04 -1.70623470e-03  1.11022302e-16]
+r_dual_new = 0.0017974192308710464 r_dual = 0.006009747440433437
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 2 x = [0.63392985 1.48073174] dir_x = [ 0.02845101 -0.02447588]
-iter = 2 v = [0.06150723] dir_v = [0.01430862]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-3.83205493e-04 -3.87087852e-05  0.00000000e+00]
-equality_satisfied = True	norm_residual = 0.0003851555788493159
-hessian_dual x = [0.63392985 1.48073174]
-hess = [[0.10916535 0.         0.34823714]
- [0.         0.05052197 0.40479445]
- [0.34823714 0.40479445 0.        ]]
-eq_constraints = 0.0
-r = [-3.83205493e-04 -3.87087852e-05  0.00000000e+00]
-backtracking_line_search x = [0.63392985 1.48073174]	dir_x = [ 0.00238752 -0.00205394]
-eq_constraints = 0.0
-r = [-3.83205493e-04 -3.87087852e-05  0.00000000e+00]
-eq_constraints = 0.0
-r = [-2.23004427e-06 -2.88545258e-07  0.00000000e+00]
-r_dual_new = 2.2486342054582633e-06 r_dual = 0.0003851555788493159
+iter = 2 x = [1.09640579 2.16574456] dir_x = [-0.23637581  0.40669944]
+iter = 2 v = [0.01125817] dir_v = [0.00418185]
+eq_constraints = 1.1102230246251565e-16
+eq_constraints = 1.1102230246251565e-16
+r = [-5.65224768e-04 -1.70623470e-03  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.0017974192308710464
+hessian_dual x = [1.09640579 2.16574456]
+hess = [[0.01084723 0.         0.34823714]
+ [0.         0.00551984 0.20239722]
+ [0.34823714 0.20239722 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-5.65224768e-04 -1.70623470e-03  1.11022302e-16]
+backtracking_line_search x = [1.09640579 2.16574456]	dir_x = [-0.08718824  0.15001284]
+eq_constraints = 1.1102230246251565e-16
+r = [-5.65224768e-04 -1.70623470e-03  1.11022302e-16]
+eq_constraints = -1.1102230246251565e-16
+r = [-1.70052990e-04 -1.02722480e-04 -1.11022302e-16]
+r_dual_new = 0.00019867039897354357 r_dual = 0.0017974192308710464
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 3 x = [0.63631737 1.4786778 ] dir_x = [ 0.00238752 -0.00205394]
-iter = 3 v = [0.06185921] dir_v = [0.00035198]
+iter = 3 x = [1.00921755 2.3157574 ] dir_x = [-0.08718824  0.15001284]
+iter = 3 v = [0.0155971] dir_v = [0.00433893]
+eq_constraints = -1.1102230246251565e-16
+eq_constraints = -1.1102230246251565e-16
+r = [-1.70052990e-04 -1.02722480e-04 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.00019867039897354357
+hessian_dual x = [1.00921755 2.3157574 ]
+hess = [[0.0150487  0.         0.34823714]
+ [0.         0.00422264 0.20239722]
+ [0.34823714 0.20239722 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-1.70052990e-04 -1.02722480e-04 -1.11022302e-16]
+backtracking_line_search x = [1.00921755 2.3157574 ]	dir_x = [-0.00024275  0.00041766]
+eq_constraints = -1.1102230246251565e-16
+r = [-1.70052990e-04 -1.02722480e-04 -1.11022302e-16]
+eq_constraints = 0.0
+r = [-1.75406259e-09 -6.35978078e-10  0.00000000e+00]
+r_dual_new = 1.865798403876938e-09 r_dual = 0.00019867039897354357
+backtracking_line_search terminate!
+backtracking_line_search step_size = 1
+iter = 4 x = [1.0089748  2.31617507] dir_x = [-0.00024275  0.00041766]
+iter = 4 v = [0.01609592] dir_v = [0.00049882]
 eq_constraints = 0.0
 eq_constraints = 0.0
-r = [-2.23004427e-06 -2.88545258e-07  0.00000000e+00]
-equality_satisfied = True	norm_residual = 2.2486342054582633e-06
-iter = 3 converged!
+r = [-1.75406259e-09 -6.35978078e-10  0.00000000e+00]
+equality_satisfied = True	norm_residual = 1.865798403876938e-09
+iter = 4 converged!
 NewtonOptim USER = 9
-a = 0.34823714351331647	b = 15.501253948543775	c = 0.14090945952392014	kappa = 0.09999999999999999	tau = 0.820149906087769
+a = 0.34823714351331647	b = 15.501253948543775	c = 0.07045472976196007	kappa = 0.09999999999999999	tau = 0.820149906087769
 hessian_dual x = [1 1]
 hess = [[0.06106646 0.         0.34823714]
- [0.         0.08454568 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = -0.33100330305053244
-r = [ 0.32577205  0.11272757 -0.3310033 ]
-backtracking_line_search x = [1 1]	dir_x = [0.76828054 0.45035645]
-eq_constraints = -0.33100330305053244
-r = [ 0.32577205  0.11272757 -0.3310033 ]
+ [0.         0.04227284 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = -0.4014580328124925
+r = [ 0.32577205  0.05636378 -0.40145803]
+backtracking_line_search x = [1 1]	dir_x = [1.04533193 0.5313288 ]
+eq_constraints = -0.4014580328124925
+r = [ 0.32577205  0.05636378 -0.40145803]
 eq_constraints = -1.1102230246251565e-16
-r = [-2.97339384e-02 -1.91311164e-02 -1.11022302e-16]
-r_dual_new = 0.0353568480511223 r_dual = 0.47791015754505134
+r = [-4.51135431e-02 -1.22938826e-02 -1.11022302e-16]
+r_dual_new = 0.04675864964115827 r_dual = 0.5200700489242331
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 0 x = [1.76828054 1.45035645] dir_x = [0.76828054 0.45035645]
-iter = 0 v = [-0.07021387] dir_v = [-1.07021387]
+iter = 0 x = [2.04533193 1.5313288 ] dir_x = [1.04533193 0.5313288 ]
+iter = 0 v = [-0.11879728] dir_v = [-1.11879728]
 eq_constraints = -1.1102230246251565e-16
 eq_constraints = -1.1102230246251565e-16
-r = [-2.97339384e-02 -1.91311164e-02 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.0353568480511223
-hessian_dual x = [1.76828054 1.45035645]
-hess = [[0.00715249 0.         0.34823714]
- [0.         0.019107   0.14090946]
- [0.34823714 0.14090946 0.        ]]
+r = [-4.51135431e-02 -1.22938826e-02 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.04675864964115827
+hessian_dual x = [2.04533193 1.5313288 ]
+hess = [[0.00428106 0.         0.34823714]
+ [0.         0.00768754 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
 eq_constraints = -1.1102230246251565e-16
-r = [-2.97339384e-02 -1.91311164e-02 -1.11022302e-16]
-backtracking_line_search x = [1.76828054 1.45035645]	dir_x = [-0.14166971  0.350116  ]
+r = [-4.51135431e-02 -1.22938826e-02 -1.11022302e-16]
+backtracking_line_search x = [2.04533193 1.5313288 ]	dir_x = [-0.08147995  0.40273159]
 eq_constraints = -1.1102230246251565e-16
-r = [-2.97339384e-02 -1.91311164e-02 -1.11022302e-16]
-eq_constraints = 0.0
-r = [-0.00016541 -0.00228083  0.        ]
-r_dual_new = 0.0022868194928568034 r_dual = 0.0353568480511223
+r = [-4.51135431e-02 -1.22938826e-02 -1.11022302e-16]
+eq_constraints = 1.1102230246251565e-16
+r = [-2.58214765e-05 -1.11970018e-03  1.11022302e-16]
+r_dual_new = 0.001119997870979014 r_dual = 0.04675864964115827
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 1 x = [1.62661082 1.80047245] dir_x = [-0.14166971  0.350116  ]
-iter = 1 v = [0.01808007] dir_v = [0.08829394]
-eq_constraints = 0.0
-eq_constraints = 0.0
-r = [-0.00016541 -0.00228083  0.        ]
-equality_satisfied = True	norm_residual = 0.0022868194928568034
-hessian_dual x = [1.62661082 1.80047245]
-hess = [[0.00965274 0.         0.34823714]
- [0.         0.00804536 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = 0.0
-r = [-0.00016541 -0.00228083  0.        ]
-backtracking_line_search x = [1.62661082 1.80047245]	dir_x = [-0.09306489  0.22999629]
-eq_constraints = 0.0
-r = [-0.00016541 -0.00228083  0.        ]
+iter = 1 x = [1.96385198 1.93406039] dir_x = [-0.08147995  0.40273159]
+iter = 1 v = [0.01175273] dir_v = [0.13055001]
 eq_constraints = 1.1102230246251565e-16
-r = [-1.02155482e-04 -3.88440143e-04  1.11022302e-16]
-r_dual_new = 0.0004016484617838121 r_dual = 0.0022868194928568034
+eq_constraints = 1.1102230246251565e-16
+r = [-2.58214765e-05 -1.11970018e-03  1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.001119997870979014
+hessian_dual x = [1.96385198 1.93406039]
+hess = [[0.00493544 0.         0.34823714]
+ [0.         0.00302121 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = 1.1102230246251565e-16
+r = [-2.58214765e-05 -1.11970018e-03  1.11022302e-16]
+backtracking_line_search x = [1.96385198 1.93406039]	dir_x = [-0.06995424  0.34576335]
+eq_constraints = 1.1102230246251565e-16
+r = [-2.58214765e-05 -1.11970018e-03  1.11022302e-16]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.28358260e-05 -2.86037896e-04 -1.11022302e-16]
+r_dual_new = 0.000286947996805621 r_dual = 0.001119997870979014
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 2 x = [1.53354593 2.03046874] dir_x = [-0.09306489  0.22999629]
-iter = 2 v = [0.02113471] dir_v = [0.00305463]
-eq_constraints = 1.1102230246251565e-16
-eq_constraints = 1.1102230246251565e-16
-r = [-1.02155482e-04 -3.88440143e-04  1.11022302e-16]
-equality_satisfied = True	norm_residual = 0.0004016484617838121
-hessian_dual x = [1.53354593 2.03046874]
-hess = [[0.01195678 0.         0.34823714]
- [0.         0.004974   0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.02155482e-04 -3.88440143e-04  1.11022302e-16]
-backtracking_line_search x = [1.53354593 2.03046874]	dir_x = [-0.02026215  0.05007495]
-eq_constraints = 1.1102230246251565e-16
-r = [-1.02155482e-04 -3.88440143e-04  1.11022302e-16]
+iter = 2 x = [1.89389774 2.27982374] dir_x = [-0.06995424  0.34576335]
+iter = 2 v = [0.01281832] dir_v = [0.00106559]
 eq_constraints = -1.1102230246251565e-16
-r = [-5.97206478e-06 -1.17982595e-05 -1.11022302e-16]
-r_dual_new = 1.3223633618067184e-05 r_dual = 0.0004016484617838121
+eq_constraints = -1.1102230246251565e-16
+r = [-2.28358260e-05 -2.86037896e-04 -1.11022302e-16]
+equality_satisfied = True	norm_residual = 0.000286947996805621
+hessian_dual x = [1.89389774 2.27982374]
+hess = [[0.00560727 0.         0.34823714]
+ [0.         0.00156479 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.28358260e-05 -2.86037896e-04 -1.11022302e-16]
+backtracking_line_search x = [1.89389774 2.27982374]	dir_x = [-0.03173137  0.15683889]
+eq_constraints = -1.1102230246251565e-16
+r = [-2.28358260e-05 -2.86037896e-04 -1.11022302e-16]
+eq_constraints = 0.0
+r = [-5.39943053e-06 -3.02596580e-05  0.00000000e+00]
+r_dual_new = 3.073761139307646e-05 r_dual = 0.000286947996805621
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 3 x = [1.51328378 2.08054368] dir_x = [-0.02026215  0.05007495]
-iter = 3 v = [0.02212376] dir_v = [0.00098905]
-eq_constraints = -1.1102230246251565e-16
-eq_constraints = -1.1102230246251565e-16
-r = [-5.97206478e-06 -1.17982595e-05 -1.11022302e-16]
-equality_satisfied = True	norm_residual = 1.3223633618067184e-05
-hessian_dual x = [1.51328378 2.08054368]
-hess = [[0.01255265 0.         0.34823714]
- [0.         0.00451216 0.14090946]
- [0.34823714 0.14090946 0.        ]]
-eq_constraints = -1.1102230246251565e-16
-r = [-5.97206478e-06 -1.17982595e-05 -1.11022302e-16]
-backtracking_line_search x = [1.51328378 2.08054368]	dir_x = [-0.00057804  0.00142853]
-eq_constraints = -1.1102230246251565e-16
-r = [-5.97206478e-06 -1.17982595e-05 -1.11022302e-16]
+iter = 3 x = [1.86216638 2.43666263] dir_x = [-0.03173137  0.15683889]
+iter = 3 v = [0.01339483] dir_v = [0.00057651]
 eq_constraints = 0.0
-r = [-5.07621008e-09 -8.84136897e-09  0.00000000e+00]
-r_dual_new = 1.0194984754351553e-08 r_dual = 1.3223633618067184e-05
+eq_constraints = 0.0
+r = [-5.39943053e-06 -3.02596580e-05  0.00000000e+00]
+equality_satisfied = True	norm_residual = 3.073761139307646e-05
+hessian_dual x = [1.86216638 2.43666263]
+hess = [[0.00595214 0.         0.34823714]
+ [0.         0.00119917 0.07045473]
+ [0.34823714 0.07045473 0.        ]]
+eq_constraints = 0.0
+r = [-5.39943053e-06 -3.02596580e-05  0.00000000e+00]
+backtracking_line_search x = [1.86216638 2.43666263]	dir_x = [-0.00409     0.02021567]
+eq_constraints = 0.0
+r = [-5.39943053e-06 -3.02596580e-05  0.00000000e+00]
+eq_constraints = 0.0
+r = [-9.48855381e-08 -3.96751453e-07  0.00000000e+00]
+r_dual_new = 4.0793992318726837e-07 r_dual = 3.073761139307646e-05
 backtracking_line_search terminate!
 backtracking_line_search step_size = 1
-iter = 4 x = [1.51270574 2.08197221] dir_x = [-0.00057804  0.00142853]
-iter = 4 v = [0.02216175] dir_v = [3.79854391e-05]
+iter = 4 x = [1.85807638 2.4568783 ] dir_x = [-0.00409     0.02021567]
+iter = 4 v = [0.01348024] dir_v = [8.54120878e-05]
 eq_constraints = 0.0
 eq_constraints = 0.0
-r = [-5.07621008e-09 -8.84136897e-09  0.00000000e+00]
-equality_satisfied = True	norm_residual = 1.0194984754351553e-08
+r = [-9.48855381e-08 -3.96751453e-07  0.00000000e+00]
+equality_satisfied = True	norm_residual = 4.0793992318726837e-07
 iter = 4 converged!
-opt_freqs = [3.71695900e+08 4.61888061e+08 4.41633096e+08 6.23029735e+08
- 9.72572792e+08 3.69121237e+08 5.13450421e+08 6.82537960e+08
- 6.76279850e+08 4.80313807e+08]
-opt_powers = [0.03817834 0.10670652 0.04529669 0.17073633 0.23711221 0.03971783
- 0.05356452 0.20191077 0.07938946 0.12494848]
+opt_freqs = [2.90109947e+08 3.88347216e+08 3.21760546e+08 4.81030142e+08
+ 6.21351628e+08 2.91564695e+08 3.54406008e+08 5.15858301e+08
+ 4.31746294e+08 4.07020568e+08]
+opt_powers = [0.03077909 0.0936158  0.03317826 0.13586987 0.13295478 0.03250078
+ 0.03569457 0.15622429 0.04443057 0.11050109]
