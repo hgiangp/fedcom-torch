@@ -6,7 +6,7 @@ class NewtonOptim(object):
         self.c = c / norm_factor
         self.kappa = kappa * (norm_factor**3)
         self.tau = tau 
-        self.A = np.array([a, c]) 
+        self.A = np.array([self.a, self.c]) 
         print(f"a = {self.a}\tb = {self.b}\tc = {self.c}\tkappa = {self.kappa}\ttau = {self.tau}")
          
     def objective(self, x): 
@@ -125,7 +125,7 @@ def test(a, b, c, kappa, tau, norm_factor):
     # Original problem solutions 
     power = 1/b * np.exp(1/inv_ln_power)
     # freq = norm_factor * 1/inv_freq 
-    freq = 1e9 * 1/inv_freq
+    freq = norm_factor * 1/inv_freq
     print("power = {:3f}\tfreq = {:.3e}".format(power, freq))
     return 
 
@@ -139,16 +139,21 @@ if __name__=='__main__':
     # test(a, b, c, kappa, tau, norm_factor)
 
     ## Non-normalized parameters
-    a, b, c = 0.348, 40, 0.26 
-    kappa = 0.1
-    tau = 0.82 
-    norm_factor = 1
-    test(a, b, c, kappa, tau, norm_factor)
+    # a, b, c = 0.348, 40, 0.26 
+    # kappa = 0.1
+    # tau = 0.82 
+    # norm_factor = 1
+    # test(a, b, c, kappa, tau, norm_factor)
 
     ## Normalized parameters 
-    # a, b, c = 0.348, 40, 2.6 * 1e8
-    # kappa = 1e-28 
-    # tau = 0.82
-    # print("Normalized parameters") 
-    # norm_factor = 1e9 
-    # test(a, b, c, kappa, tau, norm_factor)
+    a, b, c = 0.348, 40, 2.6 * 1e8
+    kappa = 1e-28 
+    tau = 0.82
+    print("Normalized parameters") 
+    norm_factor = 1e9 
+    test(a, b, c, kappa, tau, norm_factor)
+
+    ## Non-normalized parameters
+    print("Non-normalized parameters") 
+    norm_factor = 1 
+    test(a, b, c, kappa, tau, norm_factor)
