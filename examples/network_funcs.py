@@ -380,17 +380,20 @@ def test_with_location():
     data_size = np.array([s_n for _ in range(num_users)])
     powers = np.array([0.08, 0.1, 0.08, 0.09, 0.1, 0.07, 0.1, 0.09, 0.04, 0.08])
 
-    co_time = calc_trans_time(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
-    print(f"decs = {decs}")
-    print(f"co_time = {co_time}")
+    # co_time = calc_trans_time(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
+    # print(f"decs = {decs}")
+    # print(f"co_time = {co_time}")
 
-    co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
-    print(f"co_ene = {co_ene}")
+    # co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
+    # print(f"co_ene = {co_ene}")
 
-    eta = 0.3
-    freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
-    print(f"freqs = {freqs}")
-    print(f"powers = {powers}")
+    # eta = 0.02
+    # freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
+    # print(f"freqs = {freqs}")
+    # print(f"powers = {powers}")
+    bs_gains_n0 = bs_gains / N_0
+    uav_gains_n0 = uav_gains / N_0 
+    print(f"bs_gains_n0 = {bs_gains_n0}\nuav_gains_n0 = {uav_gains_n0}")
 
 def test_optimize_network(): 
     xs, ys, _ =  init_location()

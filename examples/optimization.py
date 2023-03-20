@@ -108,14 +108,21 @@ class NewtonOptim(object):
         return x[0], x[1]
 
 def test(): 
-    opt = NewtonOptim()
-    inv_power, inv_freq = opt.newton_method()
-    print(f"inv_power = {inv_power}\tinv_freq = {inv_freq}")
-    x_opt = np.array([inv_power, inv_freq])
+    a, b, c = 0.348, 40, 0.26
+    kappa = 0.1 
+    tau = 0.82
+    opt = NewtonOptim(a, b, c, tau, kappa)
+    inv_ln_power, inv_freq = opt.newton_method()
+    print(f"inv_power = {inv_ln_power}\tinv_freq = {inv_freq}")
+    x_opt = np.array([inv_ln_power, inv_freq])
     print(f"x_opt = {x_opt} obj = {opt.objective(x_opt)} Ax - b = {opt.eq_constraints(x_opt)}")
     tmp = [0.1, 0.1] # broadcasting 
     print(f"x_opt+tmp = {x_opt+tmp} obj = {opt.objective(x_opt+tmp)} Ax - b = {opt.eq_constraints(x_opt+tmp)}")
     print(f"x_opt-tmp = {x_opt-tmp} obj = {opt.objective(x_opt-tmp)} Ax - b = {opt.eq_constraints(x_opt-tmp)}")
+
+    power = 1/b * np.exp(1/inv_ln_power)
+    freq = 1e9 * 1/inv_freq 
+    print("power = {:3f}\tfreq = {:.3e}".format(power, freq))
     return 
 
 if __name__=='__main__': 
