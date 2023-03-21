@@ -310,7 +310,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     iter = 0 
     eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples) # eta = 0.317, t_min = 66.823
     tau = int(1.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
-    print(f"optimize_network tau = {tau}")
+    print(f"optimize_network_tau = {tau}")
 
     while 1: 
         # Tighten the bound of eta 
@@ -349,7 +349,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
 
         # Check stop condition
         obj = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
-        print(f"iter = {iter} obj = {obj}")
+        print(f"optimize_network_iter = {iter} obj = {obj}")
         print(f"eta = {eta}")
         print(f"decs = {decs}")
         print(f"freqs = {freqs}")
