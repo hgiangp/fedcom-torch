@@ -395,7 +395,7 @@ def test_with_location():
     # co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     # print(f"co_ene = {co_ene}")
 
-    eta = 0.2
+    eta = 0.15
     freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
 
 def test_optimize_network(): 
