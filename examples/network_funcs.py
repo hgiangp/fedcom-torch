@@ -254,13 +254,14 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, t
     r"""Solve powers, freqs for each users by newton's method"""
 
     gains = decs * uav_gains + (1 - decs) * bs_gains
+    penalty_time = decs * delta_t # (N, )
     num_local_rounds = v * math.log2(1 / eta)
 
     # Calculate opt coefficient for optimizer 
     opt_as = data_size / bw * math.log(2) # (N, )
     opt_bs = gains / N_0 # (N, )
     opt_cs = num_local_rounds * C_n * num_samples # (N, )
-    opt_tau = tau * (1-eta)/a # (1, ) equal for all users 
+    opt_tau = tau * (1-eta)/a - penalty_time # (N, ) penalty time for chosing uav # broadcasting   
     print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
 
     # Normalization variables for faster convergence 
@@ -272,7 +273,7 @@ def solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, t
 
     for i in range(num_users): 
         print(f"NewtonOptim USER = {i}")
-        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau, kappa=k_switch, norm_factor=norm_factor)
+        opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau[i], kappa=k_switch, norm_factor=norm_factor)
         inv_ln_power, inv_freq = opt.newton_method()
 
         # Update results 
