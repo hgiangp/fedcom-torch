@@ -167,10 +167,7 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     ## LOGTRACE
     ene_opt = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
-    ene_left = calc_total_energy(eta-0.02, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains) 
-    ene_right = calc_total_energy(eta+0.02, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
-    print(f"ene_left = {ene_left}\nene_opt = {ene_opt}\nene_right = {ene_right}")
-    print(f"ene_left = {ene_left.sum()}\tene_opt = {ene_opt.sum()}\tene_right = {ene_right.sum()}")    
+    print(f"ene_opt = {ene_opt}")
     ## LOGTRACE 
     return eta
 
@@ -234,19 +231,8 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
     print(f"eta = {eta_opt}, tau = {tau}")
     
     # LOGTRACE
-    eta = eta_opt
-    num_local_rounds = v * math.log2(1/eta)
-    num_global_rounds = a / (1 - eta)
-    decs = decs_opt
-
-    # calculate time  
-    t_cp = calc_comp_time(num_local_rounds, num_samples, freq_max)
-    t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, power_max)
-    
-    t_total = num_global_rounds * (t_co + t_cp)
-    print(f"num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
-    print(f"decs = {decs}")
-    print(f"t_cp = {t_cp}\nt_co = {t_co}\nt_total = {t_total}")
+    t_total = calc_total_time(eta_opt, freq_max, decs_opt, power_max, num_samples, data_size, uav_gains, bs_gains)
+    print(f"t_total = {t_total}")
     ## LOGTRACE
     return eta_opt, tau 
 
