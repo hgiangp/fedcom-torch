@@ -29,7 +29,7 @@ x_bs, y_bs = -175, 175 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
-de_r = 2.7 # pathloss exponent, connect to bs 
+de_r = 2.6 # pathloss exponent, connect to bs 
 # dn_r = 1.0 # distance between veh and bs, varies 
 
 # UAV propagation channel params 
