@@ -363,6 +363,69 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     # Stop 
     return (eta, freqs, decs, powers)
 
+def solve_freqs_fake(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau):
+    # power fixed at power_max, decs fixed 
+    # calculate coms time 
+    t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, power_max) # (N, )
+
+    # calculate number of local, global rounds 
+    num_local_rounds = v * math.log2(1/eta)
+    num_global_rounds = a / (1-eta)
+    print(f"solve_freqs_fake num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+
+    # calculate computation time for one local_round 
+    t_cp_1 = (tau / num_global_rounds - t_co) / num_local_rounds # (N, )
+    print(f"solve_freqs_fake t_cp_1 = {t_cp_1}")
+
+    # Calculate optimal freqs     
+    freqs = C_n * num_samples / t_cp_1 # (N, )
+    print(f"solve_freqs_fake num_samples = {num_samples}")
+    print(f"solve_freqs_fake freqs = {freqs}")
+    return freqs
+
+def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
+    # Initialize a feasible solution 
+    freqs = np.ones(num_users) * freq_max
+    powers = np.ones(num_users) * power_max
+    decs = np.array([1, 0, 1, 1, 0, 0, 1, 1, 0, 0], dtype=int)
+
+    eta = 0.01
+    obj_prev = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
+    print(f"obj_prev = {obj_prev}")
+
+    # Repeat
+    iter = 0 
+    tau = 100
+
+    while 1: 
+        # Solve eta
+        eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
+
+        # Solve freqs f
+        freqs = solve_freqs_fake(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau)
+
+        # LOG TRACE
+        t_total = calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+        print(f"t_total = {t_total}")
+
+        # Check stop condition
+        obj = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
+        print(f"optimize_network_iter = {iter} obj = {obj}")
+        print(f"eta = {eta}")
+        print(f"freqs = {freqs}")
+
+        if (abs(obj_prev - obj) < acc) or iter == iter_max: 
+            print("Done!")
+            break
+
+        obj_prev = obj
+        iter += 1 
+    
+    num_local_rounds = v * math.log2(1/eta)
+    num_global_rounds = a / (1 - eta)
+    print(f"num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+    return num_local_rounds, num_global_rounds
+
 def test_with_location():
     xs, ys, _ =  init_location()
     print("xs =", xs)
@@ -421,6 +484,21 @@ def test_optimize_network():
     ti = calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
     print(f"calc_total_energy ene = {ene}\ncalc_total_time ti = {ti}")
 
+def test_optimize_network_fake(): 
+    xs, ys, _ =  init_location()
+    print("xs =", xs)
+    print("ys =", ys)
+    uav_gains = calc_uav_gains(xs, ys) 
+    bs_gains = calc_bs_gains(xs, ys)
+    print(f"uav_gains = {uav_gains}")
+    print(f"bs_gains = {bs_gains}")
+
+    num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
+    data_size = np.array([s_n for _ in range(num_users)])
+    print(f"data_size = {data_size}")
+    # eta, freqs, decs, powers = optimize_network(num_samples, data_size, uav_gains, bs_gains)
+    num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
+
 def test_feasible_solution():
     xs, ys, _ =  init_location()
     print("xs =", xs)
@@ -447,6 +525,7 @@ def test_feasible_solution():
 
 
 if __name__=='__main__': 
-    test_with_location()
+    # test_with_location()
     # test_optimize_network()
     # test_feasible_solution()
+    test_optimize_network_fake()
