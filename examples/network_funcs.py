@@ -342,10 +342,8 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         freqs = decs * uav_freqs + (1 - decs) * bs_freqs
 
         # LOG TRACE
-        num_local_rounds = v * math.log2(1 / eta)
-        t_cp = calc_comp_time(num_local_rounds, num_samples, freqs)
-        t_co = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
-        print(f"t_coms = {t_co}\nt_comp = {t_cp}")
+        t_total = calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+        print(f"t_total = {t_total}")
 
         # Check stop condition
         obj = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains).sum()
@@ -397,7 +395,7 @@ def test_with_location():
     # co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
     # print(f"co_ene = {co_ene}")
 
-    eta = 0.02
+    eta = 0.2
     freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
 
 def test_optimize_network(): 
@@ -449,6 +447,6 @@ def test_feasible_solution():
 
 
 if __name__=='__main__': 
-    # test_with_location()
-    test_optimize_network()
+    test_with_location()
+    # test_optimize_network()
     # test_feasible_solution()
