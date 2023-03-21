@@ -167,8 +167,8 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     ## LOGTRACE
     ene_opt = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
-    ene_left = calc_total_energy(eta-0.2, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains) 
-    ene_right = calc_total_energy(eta+0.2, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+    ene_left = calc_total_energy(eta-0.02, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains) 
+    ene_right = calc_total_energy(eta+0.02, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
     print(f"ene_left = {ene_left}\nene_opt = {ene_opt}\nene_right = {ene_right}")
     print(f"ene_left = {ene_left.sum()}\tene_opt = {ene_opt.sum()}\tene_right = {ene_right.sum()}")    
     ## LOGTRACE 
@@ -295,6 +295,16 @@ def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gain
     energy = num_global_rounds * (ene_coms + ene_comp)
     return energy
 
+def calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains): 
+    num_local_rounds = v * math.log2(1/eta)
+    num_global_rounds = a / (1 - eta)
+    
+    ti_comp = calc_comp_time(num_local_rounds, num_samples, freqs)
+    ti_coms = calc_trans_time(decs, data_size, uav_gains, bs_gains, powers)
+    print(f"ti_comp = {ti_comp}\nti_coms = {ti_coms}")
+    ti = num_global_rounds * (ti_coms + ti_comp)
+    return ti 
+
 def optimize_network(num_samples, data_size, uav_gains, bs_gains): 
     r""" Solve the relay-node selection and resource allocation problem
     Args: 
@@ -314,6 +324,7 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
     iter = 0 
     eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples) # eta = 0.317, t_min = 66.823
     tau = int(1.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
+    print(f"optimize_network tau = {tau}")
 
     while 1: 
         # Tighten the bound of eta 
@@ -323,15 +334,17 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
 
         # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
-        uav_freqs, uav_powers = solve_freqs_powers(eta, num_samples, 1, data_size, uav_gains, bs_gains, powers, tau)
-        bs_freqs, bs_powers = solve_freqs_powers(eta, num_samples, 0, data_size, uav_gains, bs_gains, powers, tau)
-        
-        uav_ene = calc_total_energy(eta, uav_freqs, 1, uav_powers, num_samples, data_size, uav_gains, bs_gains)
+        decs = np.ones(shape=num_users, dtype=int) # check with all connecting to uav 
+        uav_freqs, uav_powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau)
+        uav_ene = calc_total_energy(eta, uav_freqs, decs, uav_powers, num_samples, data_size, uav_gains, bs_gains)
         print(f"uav_ene = {uav_ene}")
-        bs_ene = calc_total_energy(eta, bs_freqs, 0, bs_powers, num_samples, data_size, uav_gains, bs_gains)
+
+        decs = np.zeros(shape=num_users, dtype=int) # check with all connecting to bs 
+        bs_freqs, bs_powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau)
+        bs_ene = calc_total_energy(eta, bs_freqs, decs, bs_powers, num_samples, data_size, uav_gains, bs_gains)
         print(f"bs_ene = {bs_ene}")
+
         difference = uav_ene - bs_ene
-        
         print(f"difference = {difference}")
         idx = np.argpartition(difference, max_uav)[:max_uav] # https://stackoverflow.com/questions/34226400/find-the-index-of-the-k-smallest-values-of-a-numpy-array
         idx_uav = idx[np.where(difference[idx] < 0)]
@@ -419,6 +432,10 @@ def test_optimize_network():
     print(f"decs = {decs}")
     print(f"freqs = {freqs}")
     print(f"powers = {powers}") 
+    
+    ene = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+    ti = calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+    print(f"calc_total_energy ene = {ene}\ncalc_total_time ti = {ti}")
 
 def test_feasible_solution():
     xs, ys, _ =  init_location()
@@ -446,6 +463,6 @@ def test_feasible_solution():
 
 
 if __name__=='__main__': 
-    test_with_location()
-    # test_optimize_network()
+    # test_with_location()
+    test_optimize_network()
     # test_feasible_solution()
