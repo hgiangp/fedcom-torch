@@ -3,6 +3,7 @@ import numpy as np
 from scipy.special import lambertw
 
 from location_model import init_location
+from location_model import update_location 
 from optimization import NewtonOptim
 
 def calc_comp_energy(num_rounds, num_samples, freqs): 
@@ -15,6 +16,8 @@ def calc_comp_energy(num_rounds, num_samples, freqs):
         ene_cp: np array (N, ) 
     """
     ene_cp = num_rounds * k_switch * C_n * num_samples * (freqs**2)
+    # print(f"calc_comp_energy num_rounds = {num_rounds}\tnum_samples = {num_samples}\tfreqs = {freqs}")
+    # print(f"calc_comp_energy ene_cp = {ene_cp}")
     return ene_cp 
 
 def calc_comp_time(num_rounds, num_samples, freqs): 
@@ -371,19 +374,16 @@ def solve_freqs_fake(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau
     # calculate number of local, global rounds 
     num_local_rounds = v * math.log2(1/eta)
     num_global_rounds = a / (1-eta)
-    print(f"solve_freqs_fake num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
 
     # calculate computation time for one local_round 
     t_cp_1 = (tau / num_global_rounds - t_co) / num_local_rounds # (N, )
-    print(f"solve_freqs_fake t_cp_1 = {t_cp_1}")
 
     # Calculate optimal freqs     
     freqs = C_n * num_samples / t_cp_1 # (N, )
-    print(f"solve_freqs_fake num_samples = {num_samples}")
-    print(f"solve_freqs_fake freqs = {freqs}")
     return freqs
 
 def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
+    print(f"optimize_network_fake uav_gains = {uav_gains}\nbs_gains = {bs_gains}")
     # Initialize a feasible solution 
     freqs = np.ones(num_users) * freq_max
     powers = np.ones(num_users) * power_max
@@ -423,7 +423,7 @@ def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
     
     num_local_rounds = v * math.log2(1/eta)
     num_global_rounds = a / (1 - eta)
-    print(f"num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+    print(f"optimize_network_fake num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
     return num_local_rounds, num_global_rounds
 
 def test_with_location():
@@ -485,7 +485,7 @@ def test_optimize_network():
     print(f"calc_total_energy ene = {ene}\ncalc_total_time ti = {ti}")
 
 def test_optimize_network_fake(): 
-    xs, ys, _ =  init_location()
+    xs, ys, dirs =  init_location()
     print("xs =", xs)
     print("ys =", ys)
     uav_gains = calc_uav_gains(xs, ys) 
@@ -496,7 +496,16 @@ def test_optimize_network_fake():
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
     data_size = np.array([s_n for _ in range(num_users)])
     print(f"data_size = {data_size}")
-    # eta, freqs, decs, powers = optimize_network(num_samples, data_size, uav_gains, bs_gains)
+    num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
+
+    xs_new, ys_new, dirs_new = update_location(xs, ys, dirs)
+    print("xs_new =", xs_new)
+    print("ys_new =", ys_new)
+    print("update_location")
+    uav_gains = calc_uav_gains(xs_new, ys_new) 
+    bs_gains = calc_bs_gains(xs_new, ys_new)
+    print(f"uav_gains = {uav_gains}")
+    print(f"bs_gains = {bs_gains}")
     num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
 
 def test_feasible_solution():
