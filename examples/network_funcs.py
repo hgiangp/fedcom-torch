@@ -395,7 +395,7 @@ def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
 
     # Repeat
     iter = 0 
-    tau = 100
+    tau = 50
 
     while 1: 
         # Solve eta
