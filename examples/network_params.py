@@ -17,11 +17,11 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 # Offloading, global aggregation params 
 xi_factor = 0.1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
-compression_ratio = 0.5 # 1-0.95
-s_n = 251200 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
+compression_ratio = 0.1 # 1-0.95
+s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
 delta_t = 0.0 # TODO Based on current results uav's time penalty 
-N_0 = 4*1e-12 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)
+N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)
 power_max = 0.1 # W TODO  
 
 # base station propagation channel params 

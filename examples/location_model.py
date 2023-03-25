@@ -4,7 +4,7 @@ seed = 42
 rng = np.random.default_rng(seed=seed)
 no_users = 10 
 d = 20 
-delta = 200
+delta = 5
 
 def init_location():
     xs = rng.normal(loc=0, scale=d, size=(no_users))
