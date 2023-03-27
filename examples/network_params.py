@@ -9,7 +9,7 @@ L_Lipschitz = 0.4185 # Lipschitz constant of the loss function
 delta_lr = 0.1 # TODO Learning rate of local surrogate function 
 gamma_cv = 0.45 # strongly convex constant of the loss function
 
-k_switch = 1e-29 # switch capacity, depends on chip's architecture 
+k_switch = 5*1e-28 # switch capacity, depends on chip's architecture 
 C_n = 1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
@@ -50,5 +50,5 @@ print(f"v = {v}")
 print(f"a = {a}")
 
 # Optimization params 
-acc = 1e-4 # TODO
+acc = 5*1e-3 # TODO
 iter_max = 10 # TODO

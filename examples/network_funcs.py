@@ -394,10 +394,16 @@ def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
     print(f"obj_prev = {obj_prev}")
 
     # Repeat
-    iter = 0 
-    tau = 50
+    iter = 0
+    eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples) # eta = 0.317, t_min = 66.823
+    tau = int(1.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
+    print(f"optimize_network_fake eta = {eta}\ttau = {tau}\tt_min = {t_min}")
+    # tau = 50
 
     while 1: 
+        # find bound eta 
+        eta_min, eta_max = find_bound_eta(num_samples, data_size, uav_gains, bs_gains, decs, freqs, powers, tau)
+        print(f"eta_min = {eta_min}\teta_max = {eta_max}")
         # Solve eta
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
 
