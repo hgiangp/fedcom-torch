@@ -114,7 +114,7 @@ def solve_initial_eta(af, bf, tau):
 
     eta_min = np.exp(x_min)
     eta_max = np.exp(x_max)
-    print(f"eta_min = {eta_min}\neta_max = {eta_max}")
+    # print(f"eta_min = {eta_min}\neta_max = {eta_max}")
 
     return eta_min, eta_max
 
@@ -152,7 +152,7 @@ def dinkelbach_method(af, bf):
         
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
     
-    print(f"eta = {eta}")
+    # print(f"eta = {eta}")
     return eta 
     
 def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples): 
@@ -211,7 +211,7 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
     print(f"eta_opt = {eta_opt}")
 
     ### Iterative for tau 
-    t_min, t_max = 40, 120 # seconds 
+    t_min, t_max = 10, 120 # seconds 
     acc = 1e-4
     iter = 0 
 
@@ -541,6 +541,6 @@ def test_feasible_solution():
 
 if __name__=='__main__': 
     # test_with_location()
-    # test_optimize_network()
+    test_optimize_network()
     # test_feasible_solution()
-    test_optimize_network_fake()
+    # test_optimize_network_fake()
