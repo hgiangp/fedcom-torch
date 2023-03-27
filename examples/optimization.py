@@ -104,7 +104,7 @@ class NewtonOptim(object):
             print(f"equality_satisfied = {equality_satisfied}\tnorm_residual = {norm_residual}")
 
             if equality_satisfied and norm_residual <= acc: 
-                print(f"iter = {iter} converged!")
+                print(f"iter = {iter} converged! ({x[0]}, {x[1]})")
                 break 
         
         return x[0], x[1]

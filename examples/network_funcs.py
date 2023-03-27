@@ -218,20 +218,20 @@ def initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples):
     while 1:
         tau = (t_min + t_max) / 2.0 
         eta_min, eta_max = solve_initial_eta(af, bf, tau)       
-        print(f"iter = {iter}\teta_min = {eta_min}\teta_opt = {eta_opt}\teta_max = {eta_max}") 
+        # print(f"iter = {iter}\teta_min = {eta_min}\teta_opt = {eta_opt}\teta_max = {eta_max}") 
 
         # Check feasible condition for current tau  
         if eta_opt > eta_min and eta_opt < eta_max: # feasible solution  
             t_max = tau 
         else:
             t_min = tau 
-        print(f"iter = {iter}\tt_min = {t_min}\ttau = {tau}\tt_max = {t_max}")
+        # print(f"iter = {iter}\tt_min = {t_min}\ttau = {tau}\tt_max = {t_max}")
 
         if (t_max - t_min)/t_max < acc: 
             break
         iter += 1
     
-    print(f"eta = {eta_opt}, tau = {tau}")
+    print(f"initialize_feasible_solution eta = {eta_opt}, tau = {tau}")
     
     # LOGTRACE
     t_total = calc_total_time(eta_opt, freq_max, decs_opt, power_max, num_samples, data_size, uav_gains, bs_gains)
