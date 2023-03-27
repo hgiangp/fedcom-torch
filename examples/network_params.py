@@ -16,7 +16,7 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 
 # Offloading, global aggregation params 
 xi_factor = 0.1 # global gradient factor 
-epsilon_0 = 1e-3 # global accuracy 
+epsilon_0 = 5*1e-3 # global accuracy 
 compression_ratio = 0.1 # 1-0.95
 s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
@@ -50,5 +50,5 @@ print(f"v = {v}")
 print(f"a = {a}")
 
 # Optimization params 
-acc = 5*1e-3 # TODO
+acc = 1e-4 # TODO
 iter_max = 10 # TODO
