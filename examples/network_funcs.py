@@ -2,8 +2,7 @@ from network_params import *
 import numpy as np 
 from scipy.special import lambertw
 
-from location_model import init_location
-from location_model import update_location 
+from location_model import LocationModel
 from optimization import NewtonOptim
 
 def calc_comp_energy(num_rounds, num_samples, freqs): 
@@ -501,7 +500,8 @@ def test_optimize_network():
     print(f"calc_total_energy ene = {ene}\ncalc_total_time ti = {ti}")
 
 def test_optimize_network_fake(): 
-    xs, ys, dirs =  init_location()
+    loc_model = LocationModel(num_users=10, updated_dist=500)
+    xs, ys = loc_model.get_location()
     print("xs =", xs)
     print("ys =", ys)
     uav_gains = calc_uav_gains(xs, ys) 
@@ -514,10 +514,12 @@ def test_optimize_network_fake():
     print(f"data_size = {data_size}")
     num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
 
-    xs_new, ys_new, dirs_new = update_location(xs, ys, dirs)
+    print("update_location")
+    loc_model.update_location()
+    xs_new, ys_new = loc_model.get_location()
     print("xs_new =", xs_new)
     print("ys_new =", ys_new)
-    print("update_location")
+    
     uav_gains = calc_uav_gains(xs_new, ys_new) 
     bs_gains = calc_bs_gains(xs_new, ys_new)
     print(f"uav_gains = {uav_gains}")
@@ -525,7 +527,8 @@ def test_optimize_network_fake():
     num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
 
 def test_feasible_solution():
-    xs, ys, _ =  init_location()
+    loc_model = LocationModel(num_users=10, updated_dist=500)
+    xs, ys = loc_model.get_location()
     print("xs =", xs)
     print("ys =", ys)
     uav_gains = calc_uav_gains(xs, ys) 
@@ -551,6 +554,6 @@ def test_feasible_solution():
 
 if __name__=='__main__': 
     # test_with_location()
-    test_optimize_network()
+    # test_optimize_network()
     # test_feasible_solution()
-    # test_optimize_network_fake()
+    test_optimize_network_fake()
