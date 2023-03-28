@@ -170,7 +170,6 @@ def solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_s
 
     ## LOGTRACE
     ene_opt = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
-    print(f"ene_opt = {ene_opt}")
     ## LOGTRACE 
     return eta
 
@@ -282,6 +281,7 @@ def calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gain
     print(f"ene_coms = {ene_coms}\nene_comp = {ene_comp}")
 
     energy = num_global_rounds * (ene_coms + ene_comp)
+    print(f"ene_total = {energy}")
     return energy
 
 def calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains): 
@@ -321,6 +321,12 @@ def optimize_network(num_samples, data_size, uav_gains, bs_gains):
 
         # Solve eta
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
+
+        # Check eta boundary condition 
+        if eta > eta_max: 
+            eta = eta_max 
+        elif eta < eta_min: 
+            eta = eta_min 
 
         # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
         decs = np.ones(shape=num_users, dtype=int) # check with all connecting to uav 
@@ -383,7 +389,6 @@ def solve_freqs_fake(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau
     return freqs
 
 def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
-    print(f"optimize_network_fake uav_gains = {uav_gains}\nbs_gains = {bs_gains}")
     # Initialize a feasible solution 
     freqs = np.ones(num_users) * freq_max
     powers = np.ones(num_users) * power_max
@@ -406,6 +411,11 @@ def optimize_network_fake(num_samples, data_size, uav_gains, bs_gains):
         print(f"eta_min = {eta_min}\teta_max = {eta_max}")
         # Solve eta
         eta = solve_optimal_eta(decs, data_size, uav_gains, bs_gains, powers, freqs, num_samples) 
+        
+        if eta > eta_max: 
+            eta = eta_max 
+        elif eta < eta_min: 
+            eta = eta_min 
 
         # Solve freqs f
         freqs = solve_freqs_fake(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau)
