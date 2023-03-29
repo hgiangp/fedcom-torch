@@ -12,14 +12,21 @@ class NetworkOptim(object):
         self.data_size = data_size
         self.updated_dist = updated_dist
         self.loc_model = LocationModel(num_users, updated_dist)
-        self.uav_gains, self.bs_gains = self.init_channel_gains()
+        self.uav_gains, self.bs_gains = self.calc_channel_gains() # Init channel gains
 
-    def init_channel_gains(self): 
+    def calc_channel_gains(self): 
         xs, ys = self.loc_model.get_location()
+        print(f"xs = {xs}\nys = {ys}")
         uav_gains = self.calc_uav_gains(xs, ys)
         bs_gains = self.calc_bs_gains(xs, ys)
+        print(f"uav_gains = {uav_gains}\nbs_gains = {bs_gains}")
         
         return uav_gains, bs_gains
+    
+    def update_channel_gains(self): 
+        r"Update uav_gains, bs_gains of users"
+        self.loc_model.update_location()
+        self.uav_gains, self.bs_gains = self.calc_channel_gains() # Updated channel gains 
 
     def calc_comp_energy(self, num_rounds, freqs): 
         r""" Calculate local computation energy
@@ -394,111 +401,61 @@ class NetworkOptim(object):
         return uav_gains
 
 def test_with_location():
-    xs, ys, _ =  init_location()
-    print("xs =", xs)
-    print("ys =", ys)
-    uav_gains = calc_uav_gains(xs, ys) 
-    bs_gains = calc_bs_gains(xs, ys)
-    print(f"uav_gains = {uav_gains}")
-    print(f"bs_gains = {bs_gains}")
-
-    bs_gains_n0 = bs_gains / N_0
-    uav_gains_n0 = uav_gains / N_0 
-    print(f"bs_gains_n0 = {bs_gains_n0}\nuav_gains_n0 = {uav_gains_n0}")
-
+    num_users = 10 
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
+    data_size = np.array([s_n for _ in range(num_users)])
+
+    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
+
     freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
     num_rounds = 30
-    cp_ene = calc_comp_energy(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
+
+    cp_ene = netopt.calc_comp_energy(num_rounds, freqs)
     print(f"cp_ene =", cp_ene)
-    cp_time = calc_comp_time(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
+    cp_time = netopt.calc_comp_time(num_rounds, freqs)
     print(f"cp_time = {cp_time}")
 
     decs = np.array([1, 0, 1, 0, 0, 1, 1, 0, 1, 0])
-    data_size = np.array([s_n for _ in range(num_users)])
-    powers = np.array([0.08, 0.1, 0.08, 0.09, 0.1, 0.07, 0.1, 0.09, 0.04, 0.08])
-
-    # co_time = calc_trans_time(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
-    # print(f"decs = {decs}")
-    # print(f"co_time = {co_time}")
-
-    # co_ene = calc_trans_energy(decs=decs, data_size=data_size, uav_gains=uav_gains, bs_gains=bs_gains, powers=powers)
-    # print(f"co_ene = {co_ene}")
-
     eta = 0.15
-    freqs, powers = solve_freqs_powers(eta, num_samples, decs, data_size, uav_gains, bs_gains, tau=100)
+    freqs, powers = netopt.solve_freqs_powers(eta, decs, tau=100)
 
 def test_optimize_network(): 
-    xs, ys, _ =  init_location()
-    print("xs =", xs)
-    print("ys =", ys)
-    uav_gains = calc_uav_gains(xs, ys) 
-    bs_gains = calc_bs_gains(xs, ys)
-    print(f"uav_gains = {uav_gains}")
-    print(f"bs_gains = {bs_gains}")
-
+    num_users = 10 
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
     data_size = np.array([s_n for _ in range(num_users)])
-    print(f"data_size = {data_size}")
-    eta, freqs, decs, powers = optimize_network(num_samples, data_size, uav_gains, bs_gains)
+
+    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
+
+    eta, freqs, decs, powers = netopt.optimize_network()
 
     print(f"eta = {eta}")
     print(f"decs = {decs}")
     print(f"freqs = {freqs}")
     print(f"powers = {powers}") 
     
-    ene = calc_total_energy(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
-    ti = calc_total_time(eta, freqs, decs, powers, num_samples, data_size, uav_gains, bs_gains)
+    ene = netopt.calc_total_energy(eta, freqs, decs, powers)
+    ti = netopt.calc_total_time(eta, freqs, decs, powers)
     print(f"calc_total_energy ene = {ene}\ncalc_total_time ti = {ti}")
 
 def test_optimize_network_fake(): 
-    loc_model = LocationModel(num_users=10, updated_dist=500)
-    xs, ys = loc_model.get_location()
-    print("xs =", xs)
-    print("ys =", ys)
-    uav_gains = calc_uav_gains(xs, ys) 
-    bs_gains = calc_bs_gains(xs, ys)
-    print(f"uav_gains = {uav_gains}")
-    print(f"bs_gains = {bs_gains}")
-
+    num_users = 10 
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
     data_size = np.array([s_n for _ in range(num_users)])
-    print(f"data_size = {data_size}")
-    num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
+
+    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
+    num_local_rounds, num_global_rounds = netopt.optimize_network_fake()
 
     print("update_location")
-    loc_model.update_location()
-    xs_new, ys_new = loc_model.get_location()
-    print("xs_new =", xs_new)
-    print("ys_new =", ys_new)
-    
-    uav_gains = calc_uav_gains(xs_new, ys_new) 
-    bs_gains = calc_bs_gains(xs_new, ys_new)
-    print(f"uav_gains = {uav_gains}")
-    print(f"bs_gains = {bs_gains}")
-    num_local_rounds, num_global_rounds = optimize_network_fake(num_samples, data_size, uav_gains, bs_gains)
+    netopt.update_channel_gains()
+    num_local_rounds, num_global_rounds = netopt.optimize_network_fake()
 
 def test_feasible_solution():
-    loc_model = LocationModel(num_users=10, updated_dist=500)
-    xs, ys = loc_model.get_location()
-    print("xs =", xs)
-    print("ys =", ys)
-    uav_gains = calc_uav_gains(xs, ys) 
-    bs_gains = calc_bs_gains(xs, ys)
-    print(f"uav_gains = {uav_gains}")
-    print(f"bs_gains = {bs_gains}")
-
+    num_users = 10 
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
-    freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
-    num_rounds = 30
-    cp_ene = calc_comp_energy(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
-    print(f"cp_ene =", cp_ene)
-    cp_time = calc_comp_time(num_rounds=num_rounds, num_samples=num_samples, freqs=freqs)
-    print(f"cp_time = {cp_time}")
-
     data_size = np.array([s_n for _ in range(num_users)])
-    
-    eta, t_min = initialize_feasible_solution(data_size, uav_gains, bs_gains, num_samples)
+
+    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
+    eta, t_min = netopt.initialize_feasible_solution()
 
     print(f"eta = {eta}")
     print(f"t_min = {t_min}")
