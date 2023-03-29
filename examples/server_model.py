@@ -1,19 +1,19 @@
-import importlib
-import os 
 import copy 
 import torch
 import numpy as np 
 
-from custom_dataset import read_data 
 from client_model import Client
+from network_params import s_n
 
-class BaseFederated(object): 
-    def __init__(self, model, dataset):
-        self.client_model = model(input_dim=784, output_dim=10) # (5, 3)
+class BaseFederated: 
+    def __init__(self, model, dim, dataset):
+        r"""Federated Learning Model
+        Args: dim = (in_dim, out_dim) # input, output dimension
+        """
+        self.client_model = model(input_dim=dim[0], output_dim=dim[1]) # (5, 3) # (784, 10)
         self.clients = self.setup_clients(self.client_model, dataset)
         self.latest_model = self.client_model.get_params() # TODO: latest_model updated 
-
-        self.eval_every = 1 # TODO: check params         
+        self.eval_every = 1 # TODO: check params
         print("BaseFederated generated!")
     
     def setup_clients(self, model, dataset): 
@@ -49,8 +49,7 @@ class BaseFederated(object):
         
         return difference
     
-    def train(self):
-        num_rounds = 100
+    def train(self, num_rounds=100):
         for t in range(num_rounds): 
             print(f"Round {t+1}\n-------------------------------")
             # collect num_samples, grads from clients 
@@ -113,9 +112,17 @@ class BaseFederated(object):
         
         return num_samples, tot_correct, losses
     
-    def get_model_size(self): 
-        msize = self.client_model.get_model_size()
-        return msize 
+    def get_num_samples(self): 
+        num_samples = np.array([client.num_samples for client in self.clients])
+        print(f"num_samples = {num_samples}")
+        return num_samples 
+    
+    def get_mod_size(self): 
+        r""" Get model size"""
+        # msize = self.client_model.get_model_size()
+        msize = s_n
+        print(f"msize = {msize}")
+        return msize
     
 def test_aggregate(server):
     soln1 = {k: torch.ones_like(v) for k, v in server.latest_model.items()} 
@@ -129,45 +136,19 @@ def test_calc_msize(server):
     print(server.latest_model)
     return server.get_model_size()
     
-def test():
-
-    # load the client model 
-    model_path = '%s' % ('custom_model')
-    mod = importlib.import_module(model_path)
-    model = getattr(mod, 'CustomLogisticRegression')
-
-    # load the dataset 
-    dataset_name = 'synthetic'
-    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    train_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'train')
-    test_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'test')
-    dataset = read_data(train_dir, test_dir)
-
-    # TODO: check params 
-    t = BaseFederated(model, dataset)
+def test(model_dim=(5, 3), dataset_name='synthetic'):
+    model_name = 'CustomLogisticRegression'
+    from system_utils import load_model, load_data 
+    model = load_model(model_name)
+    dataset = load_data(dataset_name)
+    
+    t = BaseFederated(model, model_dim, dataset)
     # test_aggregate(t)
     # t.train()
-    print("test_calc_msize()", test_calc_msize(t))
-
-def test_mnist(): 
-    # load the client model 
-    model_path = '%s' % ('custom_model')
-    mod = importlib.import_module(model_path)
-    model = getattr(mod, 'CustomLogisticRegression')
-
-    # load the dataset 
-    dataset_name = 'mnist'
-    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    train_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'train')
-    test_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'test')
-    dataset = read_data(train_dir, test_dir)
-
-    # TODO: check params 
-    t = BaseFederated(model, dataset)
-    t.train()
-    print('Done!')
+    t.get_num_samples()
+    t.get_mod_size()
     # print("test_calc_msize()", test_calc_msize(t))
 
 if __name__=="__main__": 
-    # test()
-    test_mnist()
+    test() # test synthetic dataset 
+    # test(model_dim=(784, 19), dataset_name='mnist') # test mnist dataset 

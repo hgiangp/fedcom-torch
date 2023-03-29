@@ -5,7 +5,7 @@ from network_utils import *
 from location_model import LocationModel
 from optimization import NewtonOptim
 
-class NetworkOptim(object):
+class NetworkOptim:
     def __init__(self, num_users, num_samples, data_size, updated_dist):
         self.num_users = num_users
         self.num_samples = num_samples # np.array (num_users, )

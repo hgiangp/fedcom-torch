@@ -2,7 +2,7 @@ import numpy as np
 
 seed = 42
 rng = np.random.default_rng(seed=seed)
-class LocationModel(object): 
+class LocationModel: 
     def __init__(self, num_users=10, updated_dist=100, width=20):
         self.num_users = num_users 
         self.width = width 

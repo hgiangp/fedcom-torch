@@ -1,6 +1,6 @@
 import numpy as np 
 
-class NewtonOptim(object):
+class NewtonOptim:
     def __init__(self, a=1, b=1, c=2, tau=1, kappa=1, norm_factor=1):
         self.a, self.b = a, b
         self.c = c / norm_factor

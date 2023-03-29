@@ -7,7 +7,7 @@ import copy
 from custom_model import CustomLogisticRegression
 from custom_dataset import load_data, test_load_data
 
-class Client(object): 
+class Client: 
     def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None):
         self.id = id 
         self.model = model #CustomLogisticRegression()
