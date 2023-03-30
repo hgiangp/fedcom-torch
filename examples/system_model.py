@@ -24,7 +24,7 @@ class SystemModel:
         msize = fed_model.get_mod_size()
         data_size = np.array([msize for _ in range(num_users)])
         
-        net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist=200)
+        net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist=500)
         return net_optim
     
     def train(self): 

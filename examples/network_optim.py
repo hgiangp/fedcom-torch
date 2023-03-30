@@ -232,7 +232,7 @@ class NetworkOptim:
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
-        decs = np.random.randint(low=0, high=2, size=num_users) # random initial decisions
+        decs = np.zeros(num_users) # decs = np.random.randint(low=0, high=2, size=num_users) # random initial decisions
         eta = 0.01
         
         obj_prev = self.calc_total_energy(eta, freqs, decs, powers).sum()
@@ -322,7 +322,7 @@ class NetworkOptim:
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
-        decs = np.array([1, 0, 1, 1, 0, 0, 1, 1, 0, 0], dtype=int)
+        decs = np.zeros(num_users) # decs = np.array([1, 0, 1, 1, 0, 0, 1, 1, 0, 0], dtype=int)
 
         eta = 0.01
         obj_prev = self.calc_total_energy(eta, freqs, decs, powers).sum()
