@@ -1,10 +1,8 @@
 from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
 import torch 
-
 import os 
 import json
-
-from torch.utils.data import DataLoader
 
 class CustomDataset(Dataset): 
     def __init__(self, input_dict):
@@ -54,6 +52,18 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
+def load_data_loader(train_dict, test_dict): 
+    batch_size = 32
+
+    # Init CustomDataset 
+    training_data = CustomDataset(train_dict)
+    test_data = CustomDataset(test_dict)
+
+    # Init DataLoader 
+    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
+    testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    return traindata_loader, testdata_loader
+
 def test_load_data(user_id): 
     dataset_name = 'synthetic'
     parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -67,15 +77,3 @@ def test_load_data(user_id):
     print(f"len(train_data['y'] = {len(train_data['y'])}")
     print(f"len(test_data['y']) = {len(test_data['y'])}")
     return train_data, test_data
-
-def load_data(train_dict, test_dict): 
-    batch_size = 32
-
-    # Init CustomDataset 
-    training_data = CustomDataset(train_dict)
-    test_data = CustomDataset(test_dict)
-
-    # Init DataLoader 
-    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
-    testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
-    return traindata_loader, testdata_loader

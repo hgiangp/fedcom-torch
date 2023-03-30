@@ -1,12 +1,9 @@
 import torch.optim as optim
 import torch.nn as nn 
 import torch 
+import copy
 
-import copy 
-
-from custom_model import CustomLogisticRegression
-from custom_dataset import load_data, test_load_data
-
+from custom_dataset import load_data_loader
 class Client: 
     def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None):
         self.id = id 
@@ -14,7 +11,7 @@ class Client:
         self.optimizer = optim.SGD(self.model.parameters(), lr=1e-2)
         self.loss_fn = nn.CrossEntropyLoss()
         
-        self.train_loader, self.test_loader = load_data(train_data, test_data)
+        self.train_loader, self.test_loader = load_data_loader(train_data, test_data)
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
         
@@ -141,6 +138,8 @@ class Client:
 
 def test_train(): 
     print("test_train")
+    from custom_model import CustomLogisticRegression
+    from custom_dataset import test_load_data 
 
     model = CustomLogisticRegression(input_dim=5, output_dim=3)
     
@@ -176,6 +175,9 @@ def test_train():
 
 def test_test(): 
     print("test_test()")
+    from custom_model import CustomLogisticRegression
+    from custom_dataset import test_load_data 
+
     model = CustomLogisticRegression(input_dim=5, output_dim=3)
 
     user_id = 4
@@ -190,12 +192,13 @@ def test_test():
 
     ## Test
     print("Test Loss\n-------------------------------")
-    client.test(client.test_loader)
-    print("Train Loss\n-------------------------------") 
-    client.test(client.train_loader)
+    client.test()
 
 def test_diff_grads(): 
     print("test_diff_grads()")
+    from custom_model import CustomLogisticRegression
+    from custom_dataset import test_load_data 
+
     model = CustomLogisticRegression(input_dim=5, output_dim=3)
 
     user_id = 1
@@ -216,8 +219,10 @@ def test_diff_grads():
     print(diff_grads)
 
 def test_initial_grads(): 
-    model = CustomLogisticRegression(input_dim=5, output_dim=3)
+    from custom_model import CustomLogisticRegression
+    from custom_dataset import test_load_data 
 
+    model = CustomLogisticRegression(input_dim=5, output_dim=3)
     user_id = 1
     train_data, test_data = test_load_data(user_id)
     client = Client(user_id, train_data, test_data, model)

@@ -5,7 +5,8 @@ from network_optim import NetworkOptim
 from system_utils import * 
 
 class SystemModel: 
-    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=5):
+    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10):
+        print("__init__ start!")
         self.fed_model = self.init_federated(mod_name, mod_dim, dataset_name)
         self.net_optim = self.init_netoptim(num_users, self.fed_model)
 
@@ -13,7 +14,9 @@ class SystemModel:
         r""" TODO
         """
         model = load_model(mod_name)
+        print("model loaded!")
         dataset = load_data(dataset_name)
+        print("dataset loaded!")
         fed_model = BaseFederated(model, mod_dim, dataset)
         return fed_model 
     
@@ -41,3 +44,6 @@ class SystemModel:
 def test(): 
     sm = SystemModel()
     sm.train()
+
+if __name__=="__main__": 
+    test()
