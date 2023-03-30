@@ -119,8 +119,7 @@ class BaseFederated:
     
     def get_mod_size(self): 
         r""" Get model size"""
-        # msize = self.client_model.get_model_size()
-        msize = s_n
+        msize = s_n # msize = self.client_model.get_model_size()
         print(f"msize = {msize}")
         return msize
     

@@ -6,17 +6,15 @@ from system_utils import *
 
 class SystemModel: 
     def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10):
-        print("__init__ start!")
         self.fed_model = self.init_federated(mod_name, mod_dim, dataset_name)
         self.net_optim = self.init_netoptim(num_users, self.fed_model)
+        print("SystemModel __init__!")
 
     def init_federated(self, mod_name, mod_dim, dataset_name):
         r""" TODO
         """
         model = load_model(mod_name)
-        print("model loaded!")
         dataset = load_data(dataset_name)
-        print("dataset loaded!")
         fed_model = BaseFederated(model, mod_dim, dataset)
         return fed_model 
     
@@ -34,7 +32,7 @@ class SystemModel:
         for t in range(num_rounds): 
             num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake()
             print(f"iter = {t}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
-            self.fed_model.train(num_rounds=num_local_rounds)
+            self.fed_model.train(num_rounds=int(num_local_rounds))
             
             print("update_location") # for the next global round
             self.net_optim.update_channel_gains()

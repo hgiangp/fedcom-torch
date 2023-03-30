@@ -52,7 +52,7 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
-def load_data_loader(train_dict, test_dict): 
+def load_dataloader(train_dict, test_dict): 
     batch_size = 32
 
     # Init CustomDataset 
