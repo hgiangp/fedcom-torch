@@ -24,15 +24,16 @@ class SystemModel:
         msize = fed_model.get_mod_size()
         data_size = np.array([msize for _ in range(num_users)])
         
-        net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist=500)
+        net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist=10)
         return net_optim
     
     def train(self): 
-        num_rounds = 2 # TODO: check num_global_rounds 
-        for t in range(num_rounds): 
+        num_rounds = 30 # TODO: check num_global_rounds 
+        for t in range(num_rounds):
+            print(f"Round {t+1}\n-------------------------------") 
             num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake()
             print(f"iter = {t}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
-            self.fed_model.train(num_rounds=int(num_local_rounds))
+            self.fed_model.train(num_epochs=int(num_local_rounds), curr_round=t)
             
             print("update_location") # for the next global round
             self.net_optim.update_channel_gains()

@@ -13,7 +13,6 @@ class BaseFederated:
         self.client_model = model(input_dim=dim[0], output_dim=dim[1]) # (5, 3) # (784, 10)
         self.clients = self.setup_clients(self.client_model, dataset)
         self.latest_model = self.client_model.get_params() # TODO: latest_model updated 
-        self.eval_every = 1 # TODO: check params
         print("BaseFederated generated!")
     
     def setup_clients(self, model, dataset): 
@@ -49,44 +48,44 @@ class BaseFederated:
         
         return difference
     
-    def train(self, num_rounds=100):
-        for t in range(num_rounds): 
-            print(f"Round {t+1}\n-------------------------------")
-            # collect num_samples, grads from clients 
-            wgrads = []
-            for c in self.clients: 
-                wgrads.append(c.get_grads())
+    def train(self, num_epochs=20, curr_round=0):
+        r"""
+        Args: 
+            num_epochs: number of local rounds # network opt 
+            num_rounds: number of global rounds 
+        """
+        # collect num_samples, grads from clients 
+        wgrads = []
+        for c in self.clients: 
+            wgrads.append(c.get_grads())
 
-            # aggregate the clients grads
-            agrads = self.aggregate(wgrads)
+        # aggregate the clients grads
+        agrads = self.aggregate(wgrads)
 
-            difference = self.calc_dissimilarity(agrads=agrads, wgrads=wgrads)
-            print('gradient difference: {}'.format(difference))
+        difference = self.calc_dissimilarity(agrads=agrads, wgrads=wgrads)
+        print('gradient difference: {}'.format(difference))
 
-            # broadcast the global params and difference grads 
-            for c in self.clients:
-                c.calc_diff_grads(agrads)
+        # broadcast the global params and difference grads 
+        for c in self.clients:
+            c.calc_diff_grads(agrads)
 
-            # clients train the local surrogate models
-            num_epochs = 20 # TODO: network_opt
-            wsolns = [] # buffer for receiving clients' solution
-            for c in self.clients:
-                wsolns.append(c.train(num_epochs)) 
-                
-            # aggregate the global parameters and broadcast to all uses 
-            self.latest_model = self.aggregate(wsolns)
-            for c in self.clients: 
-                c.set_params(self.latest_model)
+        # clients train the local surrogate models
+        wsolns = [] # buffer for receiving clients' solution
+        for c in self.clients:
+            wsolns.append(c.train(num_epochs)) 
+            
+        # aggregate the global parameters and broadcast to all uses 
+        self.latest_model = self.aggregate(wsolns)
+        for c in self.clients: 
+            c.set_params(self.latest_model)
 
-            # Test model 
-            if t % self.eval_every == 0: 
-                stats = self.test() # (list num_samples, list total_correct)  
-                stats_train = self.train_error_and_loss() # (list num_samples, list total_correct, list losses)
-                print("At round {} accuracy: {}".format(t, np.sum(stats[1])*1.0/np.sum(stats[0])))
-                print("At round {} training accuracy: {}".format(t, np.sum(stats_train[1])*1.0/np.sum(stats_train[0])))
-                print("At round {} training loss: {}".format(t, np.dot(stats_train[2], stats_train[0])*1.0/np.sum(stats_train[0])))
+        # Test model
+        stats = self.test() # (list num_samples, list total_correct)  
+        stats_train = self.train_error_and_loss() # (list num_samples, list total_correct, list losses)
+        print("At round {} accuracy: {}".format(curr_round, np.sum(stats[1])*1.0/np.sum(stats[0])))
+        print("At round {} training accuracy: {}".format(curr_round, np.sum(stats_train[1])*1.0/np.sum(stats_train[0])))
+        print("At round {} training loss: {}".format(curr_round, np.dot(stats_train[2], stats_train[0])*1.0/np.sum(stats_train[0])))
         
-        print("Done!")
     
     def test(self):
         num_samples = []
@@ -143,9 +142,9 @@ def test(model_dim=(5, 3), dataset_name='synthetic'):
     
     t = BaseFederated(model, model_dim, dataset)
     # test_aggregate(t)
-    # t.train()
-    t.get_num_samples()
-    t.get_mod_size()
+    t.train(num_rounds=10)
+    # t.get_num_samples()
+    # t.get_mod_size()
     # print("test_calc_msize()", test_calc_msize(t))
 
 if __name__=="__main__": 
