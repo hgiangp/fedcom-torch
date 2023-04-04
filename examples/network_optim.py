@@ -188,7 +188,7 @@ class NetworkOptim:
         t_total = self.calc_total_time(eta_opt, freq_max, decs_opt, power_max)
         print(f"t_total = {t_total}")
         ## LOGTRACE
-        return tau, decs_opt 
+        return tau, decs_opt
 
     def solve_freqs_powers(self, eta, decs, tau): 
         r"""Solve powers, freqs for each users by newton's method"""
@@ -318,7 +318,7 @@ class NetworkOptim:
         freqs = C_n * self.num_samples / t_cp_1 # (N, )
         return freqs
 
-    def optimize_network_fake(self):
+    def optimize_network_fake(self, tau, decs):
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
@@ -326,9 +326,6 @@ class NetworkOptim:
 
         # Repeat
         iter = 0
-        t_min, decs = self.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
-        tau = int(1.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
-        print(f"optimize_network_fake tau = {tau}\tt_min = {t_min}")
         # tau = 50
 
         eta = 0.01
