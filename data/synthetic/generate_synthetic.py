@@ -7,8 +7,8 @@ import numpy as np
 from tqdm import trange
 import json
 
-# seed = 42
-rng = np.random.default_rng()
+seed = 1
+rng = np.random.default_rng(seed)
 
 num_users = 10 # TODO
 dimension = 5 # TODO: 60 
@@ -20,7 +20,7 @@ def softmax(x):
     return ex/sum_ex
 
 def generate_synthetic(alpha, beta, iid): 
-    samples_per_user = rng.lognormal(mean=4, sigma=2, size=num_users).astype(int) +  100# shape = (NUM_USERS,)
+    samples_per_user = rng.lognormal(mean=4, sigma=2, size=num_users).astype(int) + 50 # shape = (NUM_USERS,)
     print(samples_per_user)
 
     ### define variables ### 

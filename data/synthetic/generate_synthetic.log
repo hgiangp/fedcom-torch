@@ -1,12 +1,12 @@
-[104 162 107 100 294 126 183 117 112 108]
+[158 332 155  54 383 183  68 224 163 148]
 mean_x.shape = (10, 5)
-0-th users has 104 samples
-1-th users has 162 samples
-2-th users has 107 samples
-3-th users has 100 samples
-4-th users has 294 samples
-5-th users has 126 samples
-6-th users has 183 samples
-7-th users has 117 samples
-8-th users has 112 samples
-9-th users has 108 samples
+0-th users has 158 samples
+1-th users has 332 samples
+2-th users has 155 samples
+3-th users has 54 samples
+4-th users has 383 samples
+5-th users has 183 samples
+6-th users has 68 samples
+7-th users has 224 samples
+8-th users has 163 samples
+9-th users has 148 samples
