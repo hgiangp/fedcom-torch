@@ -29,23 +29,31 @@ class SystemModel:
     
     def train(self): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
-        deadline = int(2.2 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
+        deadline = int(2.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
         
         tau = deadline
         t0 = tau / 100 # TODO: set value of t0 
         
         print(f"system_model train() deadline = {deadline}\ttau = {tau}\tt0 = {t0}")
         iter = 0 # TODO: printing only 
-        while tau > t_min: 
+        while 1: 
             print(f"system_model Round {iter}\n-------------------------------") 
-            num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
-            print(f"system_model iter = {iter}\ttau = {tau}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+            num_local_rounds, num_global_rounds, a_n = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
+            print(f"system_model iter = {iter}\ttau = {tau}\ta_n = {a_n}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
             # TODO: view number of global rounds
             self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
-            print("update_location") # for the next global round
+
+            # check stop condition 
+            if a_n < 1: 
+                break 
+
+            # not stop, update location for the next global round 
+            print("update_location") 
             self.net_optim.update_channel_gains()
             tau = tau - t0
             iter += 1
+
+
         
         print("Done!")
 

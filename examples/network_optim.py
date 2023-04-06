@@ -375,7 +375,7 @@ class NetworkOptim:
         num_local_rounds = v * math.log2(1/eta)
         num_global_rounds = self.an / (1 - eta)
         print(f"optimize_network_fake num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
-        return num_local_rounds, num_global_rounds
+        return num_local_rounds, num_global_rounds, self.an # (i, n, a_n)
 
     def calc_bs_gains(self, xs, ys): 
         r""" Calculate propagation channel gains, connect to bs 
