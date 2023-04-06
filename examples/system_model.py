@@ -53,8 +53,6 @@ class SystemModel:
             tau = tau - t0
             iter += 1
 
-
-        
         print("Done!")
 
 def test(): 

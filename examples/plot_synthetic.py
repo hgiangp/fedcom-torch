@@ -24,9 +24,9 @@ def parse_log(file_name):
     
     return rounds, acc, loss, sim 
 
-def test_parse_log(): 
-    file_name = './server_model.log'
-    rounds, acc, loss, sim = parse_log(file_name=file_name)
+def test_parse_log(in_file, out_file): 
+    # file_name = './server_model.log'
+    rounds, acc, loss, sim = parse_log(file_name=in_file)
 
     print(f"acc = \n{acc[-5:]}") 
     print(f"loss = \n{loss[-5:]}") 
@@ -49,10 +49,12 @@ def test_parse_log():
     plt.subplot(313)
     plt.plot(rounds, sim)
     plt.ylabel("Dissimilarity")
-    plt.savefig('plot_mnist.png')
+    plt.savefig(out_file) # plt.savefig('plot_mnist.png')
     plt.show()
 
 
 
 if __name__=='__main__': 
-    test_parse_log()
+    in_file = './system_model.log'
+    out_file = 'plot_synthetic_10.png' 
+    test_parse_log(in_file, out_file)
