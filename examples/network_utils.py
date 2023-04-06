@@ -11,7 +11,7 @@ def solve_bound_eta(af, bf, tau):
         Return:
             Optimal eta 
         """
-        print(f"solve_bound_eta tau = {tau}\naf = {af}\nbf = {bf}")
+        # print(f"solve_bound_eta tau = {tau}\naf = {af}\nbf = {bf}")
 
         tmp = - tau/af * np.exp((bf - tau)/af)
         w0 = lambertw(tmp, k=0) # (N, ) # lambert at 0 branch (-> eta min) complex number, imaginary part = 0 
@@ -20,7 +20,7 @@ def solve_bound_eta(af, bf, tau):
 
         xs_min = (bf - tau)/af - w0.real # (N, ) # all negative
         xs_max = (bf - tau)/af - w_1.real # (N, ) # all negative 
-        # print(f"xs_min = {xs_min}\nxs_max = {xs_max}")
+        print(f"solve_bound_eta tmp = {tmp}\nxs_min = {xs_min}\nxs_max = {xs_max}")
 
         x_min = np.max(xs_min) # 1 
         x_max = np.min(xs_max) # 1 

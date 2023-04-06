@@ -12,7 +12,7 @@ class NetworkOptim:
         self.data_size = data_size
         self.updated_dist = updated_dist
         self.loc_model = LocationModel(num_users, updated_dist)
-        self.uav_gains, self.bs_gains = self.calc_channel_gains() # Init channel gains
+        self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
         self.an = a_0 # initialize with current round = 0 
 
     def calc_channel_gains(self): 
