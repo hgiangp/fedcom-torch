@@ -5,7 +5,7 @@ from network_optim import NetworkOptim
 from system_utils import * 
 
 class SystemModel: 
-    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10, updated_dist=50):
+    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10, updated_dist=10):
         self.fed_model = self.init_federated(mod_name, mod_dim, dataset_name)
         self.net_optim = self.init_netoptim(num_users, updated_dist, self.fed_model)
         print("SystemModel __init__!")
@@ -29,7 +29,7 @@ class SystemModel:
     
     def train(self): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
-        deadline = int(1.8 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
+        deadline = int(2 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
         
         tau = deadline
         t0 = tau / 100 # TODO: set value of t0 
