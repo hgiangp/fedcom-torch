@@ -13,6 +13,7 @@ class NetworkOptim:
         self.updated_dist = updated_dist
         self.loc_model = LocationModel(num_users, updated_dist)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # Init channel gains
+        self.an = a_0 # initialize with current round = 0 
 
     def calc_channel_gains(self): 
         xs, ys = self.loc_model.get_location()
@@ -22,7 +23,11 @@ class NetworkOptim:
         print(f"uav_gains = {uav_gains}\nbs_gains = {bs_gains}")
         
         return uav_gains, bs_gains
-    
+
+    def update_an(self, cround=0): 
+        self.an =  a_0 + cround * a_alpha
+        print(f"self.an = {self.an}")
+
     def update_channel_gains(self): 
         r"Update uav_gains, bs_gains of users"
         self.loc_model.update_location()
@@ -78,7 +83,7 @@ class NetworkOptim:
 
     def calc_total_energy(self, eta, freqs, decs, powers): 
         num_local_rounds = v * math.log2(1 / eta)
-        num_global_rounds = a / (1 - eta)
+        num_global_rounds = self.an / (1 - eta)
 
         ene_coms = self.calc_trans_energy(decs, powers)
         ene_comp = self.calc_comp_energy(num_local_rounds, freqs)
@@ -90,7 +95,7 @@ class NetworkOptim:
 
     def calc_total_time(self, eta, freqs, decs, powers): 
         num_local_rounds = v * math.log2(1/eta)
-        num_global_rounds = a / (1 - eta)
+        num_global_rounds = self.an / (1 - eta)
         
         ti_comp = self.calc_comp_time(num_local_rounds, freqs)
         ti_coms = self.calc_trans_time(decs, powers)
@@ -103,8 +108,8 @@ class NetworkOptim:
         Args: 
         Return: 
         """ 
-        af = a * self.calc_comp_time(1, freqs) * v / math.log(2)
-        bf = a * self.calc_trans_time(decs, powers)
+        af = self.an * self.calc_comp_time(1, freqs) * v / math.log(2)
+        bf = self.an * self.calc_trans_time(decs, powers)
 
         eta_min, eta_max = solve_bound_eta(af, bf, tau)
         return eta_min, eta_max
@@ -116,8 +121,8 @@ class NetworkOptim:
             Optimal eta 
         """
 
-        bf = a * self.calc_trans_energy(decs, powers).sum()
-        af = v * a * self.calc_comp_energy(num_rounds=1, freqs=freqs).sum() / math.log(2)
+        bf = self.an * self.calc_trans_energy(decs, powers).sum()
+        af = v * self.an * self.calc_comp_energy(num_rounds=1, freqs=freqs).sum() / math.log(2)
 
         eta = dinkelbach_method(af, bf)
         print(f"eta = {eta}")
@@ -154,8 +159,8 @@ class NetworkOptim:
         # Solve optimal eta for current resource allocation (fixed f_max, p_max, decs)
         t_cp = self.calc_comp_time(1, freq_max)
         t_co = self.calc_trans_time(decs_opt, power_max)
-        af = a * t_cp * v / math.log(2)
-        bf = a * t_co
+        af = self.an * t_cp * v / math.log(2)
+        bf = self.an * t_co
 
         # Solve optimal eta by dinkelbach method with argument related to the total time 
         af_opt, bf_opt = af.sum(), bf.sum()
@@ -191,7 +196,7 @@ class NetworkOptim:
         return tau, decs_opt
 
     def solve_freqs_powers(self, eta, decs, tau): 
-        r"""Solve powers, freqs for each users by newton's method"""
+        r"""Solve powers, freqs for each user by newton's method"""
 
         gains = decs * self.uav_gains + (1 - decs) * self.bs_gains
         penalty_time = decs * delta_t # (N, )
@@ -201,7 +206,7 @@ class NetworkOptim:
         opt_as = self.data_size / bw * math.log(2) # (N, )
         opt_bs = gains / N_0 # (N, )
         opt_cs = num_local_rounds * C_n * self.num_samples # (N, )
-        opt_tau = tau * (1-eta)/a - penalty_time # (N, ) penalty time for chosing uav # broadcasting   
+        opt_tau = tau * (1-eta)/self.an - penalty_time # (N, ) penalty time for chosing uav # broadcasting   
         print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
 
         # Normalization variables for faster convergence 
@@ -309,7 +314,7 @@ class NetworkOptim:
 
         # calculate number of local, global rounds 
         num_local_rounds = v * math.log2(1/eta)
-        num_global_rounds = a / (1-eta)
+        num_global_rounds = self.an / (1-eta)
 
         # calculate computation time for one local_round 
         t_cp_1 = (tau / num_global_rounds - t_co) / num_local_rounds # (N, )
@@ -318,7 +323,10 @@ class NetworkOptim:
         freqs = C_n * self.num_samples / t_cp_1 # (N, )
         return freqs
 
-    def optimize_network_fake(self, tau, decs):
+    def optimize_network_fake(self, tau, decs, cround=0):
+        # update a_n for calculating the number of global rounds 
+        self.update_an(cround=cround)
+
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
@@ -365,7 +373,7 @@ class NetworkOptim:
             iter += 1 
         
         num_local_rounds = v * math.log2(1/eta)
-        num_global_rounds = a / (1 - eta)
+        num_global_rounds = self.an / (1 - eta)
         print(f"optimize_network_fake num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
         return num_local_rounds, num_global_rounds
 

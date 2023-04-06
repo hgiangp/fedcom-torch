@@ -17,6 +17,7 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 # Offloading, global aggregation params 
 xi_factor = 0.1 # global gradient factor 
 epsilon_0 = 5*1e-3 # global accuracy 
+epsilon_alpha = 1.1 # alpha factor for decreasing the accuracy  
 compression_ratio = 0.1 # 1-0.95
 s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
@@ -44,10 +45,11 @@ a_env, b_env = 15, 0.5 # evironment constants
 
 # Calculable params 
 v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr) # v = 28.004615160578467 
-a = 2 * (L_Lipschitz**2) * math.log(1/epsilon_0) / ((gamma_cv**2) * xi_factor) # a = 37.301878506503535
+a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1/epsilon_0) # a = 37.301878506503535
+a_alpha = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1/epsilon_alpha) # negative 
 
 print(f"v = {v}")
-print(f"a = {a}")
+print(f"a_0 = {a_0}\ta_alpha = {a_alpha}")
 
 # Optimization params 
 acc = 1e-4 # TODO

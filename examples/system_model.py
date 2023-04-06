@@ -32,16 +32,16 @@ class SystemModel:
         deadline = int(1.8 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
         
         tau = deadline
-        t0 = tau / 50 # TODO: set value of t0 
+        t0 = tau / 100 # TODO: set value of t0 
         
         print(f"system_model train() deadline = {deadline}\ttau = {tau}\tt0 = {t0}")
         iter = 0 # TODO: printing only 
         while tau > t_min: 
             print(f"system_model Round {iter}\n-------------------------------") 
-            num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs)
+            num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
             print(f"system_model iter = {iter}\ttau = {tau}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
             # TODO: view number of global rounds
-            self.fed_model.train(num_epochs=int(num_local_rounds), curr_round=iter)
+            self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
             print("update_location") # for the next global round
             self.net_optim.update_channel_gains()
             tau = tau - t0
