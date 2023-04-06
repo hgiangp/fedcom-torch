@@ -29,7 +29,7 @@ class SystemModel:
     
     def train(self): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
-        deadline = int(2 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
+        deadline = int(2.2 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
         
         tau = deadline
         t0 = tau / 100 # TODO: set value of t0 
