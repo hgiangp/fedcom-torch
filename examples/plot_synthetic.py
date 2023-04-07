@@ -25,7 +25,6 @@ def parse_log(file_name):
     return rounds, acc, loss, sim 
 
 def test_parse_log(in_file, out_file): 
-    # file_name = './server_model.log'
     rounds, acc, loss, sim = parse_log(file_name=in_file)
 
     print(f"acc = \n{acc[-5:]}") 
@@ -55,6 +54,6 @@ def test_parse_log(in_file, out_file):
 
 
 if __name__=='__main__': 
-    # in_file, out_file = './system_model.log', 'plot_synthetic_10.png' 
+    # in_file, out_file = './system_model.log', 'plot_synthetic_dy.png' 
     in_file, out_file = './server_model.log', 'plot_synthetic.png' 
     test_parse_log(in_file, out_file)
