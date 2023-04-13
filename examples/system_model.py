@@ -58,7 +58,7 @@ class SystemModel:
         print("Done!")
 
 def test(): 
-    sm = SystemModel()
+    sm = SystemModel(updated_dist=5)
     sm.train()
 
 if __name__=="__main__": 
