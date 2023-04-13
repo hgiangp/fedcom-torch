@@ -88,7 +88,7 @@ class Client:
                 self.optimizer.step()  # update model parameters
 
                 # print log
-                loss, current = loss.item(), batch * len(X)
+                loss, current = loss.item(), (batch+1)*len(X)
                 print(f"train() client id: {self.id}-{t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
                 # print(f"model.parameters() =\n{self.model.get_params()}")
     
