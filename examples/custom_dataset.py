@@ -60,8 +60,8 @@ def load_dataloader(train_dict, test_dict):
     test_data = CustomDataset(test_dict)
 
     # Init DataLoader 
-    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
-    testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True, drop_last=True)
+    testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True, drop_last=False)
     return traindata_loader, testdata_loader
 
 def test_load_data(user_id): 
