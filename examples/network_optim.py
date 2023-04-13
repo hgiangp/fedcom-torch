@@ -324,9 +324,6 @@ class NetworkOptim:
         return freqs
 
     def optimize_network_fake(self, tau, decs, cround=0):
-        # update a_n for calculating the number of global rounds 
-        self.update_an(cround=cround)
-
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
@@ -374,7 +371,10 @@ class NetworkOptim:
         
         num_local_rounds = v * math.log2(1/eta)
         num_global_rounds = self.an / (1 - eta)
-        print(f"optimize_network_fake num_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+        
+        # update a_n for calculating the next global iteration  
+        self.update_an(cround=cround)
+
         return num_local_rounds, num_global_rounds, self.an # (i, n, a_n)
 
     def calc_bs_gains(self, xs, ys): 

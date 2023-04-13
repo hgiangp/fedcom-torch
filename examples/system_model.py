@@ -37,14 +37,17 @@ class SystemModel:
         print(f"system_model train() deadline = {deadline}\ttau = {tau}\tt0 = {t0}")
         iter = 0 # TODO: printing only 
         while 1: 
-            print(f"system_model Round {iter}\n-------------------------------") 
+            print(f"Round {iter}\n-------------------------------") 
             num_local_rounds, num_global_rounds, a_n = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
-            print(f"system_model iter = {iter}\ttau = {tau}\ta_n = {a_n}\tnum_local_rounds = {num_local_rounds}\tnum_global_rounds = {num_global_rounds}")
+            print("At round {} local rounds: {}".format(iter, num_local_rounds))
+            print("At round {} global rounds: {}".format(iter, num_global_rounds))
+            print("At round {} a_n: {}".format(iter, a_n))
+            
             # TODO: view number of global rounds
             self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
 
             # check stop condition 
-            if a_n < 1: 
+            if a_n < 0: 
                 break 
 
             # not stop, update location for the next global round 
