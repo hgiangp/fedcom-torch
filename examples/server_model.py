@@ -146,7 +146,7 @@ def test(model_dim=(5, 3), dataset_name='synthetic'):
     # t.get_num_samples()
     # t.get_mod_size()
     # print("test_calc_msize()", test_calc_msize(t))
-    num_rounds = 200 
+    num_rounds = 80 
     for i in range(num_rounds):
         t.train(num_epochs=30, cround=i)
     
