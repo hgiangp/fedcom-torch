@@ -26,7 +26,7 @@ class NetworkOptim:
 
     def update_an(self, cround=0): 
         self.an =  a_0 + cround * a_alpha
-        print(f"self.an = {self.an}")
+        # print(f"self.an = {self.an}")
 
     def update_channel_gains(self): 
         r"Update uav_gains, bs_gains of users"

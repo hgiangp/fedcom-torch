@@ -4,7 +4,7 @@ import numpy as np
 
 def parse_log(file_name): 
     rounds, acc, loss, sim = [], [], [], []
-    lrounds, grounds = [], [] 
+    lrounds, grounds, ans = [], [], []
     
     for line in open(file_name, 'r'):
         search_train_acc = re.search(r'At round (.*) training accuracy: (.*)', line, re.M|re.I)
@@ -31,10 +31,14 @@ def parse_log(file_name):
         if search_ground: 
             grounds.append(float(search_ground.group(2)))    
     
-    return rounds, acc, loss, sim, lrounds, grounds
+        search_an = re.search(r'At round (.*) a_n: (.*)', line, re.M|re.I)
+        if search_an: 
+            ans.append(float(search_an.group(2)))
+        
+    return rounds, acc, loss, sim, lrounds, grounds, ans 
 
 def test_parse_log(in_file, out_file1, out_file2): 
-    rounds, acc, loss, sim, lrounds, grounds = parse_log(file_name=in_file)
+    rounds, acc, loss, sim, lrounds, grounds, ans = parse_log(file_name=in_file)
 
     print(f"acc = \n{acc[-5:]}") 
     print(f"loss = \n{loss[-5:]}") 
@@ -46,6 +50,7 @@ def test_parse_log(in_file, out_file1, out_file2):
     sim = np.asarray(sim)
     lrounds = np.asarray(lrounds)
     grounds = np.asarray(grounds)
+    ans = np.asarray(ans)
 
     plt.figure(1)
     plt.subplot(311)
@@ -64,13 +69,17 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.show()
 
     plt.figure(2)
-    plt.subplot(211)
+    plt.subplot(311)
     plt.plot(rounds, lrounds)
     plt.ylabel("Local rounds")
 
-    plt.subplot(212)
+    plt.subplot(312)
     plt.plot(rounds, grounds)
     plt.ylabel("Global rounds")
+    
+    plt.subplot(313)
+    plt.plot(rounds, ans)
+    plt.ylabel("a_n")
 
     plt.savefig(out_file2)
     plt.show()
