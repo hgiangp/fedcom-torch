@@ -54,6 +54,6 @@ def test_parse_log(in_file, out_file):
 
 
 if __name__=='__main__': 
-    # in_file, out_file = './system_model.log', 'plot_synthetic_dy.png' 
-    in_file, out_file = './server_model.log', 'plot_synthetic.png' 
+    in_file, out_file = './logs/system_model.log', './logs/plot_synthetic_dy.png' 
+    # in_file, out_file = './logs/server_model.log', './figures/plot_synthetic.png' 
     test_parse_log(in_file, out_file)
