@@ -41,12 +41,11 @@ def dinkelbach_method(af, bf):
     acc = 1e-4 # absolute tolerant 
 
     eta = 1.0
-    zeta = af * 1.01 
+    zeta = af * 1.1 
     h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
 
     while 1:
-        eta = af / zeta # calculate temporary optimal eta
-        
+        eta = af / zeta # calculate temporary optimal eta # too large eta make the cost trap         
         print(f"af = {af}\tbf = {bf}\tzeta = {zeta}\teta = {eta}")
         h_curr = af * math.log(1/eta) + bf - zeta * (1 - eta) # check stop condition
         if abs(h_curr - h_prev) < acc: 
