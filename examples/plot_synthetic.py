@@ -77,11 +77,11 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.figure(2)
     plt.subplot(411)
     plt.plot(rounds, lrounds)
-    plt.ylabel("Local rounds")
+    plt.ylabel("Lrounds")
 
     plt.subplot(412)
     plt.plot(rounds, grounds)
-    plt.ylabel("Global rounds")
+    plt.ylabel("Grounds")
     
     plt.subplot(413)
     plt.plot(rounds, ans)
