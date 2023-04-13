@@ -368,13 +368,14 @@ class NetworkOptim:
 
             obj_prev = obj
             iter += 1 
-        
+
         num_local_rounds = v * math.log2(1/eta)
         num_global_rounds = self.an / (1 - eta)
         
         # update a_n for calculating the next global iteration  
         self.update_an(cround=cround)
 
+        print("At round {} eta: {}".format(cround, eta))        
         return num_local_rounds, num_global_rounds, self.an # (i, n, a_n)
 
     def calc_bs_gains(self, xs, ys): 
