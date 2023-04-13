@@ -20,7 +20,7 @@ def solve_bound_eta(af, bf, tau):
 
         xs_min = (bf - tau)/af - w0.real # (N, ) # all negative
         xs_max = (bf - tau)/af - w_1.real # (N, ) # all negative 
-        print(f"solve_bound_eta tmp = {tmp}\nxs_min = {xs_min}\nxs_max = {xs_max}")
+        # print(f"solve_bound_eta tmp = {tmp}\nxs_min = {xs_min}\nxs_max = {xs_max}")
 
         x_min = np.max(xs_min) # 1 
         x_max = np.min(xs_max) # 1 

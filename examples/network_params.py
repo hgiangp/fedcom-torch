@@ -17,7 +17,8 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 # Offloading, global aggregation params 
 xi_factor = 0.1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
-epsilon_alpha = 1.1 # alpha factor for decreasing the accuracy  
+epsilon_alpha = 1.09 # alpha factor for decreasing the accuracy > 1
+epsilon_a =   1.3 # > 1 n \approx 151 
 compression_ratio = 0.1 # 1-0.95
 s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
@@ -44,8 +45,8 @@ de_u = 2.5 # pathloss exponent, connect to uav
 a_env, b_env = 15, 0.5 # evironment constants
 
 # Calculable params 
-v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr) # v = 28.004615160578467 
-a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1/epsilon_0) # a = 37.301878506503535
+v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr)
+a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / (epsilon_alpha * epsilon_0))
 a_alpha = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1/epsilon_alpha) # negative 
 
 print(f"v = {v}")
