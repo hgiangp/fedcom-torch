@@ -46,7 +46,7 @@ a_env, b_env = 15, 0.5 # evironment constants
 
 # Calculable params 
 v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr)
-a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / (epsilon_alpha * epsilon_0))
+a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / (epsilon_a * epsilon_0))
 a_alpha = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1/epsilon_alpha) # negative 
 
 print(f"v = {v}")
