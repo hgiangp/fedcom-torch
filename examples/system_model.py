@@ -32,7 +32,7 @@ class SystemModel:
         deadline = int(2.3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO
         
         tau = deadline
-        t0 = tau / 150 # TODO: set value of t0 
+        t0 = tau / 200 # TODO: set value of t0 
         
         print(f"system_model train() deadline = {deadline}\ttau = {tau}\tt0 = {t0}")
         iter = 0 # TODO: printing only 
