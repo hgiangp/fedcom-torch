@@ -37,10 +37,9 @@ class SystemModel:
         iter = 0 # TODO: printing only 
         while 1: 
             print(f"Round {iter}\n-------------------------------") 
-            num_local_rounds, num_global_rounds, a_n = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
+            a_n, num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
             print("At round {} local rounds: {}".format(iter, num_local_rounds))
             print("At round {} global rounds: {}".format(iter, num_global_rounds))
-            print("At round {} a_n: {}".format(iter, a_n))
             
             # TODO: view number of global rounds
             self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
@@ -56,10 +55,52 @@ class SystemModel:
             iter += 1
 
         print("Done!")
+    
+    def train_fixedi(self):
+        t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
+        
+        tau = int(3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
+        t0 = t_min / 200 # TODO: set value of t0
+        print(f"system_model train() tau = {tau}\tt0 = {t0}\tt_min = {t_min}")
+        
+        # Optimize network at the first iteration 
+        iter = 0 # TODO: printing only 
+
+        a_n, num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs, cround=0)
+        print("At round {} local rounds: {}".format(iter, num_local_rounds))
+        print("At round {} global rounds: {}".format(iter, num_global_rounds))
+
+        max_round = int(num_global_rounds) - 1 
+
+        # FL training 
+        while 1: 
+            print(f"Round {iter}\n-------------------------------")             
+            # TODO: view number of global rounds
+            self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
+
+            # check stop condition 
+            if iter == max_round: 
+                break 
+
+            # not stop, update location for the next global round 
+            print("update_location") 
+            self.net_optim.update_channel_gains()
+            iter += 1
+
+            # Calculate energy consumption in the next iteration 
+            obj = self.net_optim.calc_total_energy(self.net_optim.eta, self.net_optim.freqs, self.net_optim.decs, self.net_optim.powers).sum()
+            print("At round {} energy consumption: {}".format(iter, obj))
+            
+        print("Done!")
 
 def test(): 
     sm = SystemModel(updated_dist=5)
     sm.train()
 
+def test_fixedi(): 
+    sm = SystemModel(updated_dist=5)
+    sm.train_fixedi()
+
 if __name__=="__main__": 
-    test()
+    # test()
+    test_fixedi()

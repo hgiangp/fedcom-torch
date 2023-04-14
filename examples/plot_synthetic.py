@@ -105,7 +105,39 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.savefig("./figures/plot_synthetic_ene.png")
     plt.show()
 
+def test_fixedi(in_file='./logs/system_model_fixedi.log'): 
+    rounds, acc, loss, sim, _, _, _, _, energies = parse_log(file_name=in_file)
+
+    rounds = np.asarray(rounds)
+    acc = np.asarray(acc) * 100
+    loss = np.asarray(loss)
+    sim = np.asarray(sim)
+    energies = np.asarray(energies)
+
+    plt.figure(1)
+    plt.subplot(311)
+    plt.plot(rounds, acc)
+    plt.ylabel("Accuracy")
+    
+    plt.subplot(312)
+    plt.plot(rounds, loss)
+    plt.ylabel("Loss")
+        
+    plt.subplot(313)
+    plt.plot(rounds, sim)
+    plt.ylabel("Dissimilarity")
+
+    plt.savefig("./figures/plot_synthetic_fixedi.png") # plt.savefig('plot_mnist.png')
+    plt.show()
+
+    plt.figure(2)
+    plt.plot(rounds, energies)
+    plt.ylabel("Energy consumption (J)")
+    plt.savefig("./figures/plot_synthetic_ene_fixedi.png")
+    plt.show()
+
 if __name__=='__main__': 
     in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
     # in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
-    test_parse_log(in_file, out_file1, out_file2)
+    # test_parse_log(in_file, out_file1, out_file2)
+    test_fixedi()

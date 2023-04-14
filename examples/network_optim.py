@@ -14,6 +14,12 @@ class NetworkOptim:
         self.loc_model = LocationModel(num_users, updated_dist)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
         self.an = a_0 # initialize with current round = 0 
+        
+        # For saving the optimal result 
+        self.eta = 0.01
+        self.freqs = freq_max 
+        self.powers = power_max 
+        self.decs = np.zeros(num_users)
 
     def calc_channel_gains(self): 
         xs, ys = self.loc_model.get_location()
@@ -376,8 +382,16 @@ class NetworkOptim:
         self.update_an(cround=cround)
         
         print("At round {} energy consumption: {}".format(cround, obj_prev)) # stop at obj_prev neat obj
-        print("At round {} eta: {}".format(cround, eta))        
-        return num_local_rounds, num_global_rounds, self.an # (i, n, a_n)
+        print("At round {} eta: {}".format(cround, eta))  
+        print("At round {} a_n: {}".format(cround, self.an))
+
+        # update optimal result for class 
+        self.eta = eta 
+        self.freqs = freqs
+        self.powers = powers 
+        self.decs = decs
+
+        return self.an, num_local_rounds, num_global_rounds # (i, n, a_n)
 
     def calc_bs_gains(self, xs, ys): 
         r""" Calculate propagation channel gains, connect to bs 
