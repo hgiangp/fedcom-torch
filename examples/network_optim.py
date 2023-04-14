@@ -358,7 +358,7 @@ class NetworkOptim:
 
             # Check stop condition
             obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
-            print(f"optimize_network_iter = {iter} obj = {obj}")
+            print(f"optimize_network iter = {iter} obj = {obj}")
             print(f"eta = {eta}")
             print(f"freqs = {freqs}")
 
@@ -374,7 +374,8 @@ class NetworkOptim:
         
         # update a_n for calculating the next global iteration  
         self.update_an(cround=cround)
-
+        
+        print("At round {} energy consumption: {}".format(cround, obj_prev)) # stop at obj_prev neat obj
         print("At round {} eta: {}".format(cround, eta))        
         return num_local_rounds, num_global_rounds, self.an # (i, n, a_n)
 

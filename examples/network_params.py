@@ -54,4 +54,4 @@ print(f"a_0 = {a_0}\ta_alpha = {a_alpha}")
 
 # Optimization params 
 acc = 1e-4 # TODO
-iter_max = 10 # TODO
+iter_max = 20 # TODO

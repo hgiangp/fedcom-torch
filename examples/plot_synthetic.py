@@ -5,7 +5,7 @@ import numpy as np
 def parse_log(file_name): 
     rounds, acc, loss, sim = [], [], [], []
     lrounds, grounds, ans = [], [], []
-    etas = []
+    etas, energies = [], []
     
     for line in open(file_name, 'r'):
         search_train_acc = re.search(r'At round (.*) training accuracy: (.*)', line, re.M|re.I)
@@ -40,10 +40,14 @@ def parse_log(file_name):
         if search_eta: 
             etas.append(float(search_eta.group(2)))
         
-    return rounds, acc, loss, sim, lrounds, grounds, ans, etas 
+        search_ene = re.search(r'At round (.*) energy consumption: (.*)', line, re.M|re.I)
+        if search_ene: 
+            energies.append(float(search_ene.group(2)))
+                
+    return rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies
 
 def test_parse_log(in_file, out_file1, out_file2): 
-    rounds, acc, loss, sim, lrounds, grounds, ans, etas = parse_log(file_name=in_file)
+    rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies = parse_log(file_name=in_file)
 
     print(f"acc = \n{acc[-5:]}") 
     print(f"loss = \n{loss[-5:]}") 
@@ -57,6 +61,7 @@ def test_parse_log(in_file, out_file1, out_file2):
     grounds = np.asarray(grounds)
     ans = np.asarray(ans)
     etas = np.asarray(etas)
+    energies = np.asarray(energies)
 
     plt.figure(1)
     plt.subplot(311)
@@ -94,7 +99,13 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.savefig(out_file2)
     plt.show()
 
+    plt.figure(3)
+    plt.plot(rounds, energies)
+    plt.ylabel("Energy consumption (J)")
+    plt.savefig("plot_synthetic_ene.png")
+    plt.show()
+
 if __name__=='__main__': 
-    # in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
-    in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
+    in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
+    # in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
     test_parse_log(in_file, out_file1, out_file2)
