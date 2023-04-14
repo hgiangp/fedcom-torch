@@ -102,7 +102,7 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.figure(3)
     plt.plot(rounds, energies)
     plt.ylabel("Energy consumption (J)")
-    plt.savefig("plot_synthetic_ene.png")
+    plt.savefig("./figures/plot_synthetic_ene.png")
     plt.show()
 
 if __name__=='__main__': 
