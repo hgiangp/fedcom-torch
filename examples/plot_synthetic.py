@@ -136,8 +136,23 @@ def test_fixedi(in_file='./logs/system_model_fixedi.log'):
     plt.savefig("./figures/plot_synthetic_ene_fixedi.png")
     plt.show()
 
+def ene_plot():
+    rounds_dy, acc_dy, loss_dy, sim_dy, lrounds_dy, grounds_dy, ans_dy, etas_dy, energies_dy = parse_log('./logs/system_model.log')
+    rounds, acc, loss, sim, _, _, _, _, energies = parse_log('./logs/system_model_fixedi.log')
+
+    max_round = len(rounds_dy)
+    plt.figure(1)
+    plt.plot(rounds_dy, energies_dy, label='Dynamic')
+    plt.plot(rounds[:max_round], energies[:max_round], label='Fixed i')
+    plt.grid(visible=True, which='both')
+    plt.legend()
+    plt.savefig('./figures/plot_synthetic_ene_compared.png')
+    plt.show()
+
+
 if __name__=='__main__': 
     in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
     # in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
     # test_parse_log(in_file, out_file1, out_file2)
-    test_fixedi()
+    # test_fixedi()
+    ene_plot()
