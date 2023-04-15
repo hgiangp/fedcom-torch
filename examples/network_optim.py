@@ -392,9 +392,6 @@ class NetworkOptim:
         self.freqs = freqs
         self.powers = powers 
         self.decs = decs
-
-        # update a_n for calculating the next global iteration  
-        self.update_an(cround=cround)
         
         # calculate energy consumption at current iteration 
         curr_ene = self.calc_total_energy_fixedi(int(num_local_rounds), 1).sum()
@@ -403,6 +400,9 @@ class NetworkOptim:
         print("At round {} eta: {}".format(cround, eta))  
         print("At round {} a_n: {}".format(cround, self.an))
 
+        # update a_n for calculating the next global iteration  
+        self.update_an(cround=cround)
+        
         return self.an, num_local_rounds, num_global_rounds # (i, n, a_n)
 
     def calc_bs_gains(self, xs, ys): 
