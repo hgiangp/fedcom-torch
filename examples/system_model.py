@@ -71,6 +71,7 @@ class SystemModel:
         print("At round {} global rounds: {}".format(iter, num_global_rounds))
 
         max_round = int(num_global_rounds) - 1 
+        num_grounds = int(num_global_rounds)
 
         # FL training 
         while 1: 
@@ -88,7 +89,8 @@ class SystemModel:
             iter += 1
 
             # Calculate energy consumption in the next iteration 
-            obj = self.net_optim.calc_total_energy(self.net_optim.eta, self.net_optim.freqs, self.net_optim.decs, self.net_optim.powers).sum()
+            num_grounds -= 1 
+            obj = self.net_optim.calc_total_energy_fixedi(int(num_local_rounds), num_grounds).sum()
             print("At round {} energy consumption: {}".format(iter, obj))
             
         print("Done!")

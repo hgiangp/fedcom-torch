@@ -98,6 +98,15 @@ class NetworkOptim:
         energy = num_global_rounds * (ene_coms + ene_comp)
         print(f"ene_total = {energy}")
         return energy
+    
+    def calc_total_energy_fixedi(self, num_lrounds, num_grounds): 
+        ene_coms = self.calc_trans_energy(self.decs, self.powers)
+        ene_comp = self.calc_comp_energy(num_lrounds, self.freqs)
+        print(f"ene_coms = {ene_coms}\nene_comp = {ene_comp}")
+
+        energy = num_grounds * (ene_coms + ene_comp)
+        print(f"ene_total = {energy}")
+        return energy
 
     def calc_total_time(self, eta, freqs, decs, powers): 
         num_local_rounds = v * math.log2(1/eta)
