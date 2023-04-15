@@ -139,5 +139,5 @@ def test_fixedi(in_file='./logs/system_model_fixedi.log'):
 if __name__=='__main__': 
     in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
     # in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
-    # test_parse_log(in_file, out_file1, out_file2)
-    test_fixedi()
+    test_parse_log(in_file, out_file1, out_file2)
+    # test_fixedi()

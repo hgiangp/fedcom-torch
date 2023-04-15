@@ -386,19 +386,22 @@ class NetworkOptim:
 
         num_local_rounds = v * math.log2(1/eta)
         num_global_rounds = self.an / (1 - eta)
-        
-        # update a_n for calculating the next global iteration  
-        self.update_an(cround=cround)
-        
-        print("At round {} energy consumption: {}".format(cround, obj_prev)) # stop at obj_prev neat obj
-        print("At round {} eta: {}".format(cround, eta))  
-        print("At round {} a_n: {}".format(cround, self.an))
 
         # update optimal result for class 
         self.eta = eta 
         self.freqs = freqs
         self.powers = powers 
         self.decs = decs
+
+        # update a_n for calculating the next global iteration  
+        self.update_an(cround=cround)
+        
+        # calculate energy consumption at current iteration 
+        curr_ene = self.calc_total_energy_fixedi(int(num_local_rounds), 1).sum()
+
+        print("At round {} energy consumption: {}".format(cround, curr_ene)) # stop at obj_prev neat obj
+        print("At round {} eta: {}".format(cround, eta))  
+        print("At round {} a_n: {}".format(cround, self.an))
 
         return self.an, num_local_rounds, num_global_rounds # (i, n, a_n)
 

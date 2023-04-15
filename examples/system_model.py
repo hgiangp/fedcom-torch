@@ -104,5 +104,5 @@ def test_fixedi():
     sm.train_fixedi()
 
 if __name__=="__main__": 
-    # test()
-    test_fixedi()
+    test()
+    # test_fixedi()
