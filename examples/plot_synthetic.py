@@ -131,7 +131,7 @@ def test_fixedi(in_file='./logs/system_model_fixedi.log'):
     plt.show()
 
     plt.figure(2)
-    plt.plot(rounds, energies)
+    plt.plot(rounds[:81], energies[:81])
     plt.ylabel("Energy consumption (J)")
     plt.savefig("./figures/plot_synthetic_ene_fixedi.png")
     plt.show()
