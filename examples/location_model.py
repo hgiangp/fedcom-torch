@@ -1,16 +1,16 @@
 import numpy as np 
 
-seed = 42
+seed = 1
 rng = np.random.default_rng(seed=seed)
 class LocationModel: 
-    def __init__(self, num_users=10, updated_dist=100, width=20, height=100):
+    def __init__(self, num_users=10, updated_dist=100, width=20, height=200):
         self.num_users = num_users 
         self.width = width 
         self.height = height 
         self.updated_dist = updated_dist
         self.xs, self.ys, self.dirs = self.init_location()
 
-    def init_location(self):
+    def init_location2(self):
         width, height = self.width, self.height 
         num_users = self.num_users        
         dirs = np.zeros(num_users, dtype=int)
@@ -31,24 +31,22 @@ class LocationModel:
     
         return xs, ys, dirs
 
-    def init_location2(self):
-        width = self.width 
-        num_users = self.num_users
+    def init_location(self):
+        width, height = self.width, self.height 
+        num_users = self.num_users 
+        
+        dirs = rng.integers(low=0, high=4, size=num_users)
+        xs = np.zeros(num_users)
+        ys = np.zeros(num_users)
 
-        xs = rng.normal(loc=0, scale=width, size=(num_users))
-        ys = rng.normal(loc=0, scale=width, size=(num_users))
-        dirs = rng.integers(low=0, high=4, size=(num_users)) 
-
-        for i in range(num_users):
-            if xs[i] > width: 
-                dirs[i] = 0 
-            elif (- xs[i] > width): 
-                dirs[i] = 2 
-            elif ys[i] > width: 
-                dirs[i] = 1
-            elif (-ys[i] > width): 
-                dirs[i] = 3
-
+        for i, dir in enumerate(dirs):
+            if dir == 0 or dir == 2:
+                xs[i] = rng.normal(loc=0, scale=height)
+                ys[i] = rng.normal(loc=0, scale=width)
+            if dir == 1 or dir == 3: 
+                xs[i] = rng.normal(loc=0, scale=width)
+                ys[i] = rng.normal(loc=0, scale=height)
+    
         return xs, ys, dirs
 
     def update_location(self): 
