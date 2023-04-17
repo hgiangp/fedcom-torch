@@ -23,16 +23,14 @@ class NetworkOptim:
 
     def calc_channel_gains(self): 
         xs, ys = self.loc_model.get_location()
+        
         custom_print(xs, name="xs")
         custom_print(ys, name="ys")
-        uav_gains = self.calc_uav_gains(xs, ys)
-        bs_gains = self.calc_bs_gains(xs, ys)
+        print(f"xs mean: {xs.mean()}")
+        print(f"ys mean: {ys.mean()}")
 
-        # For log printting 
-        uav_gains_db = 10 * np.log10(uav_gains)
-        bs_gains_db = 10 * np.log10(bs_gains)
-        custom_print(uav_gains_db, name="uav_gains")
-        custom_print(bs_gains_db, name="bs_gains")
+        uav_gains = self.calc_uav_gains(xs, ys)
+        bs_gains = self.calc_bs_gains(xs, ys)        
         
         return uav_gains, bs_gains
 
@@ -422,7 +420,15 @@ class NetworkOptim:
         dists = np.sqrt(((xs - x_bs) ** 2) + ((ys - y_bs) ** 2))
         bs_gains = A_d * np.power((c / (4 * np.pi * f_c * dists)), de_r) 
         
+        # LOG TRACE 
         custom_print(dists, name="dists_bs")
+        
+        bs_gains_db = 10 * np.log10(bs_gains) 
+        custom_print(bs_gains_db, name="bs_gains")
+
+        bs_gains_db_mean = 10 * (np.log10(bs_gains)).mean() 
+        print(f"bs_gains_db_mean: {bs_gains_db_mean}")
+
         return bs_gains 
 
     def calc_uav_gains(self, xs, ys): 
@@ -438,7 +444,15 @@ class NetworkOptim:
         pLoSs = 1 / (1 + a_env * np.exp( -b_env * (thetas - a_env))) # (N, )
         uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
 
+        # LOG TRACE
         custom_print(dists, name="dists_uav")
+        uav_gains_db = 10 * np.log10(uav_gains)
+        
+        custom_print(uav_gains_db, name="uav_gains")
+        uav_gains_db_mean = 10 * (np.log10(uav_gains)).mean()
+        
+        print(f"uav_gains_db_mean: {uav_gains_db_mean}")
+
         return uav_gains
 
 def test_with_location():

@@ -46,17 +46,31 @@ def parse_log(file_name):
                 
     return rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies
 
-def parse_array(file_name): 
+def parse_gains(file_name): 
+    uav_gains, bs_gains = [], []
     for line in open(file_name, 'r'): 
-        search_uav = re.search(r'uav_gains = (.*)$', line, re.M|re.I)
+        search_uav = re.search(r'uav_gains_db_mean: (.*)$', line, re.M|re.I)
         if search_uav: 
-            print('Found')
-            print(search_uav.group(1))
-            break 
+            uav_gains.append(float(search_uav.group(1)))
+        
+        search_bs = re.search(r'bs_gains_db_mean: (.*)$', line, re.M|re.I)
+        if search_bs: 
+            bs_gains.append(float(search_bs.group(1)))
+    
+    return uav_gains, bs_gains
 
-def test_parse_arr(): 
-    in_file = './logs/system_model.log'
-    parse_array(in_file)
+def parse_locs(file_name): 
+    xs, ys = [], []
+    for line in open(file_name, 'r'): 
+        search_xs = re.search(r'xs mean: (.*)$', line, re.M|re.I)
+        if search_xs: 
+            xs.append(float(search_xs.group(1)))
+        
+        search_ys = re.search(r'ys mean: (.*)$', line, re.M|re.I)
+        if search_ys: 
+            ys.append(float(search_ys.group(1)))
+    
+    return xs, ys  
 
 def test_parse_log(in_file, out_file1, out_file2): 
     rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies = parse_log(file_name=in_file)
@@ -161,6 +175,33 @@ def ene_plot():
     plt.savefig('./figures/plot_synthetic_ene_compared.png')
     plt.show()
 
+def test_prase_gains(): 
+    uav_gains, bs_gains = parse_locs('./logs/system_model.log')
+    rounds = np.arange(0, len(uav_gains))
+    
+    plt.figure(1)
+    plt.plot(rounds, uav_gains, label='UAV Gains')
+    plt.plot(rounds, bs_gains, label='BS Gains')
+    plt.grid(visible=True, which='both')
+    plt.legend()
+    plt.xlabel('Global Rounds')
+    plt.ylabel('Channel Gains (dB)')
+    plt.savefig('./figures/channel_gains.png')
+    plt.show()
+
+def test_parse_loc(): 
+    loc_x, loc_y = parse_locs('./logs/system_model.log')
+    rounds = np.arange(0, len(loc_x))
+
+    plt.figure(1)
+    plt.plot(loc_x, loc_y, label='(x, y)')
+    plt.plot(rounds, loc_x, label='Loc x')
+    plt.plot(rounds, loc_y, label='Loc y')
+    plt.grid(visible=True, which='both')
+    plt.legend()
+
+    plt.savefig('./figures/locations.png')
+    plt.show()
 
 if __name__=='__main__': 
     in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
@@ -168,4 +209,5 @@ if __name__=='__main__':
     # test_parse_log(in_file, out_file1, out_file2)
     # test_fixedi()
     # ene_plot()
-    test_parse_arr()
+    # test_prase_gains()
+    test_parse_loc()
