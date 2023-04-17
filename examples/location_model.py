@@ -3,13 +3,35 @@ import numpy as np
 seed = 42
 rng = np.random.default_rng(seed=seed)
 class LocationModel: 
-    def __init__(self, num_users=10, updated_dist=100, width=20):
+    def __init__(self, num_users=10, updated_dist=100, width=20, height=100):
         self.num_users = num_users 
         self.width = width 
+        self.height = height 
         self.updated_dist = updated_dist
         self.xs, self.ys, self.dirs = self.init_location()
 
     def init_location(self):
+        width, height = self.width, self.height 
+        num_users = self.num_users        
+        dirs = np.zeros(num_users, dtype=int)
+        ys = np.zeros(num_users)
+        xs = rng.normal(loc=0, scale=height, size=(num_users))
+
+        for i, x in enumerate(xs): 
+            if x > width: # dirs[i] = 0 as default 
+                ys[i] = rng.normal(scale=width)
+
+            if x < -width: 
+                dirs[i] = 2 
+                ys[i] = rng.normal(scale=width)
+
+            if -width < x and x < width: 
+                ys[i] = rng.normal(scale=height)
+                dirs[i] = 1 if ys[i] > 0 else 3
+    
+        return xs, ys, dirs
+
+    def init_location2(self):
         width = self.width 
         num_users = self.num_users
 

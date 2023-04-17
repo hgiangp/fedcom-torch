@@ -176,7 +176,7 @@ def ene_plot():
     plt.show()
 
 def test_prase_gains(): 
-    uav_gains, bs_gains = parse_locs('./logs/system_model.log')
+    uav_gains, bs_gains = parse_gains('./logs/system_model.log')
     rounds = np.arange(0, len(uav_gains))
     
     plt.figure(1)
@@ -194,7 +194,7 @@ def test_parse_loc():
     rounds = np.arange(0, len(loc_x))
 
     plt.figure(1)
-    plt.plot(loc_x, loc_y, label='(x, y)')
+    # plt.plot(loc_x, loc_y, label='(x, y)')
     plt.plot(rounds, loc_x, label='Loc x')
     plt.plot(rounds, loc_y, label='Loc y')
     plt.grid(visible=True, which='both')
@@ -209,5 +209,5 @@ if __name__=='__main__':
     # test_parse_log(in_file, out_file1, out_file2)
     # test_fixedi()
     # ene_plot()
-    # test_prase_gains()
+    test_prase_gains()
     test_parse_loc()
