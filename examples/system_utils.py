@@ -23,4 +23,4 @@ def load_data(dataset_name='synthetic'):
     train_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'train')
     test_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'test')
     dataset = read_data(train_dir, test_dir)
-    return dataset 
+    return dataset

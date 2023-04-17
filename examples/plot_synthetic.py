@@ -46,6 +46,18 @@ def parse_log(file_name):
                 
     return rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies
 
+def parse_array(file_name): 
+    for line in open(file_name, 'r'): 
+        search_uav = re.search(r'uav_gains = (.*)$', line, re.M|re.I)
+        if search_uav: 
+            print('Found')
+            print(search_uav.group(1))
+            break 
+
+def test_parse_arr(): 
+    in_file = './logs/system_model.log'
+    parse_array(in_file)
+
 def test_parse_log(in_file, out_file1, out_file2): 
     rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies = parse_log(file_name=in_file)
 
@@ -155,4 +167,5 @@ if __name__=='__main__':
     # in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
     # test_parse_log(in_file, out_file1, out_file2)
     # test_fixedi()
-    ene_plot()
+    # ene_plot()
+    test_parse_arr()

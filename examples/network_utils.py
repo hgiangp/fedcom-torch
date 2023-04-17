@@ -55,4 +55,10 @@ def dinkelbach_method(af, bf):
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
     
     # print(f"eta = {eta}")
-    return eta 
+    return eta
+
+def custom_print(xs, name="xs"):
+    print(name, end=' = ')
+    for x in xs: 
+        print(f'{x:>6f} ', end='')
+    print()

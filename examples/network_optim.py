@@ -23,10 +23,16 @@ class NetworkOptim:
 
     def calc_channel_gains(self): 
         xs, ys = self.loc_model.get_location()
-        print(f"xs = {xs}\nys = {ys}")
+        custom_print(xs, name="xs")
+        custom_print(ys, name="ys")
         uav_gains = self.calc_uav_gains(xs, ys)
         bs_gains = self.calc_bs_gains(xs, ys)
-        print(f"uav_gains = {uav_gains}\nbs_gains = {bs_gains}")
+
+        # For log printting 
+        uav_gains_db = 10 * np.log10(uav_gains)
+        bs_gains_db = 10 * np.log10(bs_gains)
+        custom_print(uav_gains_db, name="uav_gains")
+        custom_print(bs_gains_db, name="bs_gains")
         
         return uav_gains, bs_gains
 
@@ -414,8 +420,9 @@ class NetworkOptim:
         """
         # Calculate the distances to the basestation
         dists = np.sqrt(((xs - x_bs) ** 2) + ((ys - y_bs) ** 2))
-        print(f"dists_bs = {dists}")
         bs_gains = A_d * np.power((c / (4 * np.pi * f_c * dists)), de_r) 
+        
+        custom_print(dists, name="dists_bs")
         return bs_gains 
 
     def calc_uav_gains(self, xs, ys): 
@@ -429,8 +436,9 @@ class NetworkOptim:
         dists = np.sqrt((xs ** 2) + (ys ** 2) + (z_uav ** 2)) # (N, )
         thetas = 180 / np.pi * np.arctan(z_uav / dists) # (N, )
         pLoSs = 1 / (1 + a_env * np.exp( -b_env * (thetas - a_env))) # (N, )
-        print(f"dists_uav =", dists)
         uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
+
+        custom_print(dists, name="dists_uav")
         return uav_gains
 
 def test_with_location():
