@@ -93,33 +93,40 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.subplot(311)
     plt.plot(rounds, acc)
     plt.ylabel("Accuracy")
-    
+    plt.grid(which='both')
+
     plt.subplot(312)
     plt.plot(rounds, loss)
     plt.ylabel("Loss")
+    plt.grid(which='both')
         
     plt.subplot(313)
     plt.plot(rounds, sim)
     plt.ylabel("Dissimilarity")
 
+    plt.grid(which='both')
     plt.savefig(out_file1) # plt.savefig('plot_mnist.png')
     plt.show()
 
     plt.figure(2)
     plt.subplot(411)
     plt.plot(rounds, lrounds)
+    plt.grid(which='both')
     plt.ylabel("Lrounds")
 
     plt.subplot(412)
     plt.plot(rounds, grounds)
+    plt.grid(which='both')
     plt.ylabel("Grounds")
     
     plt.subplot(413)
     plt.plot(rounds, ans)
+    plt.grid(which='both')
     plt.ylabel("a_n")
 
     plt.subplot(414)
     plt.plot(rounds, etas)
+    plt.grid(which='both')
     plt.ylabel("eta")
 
     plt.savefig(out_file2)
@@ -129,6 +136,7 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.plot(rounds, energies)
     plt.ylabel("Energy consumption (J)")
     plt.savefig("./figures/plot_synthetic_ene.png")
+    plt.grid(which='both')
     plt.show()
 
 def test_fixedi(in_file='./logs/system_model_fixedi.log'): 
