@@ -89,7 +89,7 @@ class Client:
 
                 # print log
                 loss, current = loss.item(), (batch+1)*len(X)
-                print(f"train() client id: {self.id}-{t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+                print(f"train() client id: {self.id}-{t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]  surr: {surr_term:>7f}")
                 # print(f"model.parameters() =\n{self.model.get_params()}")
     
         # print("Done!")
