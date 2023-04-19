@@ -149,7 +149,7 @@ def test(model_dim=(5, 3), dataset_name='synthetic'):
     # print("test_calc_msize()", test_calc_msize(t))
     num_rounds = 80 
     for i in range(num_rounds):
-        t.train(num_epochs=13, cround=i)
+        t.train(num_epochs=50, cround=i)
     
 
 if __name__=="__main__": 

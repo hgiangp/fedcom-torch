@@ -211,11 +211,13 @@ def test_parse_loc():
     plt.savefig('./figures/locations.png')
     plt.show()
 
-if __name__=='__main__': 
-    in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'  
-    # in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dump.png' 
+def test_system_model(): 
+    in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'
     test_parse_log(in_file, out_file1, out_file2)
-    # test_fixedi()
-    # ene_plot()
     test_prase_gains()
     test_parse_loc()
+
+if __name__=='__main__': 
+    # ene_plot()
+    # test_system_model()
+    test_fixedi()
