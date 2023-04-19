@@ -15,8 +15,9 @@ class Client:
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
         
-        self.xi_factor = 1 # TODO
-        self.diff_grads = {} 
+        self.xi_factor = 0.1 # TODO
+        self.diff_grads = {}
+        self.arx_params = copy.deepcopy(self.get_params()[1]) # archived params, save the local_params before a new global rounds
 
         self.initial_train() # for generating the initial grads (train without global grads)
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
@@ -48,7 +49,12 @@ class Client:
             set model.parameters = model_params 
         Hint: https://medium.com/@mrityu.jha/understanding-the-grad-of-autograd-fc8d266fd6cf
         """
+        # print(f"set_params params_dict = {params_dict}")
+        # Save the global params 
+        self.arx_params = copy.deepcopy(params_dict)
+        # Load the global params to model 
         self.model.set_params(params_dict)
+        # print(f"set_params arx_params = {self.arx_params}")
     
     def get_grads(self): 
         r"""Get model.parameters() gradients 
@@ -62,8 +68,11 @@ class Client:
         sum = 0.0
         local_params = self.get_params()[1]
 
+        # print(f"self.arx_params = {self.arx_params}")
+
         for k in local_params.keys():
-            sum += (local_params[k] * diff_gards[k]).sum()
+            h_k = local_params[k] - self.arx_params[k]
+            sum += (h_k * diff_gards[k]).sum()
         
         return sum
     
