@@ -15,7 +15,7 @@ class Client:
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
         
-        self.xi_factor = 0.1 # TODO
+        self.xi_factor = 1 # TODO
         self.diff_grads = {} 
 
         self.initial_train() # for generating the initial grads (train without global grads)
