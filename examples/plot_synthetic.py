@@ -221,8 +221,50 @@ def test_server_model():
     in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dumb.png'
     test_parse_log(in_file, out_file1, out_file2)
 
+def test_combine(): 
+    rounds_sys, acc_sys, loss_sys, sim_sys, _, _, _, _, _ = parse_log('./logs/system_model.log')
+    rounds_ser, acc_ser, loss_ser, sim_ser, _, _, _, _, _ = parse_log('./logs/server_model.log')
+
+    rounds_sys = np.asarray(rounds_sys)
+    acc_sys = np.asarray(acc_sys) * 100
+    loss_sys = np.asarray(loss_sys)
+    sim_sys = np.asarray(sim_sys)
+
+    rounds_ser = np.asarray(rounds_ser)
+    acc_ser = np.asarray(acc_ser) * 100
+    loss_ser = np.asarray(loss_ser)
+    sim_ser = np.asarray(sim_ser)
+
+    max_round = min(len(rounds_sys), len(rounds_ser))
+
+    plt.figure(1)
+    plt.subplot(311)
+    plt.plot(rounds_sys[:max_round], acc_sys[:max_round], label='system')
+    plt.plot(rounds_ser[:max_round], acc_ser[:max_round], label='server')
+    plt.ylabel("Accuracy")
+    plt.grid(which='both')
+    plt.legend()
+
+    plt.subplot(312)
+    plt.plot(rounds_sys[:max_round], loss_sys[:max_round], label='system')
+    plt.plot(rounds_ser[:max_round], loss_ser[:max_round], label='server')
+    plt.ylabel("Loss")
+    plt.grid(which='both')
+    # plt.legend()
+        
+    plt.subplot(313)
+    plt.plot(rounds_sys[:max_round], sim_sys[:max_round], label='system')
+    plt.plot(rounds_ser[:max_round], sim_ser[:max_round], label='server')
+    plt.ylabel("Dissimilarity")
+    plt.grid(which='both')
+    # plt.legend()
+
+    plt.savefig('./figures/plot_synthetic_fedl.png') 
+    plt.show()
+
 if __name__=='__main__': 
     # ene_plot()
     # test_system_model()
     # test_fixedi()
-    test_server_model()
+    # test_server_model()
+    test_combine()
