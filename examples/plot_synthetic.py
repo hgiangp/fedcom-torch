@@ -217,7 +217,12 @@ def test_system_model():
     test_prase_gains()
     test_parse_loc()
 
+def test_server_model(): 
+    in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dumb.png'
+    test_parse_log(in_file, out_file1, out_file2)
+
 if __name__=='__main__': 
     # ene_plot()
     # test_system_model()
-    test_fixedi()
+    # test_fixedi()
+    test_server_model()
