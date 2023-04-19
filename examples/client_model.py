@@ -132,8 +132,8 @@ class Client:
     
     def test(self): 
         r"""Evaluate on the test dataset"""
-        tot_correct, _ = self.common_test(self.test_loader)
-        return self.test_samples, tot_correct
+        tot_correct, loss = self.common_test(self.test_loader)
+        return self.test_samples, tot_correct, loss
 
     def train_error_and_loss(self): 
         r"""Evaluate on the train dataset"""

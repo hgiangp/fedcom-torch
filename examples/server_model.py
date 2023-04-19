@@ -86,18 +86,21 @@ class BaseFederated:
         print("At round {} accuracy: {}".format(cround, np.sum(stats[1])*1.0/np.sum(stats[0])))
         print("At round {} training accuracy: {}".format(cround, np.sum(stats_train[1])*1.0/np.sum(stats_train[0])))
         print("At round {} training loss: {}".format(cround, np.dot(stats_train[2], stats_train[0])*1.0/np.sum(stats_train[0])))
+        print("At round {} test loss: {}".format(cround, np.dot(stats[2], stats[0])*1.0/np.sum(stats[0])))
         
     
     def test(self):
         num_samples = []
         tot_correct = []
+        losses = []
 
         for c in self.clients: 
-            ns, ct = c.test()
+            ns, ct, cl = c.test()
             num_samples.append(ns)
             tot_correct.append(ct*1.0)
+            losses.append(cl*1.0)
 
-        return num_samples, tot_correct
+        return num_samples, tot_correct, losses
     
     def train_error_and_loss(self): 
         num_samples = []
@@ -147,9 +150,9 @@ def test(model_dim=(5, 3), dataset_name='synthetic'):
     # t.get_num_samples()
     # t.get_mod_size()
     # print("test_calc_msize()", test_calc_msize(t))
-    num_rounds = 200 
+    num_rounds = 300 
     for i in range(num_rounds):
-        t.train(num_epochs=50, cround=i)
+        t.train(num_epochs=13, cround=i)
     
 
 if __name__=="__main__": 

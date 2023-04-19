@@ -6,6 +6,7 @@ def parse_log(file_name):
     rounds, acc, loss, sim = [], [], [], []
     lrounds, grounds, ans = [], [], []
     etas, energies = [], []
+    test_loss = []
     
     for line in open(file_name, 'r'):
         search_train_acc = re.search(r'At round (.*) training accuracy: (.*)', line, re.M|re.I)
@@ -19,6 +20,11 @@ def parse_log(file_name):
         search_loss = re.search(r'At round (.*) training loss: (.*)', line, re.M|re.I)
         if search_loss: 
             loss.append(float(search_loss.group(2)))
+
+        search_test_loss = re.search(r'At round (.*) test loss: (.*)', line, re.M|re.I)
+        if search_test_loss: 
+            test_loss.append(float(search_test_loss.group(2)))
+        
 
         search_grad = re.search(r'gradient difference: (.*)', line, re.M|re.I)
         if search_grad: 
@@ -44,7 +50,7 @@ def parse_log(file_name):
         if search_ene: 
             energies.append(float(search_ene.group(2)))
                 
-    return rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies
+    return rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies, test_loss
 
 def parse_gains(file_name): 
     uav_gains, bs_gains = [], []
@@ -73,7 +79,7 @@ def parse_locs(file_name):
     return xs, ys  
 
 def test_parse_log(in_file, out_file1, out_file2): 
-    rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies = parse_log(file_name=in_file)
+    rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies, test_loss = parse_log(file_name=in_file)
 
     print(f"acc = \n{acc[-5:]}") 
     print(f"loss = \n{loss[-5:]}") 
@@ -88,19 +94,25 @@ def test_parse_log(in_file, out_file1, out_file2):
     ans = np.asarray(ans)
     etas = np.asarray(etas)
     energies = np.asarray(energies)
+    test_loss = np.asarray(test_loss)
 
     plt.figure(1)
-    plt.subplot(311)
+    plt.subplot(411)
     plt.plot(rounds, acc)
-    plt.ylabel("Accuracy")
+    plt.ylabel("Train Accuracy")
     plt.grid(which='both')
 
-    plt.subplot(312)
+    plt.subplot(412)
     plt.plot(rounds, loss)
-    plt.ylabel("Loss")
+    plt.ylabel("Train Loss")
+    plt.grid(which='both')
+
+    plt.subplot(413)
+    plt.plot(rounds, test_loss)
+    plt.ylabel("Test Loss")
     plt.grid(which='both')
         
-    plt.subplot(313)
+    plt.subplot(414)
     plt.plot(rounds, sim)
     plt.ylabel("Dissimilarity")
 
@@ -222,8 +234,8 @@ def test_server_model():
     test_parse_log(in_file, out_file1, out_file2)
 
 def test_combine(): 
-    rounds_sys, acc_sys, loss_sys, sim_sys, _, _, _, _, _ = parse_log('./logs/system_model.log')
-    rounds_ser, acc_ser, loss_ser, sim_ser, _, _, _, _, _ = parse_log('./logs/server_model.log')
+    rounds_sys, acc_sys, loss_sys, sim_sys, _, _, _, _, _, tloss_sys = parse_log('./logs/system_model.log')
+    rounds_ser, acc_ser, loss_ser, sim_ser, _, _, _, _, _, tloss_ser = parse_log('./logs/server_model.log')
 
     rounds_sys = np.asarray(rounds_sys)
     acc_sys = np.asarray(acc_sys) * 100
@@ -238,21 +250,27 @@ def test_combine():
     max_round = min(len(rounds_sys), len(rounds_ser))
 
     plt.figure(1)
-    plt.subplot(311)
+    plt.subplot(411)
     plt.plot(rounds_sys[:max_round], acc_sys[:max_round], label='system')
     plt.plot(rounds_ser[:max_round], acc_ser[:max_round], label='server')
-    plt.ylabel("Accuracy")
+    plt.ylabel("Train Accuracy")
     plt.grid(which='both')
     plt.legend()
 
-    plt.subplot(312)
+    plt.subplot(412)
     plt.plot(rounds_sys[:max_round], loss_sys[:max_round], label='system')
     plt.plot(rounds_ser[:max_round], loss_ser[:max_round], label='server')
-    plt.ylabel("Loss")
+    plt.ylabel("Train Loss")
     plt.grid(which='both')
     # plt.legend()
+
+    plt.subplot(413)
+    plt.plot(rounds_sys[:max_round], tloss_sys[:max_round], label='system')
+    plt.plot(rounds_ser[:max_round], tloss_ser[:max_round], label='server')
+    plt.ylabel("Test Loss")
+    plt.grid(which='both')
         
-    plt.subplot(313)
+    plt.subplot(414)
     plt.plot(rounds_sys[:max_round], sim_sys[:max_round], label='system')
     plt.plot(rounds_ser[:max_round], sim_ser[:max_round], label='server')
     plt.ylabel("Dissimilarity")
@@ -264,7 +282,7 @@ def test_combine():
 
 if __name__=='__main__': 
     # ene_plot()
-    test_system_model()
+    # test_system_model()
     # test_fixedi()
     # test_server_model()
-    # test_combine()
+    test_combine()
