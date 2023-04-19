@@ -264,7 +264,7 @@ def test_combine():
 
 if __name__=='__main__': 
     # ene_plot()
-    # test_system_model()
+    test_system_model()
     # test_fixedi()
     # test_server_model()
-    test_combine()
+    # test_combine()

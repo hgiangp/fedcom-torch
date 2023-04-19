@@ -15,7 +15,7 @@ class Client:
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
         
-        self.xi_factor = 1 # 0.1 TODO
+        self.xi_factor = 0.1 # 1 TODO
         self.diff_grads = {}
         self.arx_params = copy.deepcopy(self.get_params()[1]) # archived params, save the local_params before a new global rounds
 
