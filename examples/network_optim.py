@@ -371,10 +371,6 @@ class NetworkOptim:
             # Solve freqs f
             freqs = self.solve_freqs_fake(eta, decs, tau)
 
-            # LOG TRACE
-            t_total = self.calc_total_time(eta, freqs, decs, powers)
-            print(f"t_total = {t_total}")
-
             # Check stop condition
             obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
             print(f"optimize_network iter = {iter} obj = {obj}")
@@ -397,10 +393,15 @@ class NetworkOptim:
         self.powers = powers 
         self.decs = decs
         
-        # calculate energy consumption at current iteration 
-        curr_ene = self.calc_total_energy_fixedi(int(num_lrounds), 1).sum()
+        # calculate time, energy consumption at the current iteration 
+        t_co = self.calc_trans_time(self.decs, self.powers).sum()
+        e_co = self.calc_trans_energy(self.decs, self.powers).sum()
+        
+        t_cp = self.calc_comp_time(num_lrounds, self.freqs).sum()   
+        e_cp = self.calc_comp_energy(num_lrounds, self.freqs).sum()
 
-        print("At round {} energy consumption: {}".format(ground, curr_ene)) # stop at obj_prev neat obj
+        print("At round {} t_co: {} t_cp: {}".format(ground, t_co, t_cp))
+        print("At round {} e_co: {} e_cp: {}".format(ground, e_co, e_cp))
         print("At round {} eta: {}".format(ground, eta))  
         print("At round {} a_n: {}".format(ground, self.an))
 
