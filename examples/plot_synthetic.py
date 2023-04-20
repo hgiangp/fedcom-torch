@@ -2,10 +2,8 @@ import re
 import matplotlib.pyplot as plt
 import numpy as np 
 
-def parse_log(file_name): 
+def parse_fedlearn(file_name): 
     rounds, acc, loss, sim = [], [], [], []
-    lrounds, grounds, ans = [], [], []
-    etas, energies = [], []
     test_loss = []
     
     for line in open(file_name, 'r'):
@@ -25,11 +23,16 @@ def parse_log(file_name):
         if search_test_loss: 
             test_loss.append(float(search_test_loss.group(2)))
         
-
         search_grad = re.search(r'gradient difference: (.*)', line, re.M|re.I)
         if search_grad: 
             sim.append(float(search_grad.group(1)))
+        
+    return rounds, acc, loss, sim, test_loss
 
+def parse_netopt_params(file_name):
+    lrounds, grounds, ans, etas = [], [], [], []
+
+    for line in open(file_name, 'r'):
         search_lround = re.search(r'At round (.*) local rounds: (.*)', line, re.M|re.I)
         if search_lround: 
             lrounds.append(float(search_lround.group(2)))
@@ -37,7 +40,7 @@ def parse_log(file_name):
         search_ground = re.search(r'At round (.*) global rounds: (.*)', line, re.M|re.I)
         if search_ground: 
             grounds.append(float(search_ground.group(2)))    
-    
+
         search_an = re.search(r'At round (.*) a_n: (.*)', line, re.M|re.I)
         if search_an: 
             ans.append(float(search_an.group(2)))
@@ -45,12 +48,8 @@ def parse_log(file_name):
         search_eta = re.search(r'At round (.*) eta: (.*)', line, re.M|re.I)
         if search_eta: 
             etas.append(float(search_eta.group(2)))
-        
-        search_ene = re.search(r'At round (.*) energy consumption: (.*)', line, re.M|re.I)
-        if search_ene: 
-            energies.append(float(search_ene.group(2)))
-                
-    return rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies, test_loss
+    
+    return lrounds, grounds, ans, etas
 
 def parse_gains(file_name): 
     uav_gains, bs_gains = [], []
@@ -65,7 +64,7 @@ def parse_gains(file_name):
     
     return uav_gains, bs_gains
 
-def parse_locs(file_name): 
+def parse_locations(file_name): 
     xs, ys = [], []
     for line in open(file_name, 'r'): 
         search_xs = re.search(r'xs mean: (.*)$', line, re.M|re.I)
