@@ -15,7 +15,7 @@ C_n = 1e4 # TODO: testback # number of cpu cycles per sample
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
 
 # Offloading, global aggregation params 
-xi_factor = 0.1 # global gradient factor 
+xi_factor = 1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
 epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
 epsilon_a = 2 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
