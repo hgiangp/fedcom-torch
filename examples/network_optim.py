@@ -34,8 +34,8 @@ class NetworkOptim:
         
         return uav_gains, bs_gains
 
-    def update_an(self, cround=0): 
-        self.an =  a_0 + cround * a_alpha
+    def update_an(self, ground=0): 
+        self.an =  a_0 + ground * a_alpha
         # print(f"self.an = {self.an}")
 
     def update_channel_gains(self): 
@@ -92,14 +92,14 @@ class NetworkOptim:
         return ene_co
 
     def calc_total_energy(self, eta, freqs, decs, powers): 
-        num_local_rounds = v * math.log2(1 / eta)
-        num_global_rounds = self.an / (1 - eta)
+        num_lrounds = v * math.log2(1 / eta)
+        num_grounds = self.an / (1 - eta)
 
         ene_coms = self.calc_trans_energy(decs, powers)
-        ene_comp = self.calc_comp_energy(num_local_rounds, freqs)
+        ene_comp = self.calc_comp_energy(num_lrounds, freqs)
         print(f"ene_coms = {ene_coms}\nene_comp = {ene_comp}")
 
-        energy = num_global_rounds * (ene_coms + ene_comp)
+        energy = num_grounds * (ene_coms + ene_comp)
         print(f"ene_total = {energy}")
         return energy
     
@@ -113,13 +113,13 @@ class NetworkOptim:
         return energy
 
     def calc_total_time(self, eta, freqs, decs, powers): 
-        num_local_rounds = v * math.log2(1/eta)
-        num_global_rounds = self.an / (1 - eta)
+        num_lrounds = v * math.log2(1/eta)
+        num_grounds = self.an / (1 - eta)
         
-        ti_comp = self.calc_comp_time(num_local_rounds, freqs)
+        ti_comp = self.calc_comp_time(num_lrounds, freqs)
         ti_coms = self.calc_trans_time(decs, powers)
         print(f"ti_comp = {ti_comp}\nti_coms = {ti_coms}")
-        ti = num_global_rounds * (ti_coms + ti_comp)
+        ti = num_grounds * (ti_coms + ti_comp)
         return ti 
     
     def find_bound_eta(self, freqs, decs, powers, tau):
@@ -219,12 +219,12 @@ class NetworkOptim:
 
         gains = decs * self.uav_gains + (1 - decs) * self.bs_gains
         penalty_time = decs * delta_t # (N, )
-        num_local_rounds = v * math.log2(1 / eta)
+        num_lrounds = v * math.log2(1 / eta)
 
         # Calculate opt coefficient for optimizer 
         opt_as = self.data_size / bw * math.log(2) # (N, )
         opt_bs = gains / N_0 # (N, )
-        opt_cs = num_local_rounds * C_n * self.num_samples # (N, )
+        opt_cs = num_lrounds * C_n * self.num_samples # (N, )
         opt_tau = tau * (1-eta)/self.an - penalty_time # (N, ) penalty time for chosing uav # broadcasting   
         print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
 
@@ -332,17 +332,17 @@ class NetworkOptim:
         t_co = self.calc_trans_time(decs, power_max) # (N, )
 
         # calculate number of local, global rounds 
-        num_local_rounds = v * math.log2(1/eta)
-        num_global_rounds = self.an / (1-eta)
+        num_lrounds = v * math.log2(1/eta)
+        num_grounds = self.an / (1-eta)
 
         # calculate computation time for one local_round 
-        t_cp_1 = (tau / num_global_rounds - t_co) / num_local_rounds # (N, )
+        t_cp_1 = (tau / num_grounds - t_co) / num_lrounds # (N, )
 
         # Calculate optimal freqs     
         freqs = C_n * self.num_samples / t_cp_1 # (N, )
         return freqs
 
-    def optimize_network_fake(self, tau, decs, cround=0):
+    def optimize_network_fake(self, tau, decs, ground=0):
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
@@ -388,8 +388,8 @@ class NetworkOptim:
             obj_prev = obj
             iter += 1 
 
-        num_local_rounds = v * math.log2(1/eta)
-        num_global_rounds = self.an / (1 - eta)
+        num_lrounds = v * math.log2(1/eta)
+        num_grounds = self.an / (1 - eta)
 
         # update optimal result for class 
         self.eta = eta 
@@ -398,16 +398,16 @@ class NetworkOptim:
         self.decs = decs
         
         # calculate energy consumption at current iteration 
-        curr_ene = self.calc_total_energy_fixedi(int(num_local_rounds), 1).sum()
+        curr_ene = self.calc_total_energy_fixedi(int(num_lrounds), 1).sum()
 
-        print("At round {} energy consumption: {}".format(cround, curr_ene)) # stop at obj_prev neat obj
-        print("At round {} eta: {}".format(cround, eta))  
-        print("At round {} a_n: {}".format(cround, self.an))
+        print("At round {} energy consumption: {}".format(ground, curr_ene)) # stop at obj_prev neat obj
+        print("At round {} eta: {}".format(ground, eta))  
+        print("At round {} a_n: {}".format(ground, self.an))
 
         # update a_n for calculating the next global iteration  
-        self.update_an(cround=cround)
+        self.update_an(ground=ground)
         
-        return self.an, num_local_rounds, num_global_rounds # (i, n, a_n)
+        return self.an, num_lrounds, num_grounds # (i, n, a_n)
 
     def calc_bs_gains(self, xs, ys): 
         r""" Calculate propagation channel gains, connect to bs 
@@ -498,11 +498,11 @@ def test_optimize_network_fake():
     data_size = np.array([s_n for _ in range(num_users)])
 
     netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
-    num_local_rounds, num_global_rounds = netopt.optimize_network_fake()
+    num_lrounds, num_grounds = netopt.optimize_network_fake()
 
     print("update_location")
     netopt.update_channel_gains()
-    num_local_rounds, num_global_rounds = netopt.optimize_network_fake()
+    num_lrounds, num_grounds = netopt.optimize_network_fake()
 
 def test_feasible_solution():
     num_users = 10 

@@ -37,12 +37,12 @@ class SystemModel:
         iter = 0 # TODO: printing only 
         while 1: 
             print(f"Round {iter}\n-------------------------------") 
-            a_n, num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs, cround=iter)
-            print("At round {} local rounds: {}".format(iter, num_local_rounds))
-            print("At round {} global rounds: {}".format(iter, num_global_rounds))
+            a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_fake(tau, decs, ground=iter)
+            print("At round {} local rounds: {}".format(iter, num_lrounds))
+            print("At round {} global rounds: {}".format(iter, num_grounds))
             
             # TODO: view number of global rounds
-            self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
+            self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
 
             # check stop condition 
             if a_n < 0: 
@@ -66,18 +66,18 @@ class SystemModel:
         # Optimize network at the first iteration 
         iter = 0 # TODO: printing only 
 
-        a_n, num_local_rounds, num_global_rounds = self.net_optim.optimize_network_fake(tau, decs, cround=0)
-        print("At round {} local rounds: {}".format(iter, num_local_rounds))
-        print("At round {} global rounds: {}".format(iter, num_global_rounds))
+        a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_fake(tau, decs, ground=0)
+        print("At round {} local rounds: {}".format(iter, num_lrounds))
+        print("At round {} global rounds: {}".format(iter, num_grounds))
 
-        max_round = int(num_global_rounds) - 1 
-        # num_grounds = int(num_global_rounds)
+        max_round = int(num_grounds) - 1 
+        # num_grounds = int(num_grounds)
 
         # FL training 
         while 1: 
             print(f"Round {iter}\n-------------------------------")             
             # TODO: view number of global rounds
-            self.fed_model.train(num_epochs=int(num_local_rounds), cround=iter)
+            self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
 
             # check stop condition 
             if iter == max_round: 
@@ -89,7 +89,7 @@ class SystemModel:
             iter += 1
 
             # Calculate energy consumption in the next iteration 
-            obj = self.net_optim.calc_total_energy_fixedi(int(num_local_rounds), 1).sum()
+            obj = self.net_optim.calc_total_energy_fixedi(int(num_lrounds), 1).sum()
             print("At round {} energy consumption: {}".format(iter, obj))
             
         print("Done!")
