@@ -9,7 +9,7 @@ class Client:
     def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None, xi_factor=xi_factor):
         self.id = id 
         self.model = model #CustomLogisticRegression()
-        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-2)
+        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
         self.loss_fn = nn.CrossEntropyLoss()
         
         self.train_loader, self.test_loader = load_dataloader(train_data, test_data)
