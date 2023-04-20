@@ -30,8 +30,8 @@ class SystemModel:
     def train(self): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
         
-        tau = int(3 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
-        t0 = t_min / 200 # TODO: set value of t0 
+        tau = int(4 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
+        t0 = t_min / 250 # TODO: set value of t0 
         
         print(f"system_model train() tau = {tau}\tt0 = {t0}\tt_min = {t_min}")
         iter = 0 # TODO: printing only 

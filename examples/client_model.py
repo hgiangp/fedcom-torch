@@ -9,7 +9,7 @@ class Client:
     def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None, xi_factor=xi_factor):
         self.id = id 
         self.model = model #CustomLogisticRegression()
-        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
+        self.optimizer = optim.SGD(self.model.parameters(), lr=5*1e-3)
         self.loss_fn = nn.CrossEntropyLoss()
         
         self.train_loader, self.test_loader = load_dataloader(train_data, test_data)
@@ -18,7 +18,9 @@ class Client:
         
         self.xi_factor = xi_factor # 1 TODO
         self.diff_grads = {}
-        self.arx_params = copy.deepcopy(self.get_params()) # archived params, save the local_params before a new global rounds
+
+        # archived params, save the local_params before a new global rounds
+        self.arx_params = copy.deepcopy(self.get_params())
 
         self.initial_train() # for generating the initial grads (train without global grads)
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
@@ -119,8 +121,8 @@ class Client:
                 self.optimizer.step()  # update model parameters
 
                 # print log
-                loss, current = loss.item(), (batch+1)*len(X)
-                print(f"train() client id: {self.id}-{t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]  surr: {surr_term:>7f}")
+                # loss, current = loss.item(), (batch+1)*len(X)
+                # print(f"train() client id: {self.id}-{t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]  surr: {surr_term:>7f}")
     
         # print("Done!")
         wsoln = self.get_wparams()
