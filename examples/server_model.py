@@ -58,7 +58,7 @@ class BaseFederated:
         # collect num_samples, grads from clients 
         wgrads = []
         for c in self.clients: 
-            wgrads.append(c.get_grads())
+            wgrads.append(c.get_wgrads())
 
         # aggregate the clients grads
         agrads = self.aggregate(wgrads)
@@ -68,13 +68,13 @@ class BaseFederated:
 
         # broadcast the global params and difference grads 
         for c in self.clients:
-            c.calc_diff_grads(agrads)
+            c.calc_delta_grads(agrads)
 
         # clients train the local surrogate models
         wsolns = [] # buffer for receiving clients' solution
         for c in self.clients:
             wsolns.append(c.train(num_epochs)) 
-            
+
         # aggregate the global parameters and broadcast to all uses 
         self.latest_model = self.aggregate(wsolns)
         for c in self.clients: 

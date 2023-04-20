@@ -17,7 +17,7 @@ class Client:
         
         self.xi_factor = 0.1 # 1 TODO
         self.diff_grads = {}
-        self.arx_params = copy.deepcopy(self.get_params()[1]) # archived params, save the local_params before a new global rounds
+        self.arx_params = copy.deepcopy(self.get_params()) # archived params, save the local_params before a new global rounds
 
         self.initial_train() # for generating the initial grads (train without global grads)
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
@@ -34,12 +34,19 @@ class Client:
                 loss.backward()  # update gradients
                 self.optimizer.step()  # update model parameters
     
+    def get_wparams(self): 
+        r"""Get weighted model.parameters()
+        Return: 
+            tuple(int num_samples, dict {'state_dict': tensor(param.data)})
+        """
+        return (self.num_samples, self.model.get_params())
+    
     def get_params(self): 
         r"""Get model.parameters()
         Return: 
             dict {'state_dict': tensor(param.data)}
         """
-        return (self.num_samples, self.model.get_params())
+        return self.model.get_params()
 
     def set_params(self, params_dict=None):
         r"""Set initial params to model parameters()
@@ -56,25 +63,39 @@ class Client:
         self.model.set_params(params_dict)
         # print(f"set_params arx_params = {self.arx_params}")
     
+    def get_wgrads(self): 
+        r"""Get weighted model.parameters() gradients 
+        Return: 
+            tuple( int num_samples, dict {'state_dict': tensor(param.grad)})
+        """
+        return (self.num_samples, self.model.get_grads())
+    
     def get_grads(self): 
         r"""Get model.parameters() gradients 
         Return: 
             dict {'state_dict': tensor(param.grad)}
         """
-        return (self.num_samples, self.model.get_grads())
+        return self.model.get_grads()
     
-    def dot_diff_grads(self, diff_gards): 
+    def calc_surrogate_term_delta(self, diff_gards): 
         r"""diff_grads: dict {'state_dict': grad}"""
         sum = 0.0
-        local_params = self.get_params()[1]
-
-        # print(f"self.arx_params = {self.arx_params}")
+        local_params = self.get_params()
 
         for k in local_params.keys():
             h_k = local_params[k] - self.arx_params[k]
             sum += (h_k * diff_gards[k]).sum()
         
         return sum
+
+    def calc_surrogate_term(self): 
+        sum = 0.0
+        local_params = self.get_params()
+
+        for k in local_params.keys(): 
+            sum += (local_params[k] * self.diff_grads[k]).sum()
+        
+        return sum 
     
     def train(self, num_epochs):
         # Calculate diff_grads 
@@ -88,7 +109,7 @@ class Client:
 
                 # Calculate surrogate term and update the loss
                 # Hint: https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
-                surr_term = self.dot_diff_grads(self.diff_grads)
+                surr_term = self.calc_surrogate_term()
                 loss = loss + surr_term
 
                 # Back propagation
@@ -99,14 +120,13 @@ class Client:
                 # print log
                 loss, current = loss.item(), (batch+1)*len(X)
                 print(f"train() client id: {self.id}-{t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]  surr: {surr_term:>7f}")
-                # print(f"model.parameters() =\n{self.model.get_params()}")
     
         # print("Done!")
-        wsoln = self.get_params()
+        wsoln = self.get_wparams()
         return wsoln
     
-    def calc_diff_grads(self, glob_grads): 
-        local_grads = self.get_grads()[1] # the second arg
+    def calc_delta_grads(self, glob_grads): 
+        local_grads = self.get_grads()
 
         for k in local_grads.keys(): 
             self.diff_grads[k] = self.xi_factor * glob_grads[k] - local_grads[k]
@@ -141,7 +161,7 @@ class Client:
         return self.num_samples, tot_correct, loss 
     
     def fake_set_grads(self): 
-        params = copy.deepcopy(self.get_params()[1])
+        params = copy.deepcopy(self.get_params())
         fake_global_grads = {k: torch.randn_like(v) for k, v in zip(params.keys(), params.values())}
         self.calc_diff_grads(glob_grads=fake_global_grads)
 
@@ -213,7 +233,7 @@ def test_diff_grads():
     user_id = 1
     train_data, test_data = test_load_data(user_id)
     client = Client(user_id, train_data, test_data, model)
-    pretrain_params = copy.deepcopy(client.get_params()[1])
+    pretrain_params = copy.deepcopy(client.get_params())
     print(f"pretrain_params =\n{pretrain_params}")
 
     diff_dict = {k: torch.randn_like(v) for k, v in zip(pretrain_params.keys(), pretrain_params.values())}
