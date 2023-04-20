@@ -2,7 +2,7 @@ import re
 import matplotlib.pyplot as plt
 import numpy as np 
 
-def parse_fedlearn(file_name): 
+def parse_fedl(file_name): 
     rounds, acc, loss, sim = [], [], [], []
     test_loss = []
     
@@ -29,7 +29,7 @@ def parse_fedlearn(file_name):
         
     return rounds, acc, loss, sim, test_loss
 
-def parse_netopt_params(file_name):
+def parse_netopt(file_name):
     lrounds, grounds, ans, etas = [], [], [], []
 
     for line in open(file_name, 'r'):
@@ -64,7 +64,7 @@ def parse_gains(file_name):
     
     return uav_gains, bs_gains
 
-def parse_locations(file_name): 
+def parse_location(file_name): 
     xs, ys = [], []
     for line in open(file_name, 'r'): 
         search_xs = re.search(r'xs mean: (.*)$', line, re.M|re.I)
@@ -77,22 +77,13 @@ def parse_locations(file_name):
     
     return xs, ys  
 
-def test_parse_log(in_file, out_file1, out_file2): 
-    rounds, acc, loss, sim, lrounds, grounds, ans, etas, energies, test_loss = parse_log(file_name=in_file)
-
-    print(f"acc = \n{acc[-5:]}") 
-    print(f"loss = \n{loss[-5:]}") 
-    print(f"sim = \n{sim[-5:]}")
+def plot_fedl(log_file, fig_file): 
+    rounds, acc, loss, sim, test_loss = parse_fedl(log_file)
 
     rounds = np.asarray(rounds)
     acc = np.asarray(acc) * 100
     loss = np.asarray(loss)
     sim = np.asarray(sim)
-    lrounds = np.asarray(lrounds)
-    grounds = np.asarray(grounds)
-    ans = np.asarray(ans)
-    etas = np.asarray(etas)
-    energies = np.asarray(energies)
     test_loss = np.asarray(test_loss)
 
     plt.figure(1)
@@ -116,19 +107,29 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.ylabel("Dissimilarity")
 
     plt.grid(which='both')
-    plt.savefig(out_file1) # plt.savefig('plot_mnist.png')
+    plt.savefig(fig_file) # plt.savefig('plot_mnist.png')
     plt.show()
 
-    plt.figure(2)
+def plot_netopt(log_file, fig_file): 
+    lrounds, grounds, ans, etas = parse_netopt(log_file)
+    
+    lrounds = np.asarray(lrounds)
+    grounds = np.asarray(grounds)
+    ans = np.asarray(ans)
+    etas = np.asarray(etas)
+
+    rounds = np.arange(0, len(lrounds), dtype=int)
+
+    plt.figure(1)
     plt.subplot(411)
     plt.plot(rounds, lrounds)
     plt.grid(which='both')
-    plt.ylabel("Lrounds")
+    plt.ylabel("LRounds")
 
     plt.subplot(412)
     plt.plot(rounds, grounds)
     plt.grid(which='both')
-    plt.ylabel("Grounds")
+    plt.ylabel("GRounds")
     
     plt.subplot(413)
     plt.plot(rounds, ans)
@@ -140,61 +141,10 @@ def test_parse_log(in_file, out_file1, out_file2):
     plt.grid(which='both')
     plt.ylabel("eta")
 
-    plt.savefig(out_file2)
+    plt.savefig(fig_file)
     plt.show()
 
-    plt.figure(3)
-    plt.plot(rounds, energies)
-    plt.ylabel("Energy consumption (J)")
-    plt.savefig("./figures/plot_synthetic_ene.png")
-    plt.grid(which='both')
-    plt.show()
-
-def test_fixedi(in_file='./logs/system_model_fixedi.log'): 
-    rounds, acc, loss, sim, _, _, _, _, energies = parse_log(file_name=in_file)
-
-    rounds = np.asarray(rounds)
-    acc = np.asarray(acc) * 100
-    loss = np.asarray(loss)
-    sim = np.asarray(sim)
-    energies = np.asarray(energies)
-
-    plt.figure(1)
-    plt.subplot(311)
-    plt.plot(rounds, acc)
-    plt.ylabel("Accuracy")
-    
-    plt.subplot(312)
-    plt.plot(rounds, loss)
-    plt.ylabel("Loss")
-        
-    plt.subplot(313)
-    plt.plot(rounds, sim)
-    plt.ylabel("Dissimilarity")
-
-    plt.savefig("./figures/plot_synthetic_fixedi.png") # plt.savefig('plot_mnist.png')
-    plt.show()
-
-    plt.figure(2)
-    plt.plot(rounds[:81], energies[:81])
-    plt.ylabel("Energy consumption (J)")
-    plt.savefig("./figures/plot_synthetic_ene_fixedi.png")
-    plt.show()
-
-def ene_plot():
-    rounds_dy, acc_dy, loss_dy, sim_dy, lrounds_dy, grounds_dy, ans_dy, etas_dy, energies_dy = parse_log('./logs/system_model.log')
-    rounds, acc, loss, sim, _, _, _, _, energies = parse_log('./logs/system_model_fixedi.log')
-
-    max_round = len(rounds_dy)
-    plt.figure(1)
-    plt.plot(rounds_dy, energies_dy, label='Dynamic')
-    plt.plot(rounds[:max_round], energies[:max_round], label='Fixed i')
-    plt.grid(visible=True, which='both')
-    plt.legend()
-    plt.savefig('./figures/plot_synthetic_ene_compared.png')
-    plt.show()
-
-def test_prase_gains(): 
+def plot_gains(): 
     uav_gains, bs_gains = parse_gains('./logs/system_model.log')
     rounds = np.arange(0, len(uav_gains))
     
@@ -208,8 +158,8 @@ def test_prase_gains():
     plt.savefig('./figures/channel_gains.png')
     plt.show()
 
-def test_parse_loc(): 
-    loc_x, loc_y = parse_locs('./logs/system_model.log')
+def plot_location(): 
+    loc_x, loc_y = parse_location('./logs/system_model.log')
     rounds = np.arange(0, len(loc_x))
 
     plt.figure(1)
@@ -222,19 +172,27 @@ def test_parse_loc():
     plt.savefig('./figures/locations.png')
     plt.show()
 
+def test_fixedi(): 
+    log_file = './logs/system_model_fixedi.log'
+    fig_file = './figures/plot_synthetic_fixedi.png'
+    plot_fedl(log_file, fig_file)
+
 def test_system_model(): 
-    in_file, out_file1, out_file2 = './logs/system_model.log', './figures/plot_synthetic_dy1.png', './figures/plot_synthetic_dy2.png'
-    test_parse_log(in_file, out_file1, out_file2)
-    test_prase_gains()
-    test_parse_loc()
+    log_file = './logs/system_model.log'
+    fig_file_fedl = './figures/plot_synthetic_dy1.png'
+    fig_file_netopt = './figures/plot_synthetic_dy2.png'
+    plot_fedl(log_file, fig_file_fedl)
+    plot_netopt(log_file, fig_file_netopt)
+    plot_gains()
+    plot_location()
 
 def test_server_model(): 
-    in_file, out_file1, out_file2 = './logs/server_model.log', './figures/plot_synthetic.png', './figures/dumb.png'
-    test_parse_log(in_file, out_file1, out_file2)
+    log_file, fig_file = './logs/server_model.log', './figures/plot_synthetic.png'
+    plot_fedl(log_file, fig_file)
 
 def test_combine(): 
-    rounds_sys, acc_sys, loss_sys, sim_sys, _, _, _, _, _, tloss_sys = parse_log('./logs/system_model.log')
-    rounds_ser, acc_ser, loss_ser, sim_ser, _, _, _, _, _, tloss_ser = parse_log('./logs/server_model.log')
+    rounds_sys, acc_sys, loss_sys, sim_sys, tloss_sys = parse_fedl('./logs/system_model.log')
+    rounds_ser, acc_ser, loss_ser, sim_ser, tloss_ser = parse_fedl('./logs/server_model.log')
 
     rounds_sys = np.asarray(rounds_sys)
     acc_sys = np.asarray(acc_sys) * 100
@@ -280,7 +238,6 @@ def test_combine():
     plt.show()
 
 if __name__=='__main__': 
-    # ene_plot()
     test_system_model()
     # test_fixedi()
     # test_server_model()
