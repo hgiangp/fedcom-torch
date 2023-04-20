@@ -51,6 +51,22 @@ def parse_netopt(file_name):
     
     return lrounds, grounds, ans, etas
 
+def parse_net_tien(file_name): 
+    t_co, t_cp, e_co, e_cp = [], [], [], []
+
+    for line in open(file_name, 'r'):
+        search_time = re.search(r'At round (.*) t_co: (.*) t_cp: (.*)', line, re.M|re.I)
+        if search_time: 
+            t_co.append(float(search_time.group(2)))
+            t_cp.append(float(search_time.group(3)))  
+
+        search_ene = re.search(r'At round (.*) e_co: (.*) e_cp: (.*)', line, re.M|re.I)
+        if search_ene: 
+            e_co.append(float(search_ene.group(2)))
+            e_cp.append(float(search_ene.group(3)))    
+    
+    return t_co, t_cp, e_co, e_cp
+
 def parse_gains(file_name): 
     uav_gains, bs_gains = [], []
     for line in open(file_name, 'r'): 
@@ -172,6 +188,36 @@ def plot_location():
     plt.savefig('./figures/locations.png')
     plt.show()
 
+def plot_tien(log_file, fig_file_time, fig_file_ene): 
+    t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
+
+    t_co = np.asarray(t_co)
+    t_cp = np.asarray(t_cp)
+    e_co = np.asarray(e_co)
+    e_cp = np.asarray(e_cp)
+    rounds = np.arange(0, len(t_co))
+    
+    # time, energy in each grounds  
+    plt.figure(1)
+    plt.plot(rounds, t_co, label='temp coms')
+    plt.plot(rounds, t_cp, label='temp comp')
+    plt.plot(rounds, (t_co + t_cp).cumsum(), label='accumulated')
+    plt.grid(visible=True, which='both')
+    plt.ylabel('Time (s)')
+    plt.legend()
+    plt.savefig(fig_file_time)
+    plt.show()
+
+    plt.figure(2)
+    plt.plot(rounds, e_co, label='temp coms')
+    plt.plot(rounds, e_cp, label='temp comp')
+    plt.plot(rounds, (e_co + e_cp).cumsum(), label='accumulated')
+    plt.grid(visible=True, which='both')
+    plt.ylabel('Energy (J)')
+    plt.legend()
+    plt.savefig(fig_file_ene)
+    plt.show()
+
 def test_fixedi(): 
     log_file = './logs/system_model_fixedi.log'
     fig_file = './figures/plot_synthetic_fixedi.png'
@@ -181,10 +227,13 @@ def test_system_model():
     log_file = './logs/system_model.log'
     fig_file_fedl = './figures/plot_synthetic_dy1.png'
     fig_file_netopt = './figures/plot_synthetic_dy2.png'
-    plot_fedl(log_file, fig_file_fedl)
-    plot_netopt(log_file, fig_file_netopt)
-    plot_gains()
-    plot_location()
+    # plot_fedl(log_file, fig_file_fedl)
+    # plot_netopt(log_file, fig_file_netopt)
+    # plot_gains()
+    # plot_location()
+    fig_file_time = './figures/plot_synthetic_time.png'
+    fig_file_ene = './figures/plot_synthetic_ene.png'
+    plot_tien(log_file, fig_file_time, fig_file_ene)
 
 def test_server_model(): 
     log_file, fig_file = './logs/server_model.log', './figures/plot_synthetic.png'
