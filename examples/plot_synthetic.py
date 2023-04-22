@@ -202,6 +202,7 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
     plt.plot(rounds, t_co, label='temp coms')
     plt.plot(rounds, t_cp, label='temp comp')
     plt.plot(rounds, (t_co + t_cp).cumsum(), label='accumulated')
+    plt.yscale('log')
     plt.grid(visible=True, which='both')
     plt.ylabel('Time (s)')
     plt.legend()
@@ -212,6 +213,7 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
     plt.plot(rounds, e_co, label='temp coms')
     plt.plot(rounds, e_cp, label='temp comp')
     plt.plot(rounds, (e_co + e_cp).cumsum(), label='accumulated')
+    plt.yscale('log')
     plt.grid(visible=True, which='both')
     plt.ylabel('Energy (J)')
     plt.legend()
@@ -227,10 +229,10 @@ def test_system_model():
     log_file = './logs/system_model.log'
     fig_file_fedl = './figures/plot_synthetic_dy1.png'
     fig_file_netopt = './figures/plot_synthetic_dy2.png'
-    # plot_fedl(log_file, fig_file_fedl)
-    # plot_netopt(log_file, fig_file_netopt)
-    # plot_gains()
-    # plot_location()
+    plot_fedl(log_file, fig_file_fedl)
+    plot_netopt(log_file, fig_file_netopt)
+    plot_gains()
+    plot_location()
     fig_file_time = './figures/plot_synthetic_time.png'
     fig_file_ene = './figures/plot_synthetic_ene.png'
     plot_tien(log_file, fig_file_time, fig_file_ene)

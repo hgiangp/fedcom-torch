@@ -5,11 +5,11 @@ tau = 80 # total time threshold
 max_uav = 5 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
-L_Lipschitz = 0.4185 # Lipschitz constant of the loss function
-delta_lr = 0.1 # TODO Learning rate of local surrogate function 
-gamma_cv = 0.45 # strongly convex constant of the loss function
+L_Lipschitz = 1.03 # Lipschitz constant of the loss function
+delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
+gamma_cv = 1.01 # strongly convex constant of the loss function
 
-k_switch = 5*1e-28 # switch capacity, depends on chip's architecture 
+k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 C_n = 1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
@@ -18,12 +18,12 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 xi_factor = 1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
 epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
-epsilon_a = 50 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
+epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
 compression_ratio = 0.1 # 1-0.95
-s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
+s_n = 28100 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
 delta_t = 0.0 # TODO Based on current results uav's time penalty 
-N_0 = 4*1e-14 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)
+N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)
 power_max = 0.1 # W TODO  
 
 # base station propagation channel params 
@@ -31,7 +31,7 @@ x_bs, y_bs = -175, 175 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
-de_r = 2.8 # pathloss exponent, connect to bs 
+de_r = 2.6 # pathloss exponent, connect to bs 
 # dn_r = 1.0 # distance between veh and bs, varies 
 
 # UAV propagation channel params 
@@ -41,7 +41,7 @@ de_r = 2.8 # pathloss exponent, connect to bs
 z_uav = 100 # flighting height of uav 
 g_0 = 1e-5 # -50 dB reference channel gain (10**(x/10))
 alpha = 0.2 # < 1, attenuation effect of NLoS channel 
-de_u = 2.5 # pathloss exponent, connect to uav 
+de_u = 2.1 # pathloss exponent, connect to uav 
 a_env, b_env = 15, 0.5 # evironment constants
 
 # Calculable params 
