@@ -49,7 +49,7 @@ class SystemModel:
 
             # check stop condition
             tau = tau - t0
-            if tau < 0: 
+            if a_n < 1 or tau < 0: 
                 break 
 
             # not stop, update location for the next global round 

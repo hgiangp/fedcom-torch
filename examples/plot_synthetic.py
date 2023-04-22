@@ -191,18 +191,19 @@ def plot_location():
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
     t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
 
-    t_co = np.asarray(t_co)
-    t_cp = np.asarray(t_cp)
-    e_co = np.asarray(e_co)
-    e_cp = np.asarray(e_cp)
-    rounds = np.arange(0, len(t_co))
+    round_max = 180
+    t_co = np.asarray(t_co)[:round_max]
+    t_cp = np.asarray(t_cp)[:round_max]
+    e_co = np.asarray(e_co)[:round_max]
+    e_cp = np.asarray(e_cp)[:round_max]
+    rounds = np.arange(0, len(t_co))[:round_max]
     
     # time, energy in each grounds  
     plt.figure(1)
     plt.plot(rounds, t_co, label='temp coms')
     plt.plot(rounds, t_cp, label='temp comp')
-    plt.plot(rounds, (t_co + t_cp).cumsum(), label='accumulated')
-    plt.yscale('log')
+    # plt.plot(rounds, (t_co + t_cp).cumsum(), label='accumulated')
+    # plt.yscale('log')
     plt.grid(visible=True, which='both')
     plt.ylabel('Time (s)')
     plt.legend()
@@ -212,8 +213,8 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
     plt.figure(2)
     plt.plot(rounds, e_co, label='temp coms')
     plt.plot(rounds, e_cp, label='temp comp')
-    plt.plot(rounds, (e_co + e_cp).cumsum(), label='accumulated')
-    plt.yscale('log')
+    # plt.plot(rounds, (e_co + e_cp).cumsum(), label='accumulated')
+    # plt.yscale('log')
     plt.grid(visible=True, which='both')
     plt.ylabel('Energy (J)')
     plt.legend()
