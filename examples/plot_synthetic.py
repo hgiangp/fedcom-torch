@@ -191,7 +191,7 @@ def plot_location():
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
     t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
 
-    round_max = 180
+    round_max = 185
     t_co = np.asarray(t_co)[:round_max]
     t_cp = np.asarray(t_cp)[:round_max]
     e_co = np.asarray(e_co)[:round_max]
@@ -232,8 +232,8 @@ def test_system_model():
     fig_file_netopt = './figures/plot_synthetic_dy2.png'
     plot_fedl(log_file, fig_file_fedl)
     plot_netopt(log_file, fig_file_netopt)
-    plot_gains()
-    plot_location()
+    # plot_gains()
+    # plot_location()
     fig_file_time = './figures/plot_synthetic_time.png'
     fig_file_ene = './figures/plot_synthetic_ene.png'
     plot_tien(log_file, fig_file_time, fig_file_ene)

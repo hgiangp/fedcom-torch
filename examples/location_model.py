@@ -1,4 +1,5 @@
-import numpy as np 
+import numpy as np
+np.set_printoptions(precision=6, linewidth=np.inf)
 
 seed = 1
 rng = np.random.default_rng(seed=seed)
@@ -83,6 +84,8 @@ class LocationModel:
 
     def get_location(self): 
         r"Get location, remember to call update_location in advance"
+        print(f"xs = {self.xs}")
+        print(f"ys = {self.ys}")
         return (self.xs, self.ys)
 
 def test(): 

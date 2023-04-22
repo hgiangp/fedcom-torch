@@ -56,9 +56,3 @@ def dinkelbach_method(af, bf):
     
     # print(f"eta = {eta}")
     return eta
-
-def custom_print(xs, name="xs"):
-    print(name, end=' = ')
-    for x in xs: 
-        print(f'{x:>6f} ', end='')
-    print()
