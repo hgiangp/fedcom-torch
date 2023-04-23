@@ -396,7 +396,7 @@ class NetworkOptim:
         t_cp = self.calc_comp_time(num_lrounds, self.freqs).sum()   
         e_cp = self.calc_comp_energy(num_lrounds, self.freqs).sum()
 
-        print("At round {} t_co: {} t_cp: {}".format(ground, t_co/num_users, t_cp/num_users))
+        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co/num_users, t_cp/num_users))
         print("At round {} e_co: {} e_cp: {}".format(ground, e_co, e_cp))
         print("At round {} eta: {}".format(ground, eta))  
         print("At round {} a_n: {}".format(ground, self.an))

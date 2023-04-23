@@ -1,5 +1,7 @@
 import re 
+from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider 
 import numpy as np 
 
 def parse_fedl(file_name): 
@@ -55,7 +57,7 @@ def parse_net_tien(file_name):
     t_co, t_cp, e_co, e_cp = [], [], [], []
 
     for line in open(file_name, 'r'):
-        search_time = re.search(r'At round (.*) t_co: (.*) t_cp: (.*)', line, re.M|re.I)
+        search_time = re.search(r'At round (.*) average t_co: (.*) average t_cp: (.*)', line, re.M|re.I)
         if search_time: 
             t_co.append(float(search_time.group(2)))
             t_cp.append(float(search_time.group(3)))  
@@ -70,28 +72,39 @@ def parse_net_tien(file_name):
 def parse_gains(file_name): 
     uav_gains, bs_gains = [], []
     for line in open(file_name, 'r'): 
-        search_uav = re.search(r'uav_gains_db_mean: (.*)$', line, re.M|re.I)
-        if search_uav: 
-            uav_gains.append(float(search_uav.group(1)))
+        search_uav = re.search(r'uav_gains = \[(.*)\]$', line, re.M|re.I)
+        if search_uav:
+            gain = np.fromstring(search_uav.group(1), sep=' ')
+            gain_db_mean = 10 * np.log10(gain).mean()
+            uav_gains.append(gain_db_mean)
         
-        search_bs = re.search(r'bs_gains_db_mean: (.*)$', line, re.M|re.I)
+        search_bs = re.search(r'bs_gains = \[(.*)\]$', line, re.M|re.I)
         if search_bs: 
-            bs_gains.append(float(search_bs.group(1)))
+            gain = np.fromstring(search_bs.group(1), sep=' ')
+            gain_db_mean = 10 * np.log10(gain).mean()
+            bs_gains.append(gain_db_mean)  
     
     return uav_gains, bs_gains
 
 def parse_location(file_name): 
     xs, ys = [], []
+
     for line in open(file_name, 'r'): 
-        search_xs = re.search(r'xs mean: (.*)$', line, re.M|re.I)
+        search_xs = re.search(r'xs = \[(.*)\]', line, re.M|re.I)
         if search_xs: 
-            xs.append(float(search_xs.group(1)))
+            x = np.fromstring(search_xs.group(1), sep=' ')
+            xs.append(x)
         
-        search_ys = re.search(r'ys mean: (.*)$', line, re.M|re.I)
+        search_ys = re.search(r'ys = \[(.*)\]', line, re.M|re.I)
         if search_ys: 
-            ys.append(float(search_ys.group(1)))
+            y = np.fromstring(search_ys.group(1), sep=' ')
+            ys.append(y)
     
-    return xs, ys  
+
+    # convert to numpy array 
+    xs_np = np.array(xs) # (num_grounds, num_users)
+    ys_np = np.array(ys) # (num_grounds, num_users)
+    return xs_np, ys_np 
 
 def plot_fedl(log_file, fig_file): 
     rounds, acc, loss, sim, test_loss = parse_fedl(log_file)
@@ -174,19 +187,63 @@ def plot_gains():
     plt.savefig('./figures/channel_gains.png')
     plt.show()
 
-def plot_location(): 
-    loc_x, loc_y = parse_location('./logs/system_model.log')
-    rounds = np.arange(0, len(loc_x))
+def plot_location_act(): 
+    xs, ys = parse_location('./logs/system_model.log') # (num_grounds, num_users)
+    num_grounds, num_users = xs.shape
 
-    plt.figure(1)
-    # plt.plot(loc_x, loc_y, label='(x, y)')
-    plt.plot(rounds, loc_x, label='Loc x')
-    plt.plot(rounds, loc_y, label='Loc y')
-    plt.grid(visible=True, which='both')
-    plt.legend()
+    fig = plt.figure(figsize=(6, 4))
 
-    plt.savefig('./figures/locations.png')
+    ax = fig.add_subplot(111) 
+    fig.subplots_adjust(top=0.85) # 0.25 top to place sliders 
+
+    # Create axes for sliders 
+    ax_rounds = fig.add_axes([0.3, 0.92, 0.4, 0.05])
+    ax_rounds.spines['top'].set_visible(True)
+    ax_rounds.spines['right'].set_visible(True)
+
+    # Create sliders 
+    s_rounds = Slider(ax=ax_rounds, label='GRound', valmin=0, valmax=num_grounds-1, valfmt='%0.0f', facecolor='#cc7000')
+
+    colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
+    # labels = [f'user {i}' for i in range(num_users)]
+    
+    # Plot default data
+    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
+    ax.set_xlim(-1200,1200)
+    ax.set_ylim(-2000, 1200)
+    ax.grid(True, 'both')
+
+    # Update values 
+    def update(round):
+        sc.set_offsets(np.c_[xs[int(round)], ys[int(round)]])
+        fig.canvas.draw_idle()
+
+    s_rounds.on_changed(update)
+    # plt.savefig('./figures/locations.png')
     plt.show()
+
+def plot_location_ani(): 
+    xs, ys = parse_location('./logs/system_model.log') # (num_grounds, num_users)
+    num_grounds, num_users = xs.shape
+
+    colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
+    # labels = [f'user {i}' for i in range(num_users)]
+
+    fig, ax = plt.subplots()
+    sc = ax.scatter(xs[0], ys[0], c=colors)
+    plt.xlim(-1200,1200)
+    plt.ylim(-2000,1200)
+    plt.grid(True, 'both')
+
+    def animate(i):
+        sc.set_offsets(np.c_[xs[i], ys[i]])
+    ani = FuncAnimation(fig, animate, frames=num_grounds, interval=50, repeat=False) 
+    
+    # Ensure the entire plot is visible 
+    fig.tight_layout()
+
+    # Save and show animation
+    ani.save('./figures/location_ani.gif', writer='imagemagick', fps=18)
 
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
     t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
@@ -228,15 +285,15 @@ def test_fixedi():
 
 def test_system_model(): 
     log_file = './logs/system_model.log'
-    fig_file_fedl = './figures/plot_synthetic_dy1.png'
-    fig_file_netopt = './figures/plot_synthetic_dy2.png'
-    plot_fedl(log_file, fig_file_fedl)
-    plot_netopt(log_file, fig_file_netopt)
-    # plot_gains()
+    # fig_file_fedl = './figures/plot_synthetic_dy1.png'
+    # fig_file_netopt = './figures/plot_synthetic_dy2.png'
+    # plot_fedl(log_file, fig_file_fedl)
+    # plot_netopt(log_file, fig_file_netopt)
+    plot_gains()
     # plot_location()
-    fig_file_time = './figures/plot_synthetic_time.png'
-    fig_file_ene = './figures/plot_synthetic_ene.png'
-    plot_tien(log_file, fig_file_time, fig_file_ene)
+    # fig_file_time = './figures/plot_synthetic_time.png'
+    # fig_file_ene = './figures/plot_synthetic_ene.png'
+    # plot_tien(log_file, fig_file_time, fig_file_ene)
 
 def test_server_model(): 
     log_file, fig_file = './logs/server_model.log', './figures/plot_synthetic.png'
@@ -290,7 +347,9 @@ def test_combine():
     plt.show()
 
 if __name__=='__main__': 
-    test_system_model()
+    # test_system_model()
+    # plot_location_ani()
+    plot_location_act()
     # test_fixedi()
     # test_server_model()
     # test_combine()
