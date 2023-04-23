@@ -1,6 +1,6 @@
 import re 
-from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider 
 import numpy as np 
 
@@ -188,6 +188,7 @@ def plot_gains():
     plt.show()
 
 def plot_location_act(): 
+    r'''Create interactive plot'''
     xs, ys = parse_location('./logs/system_model.log') # (num_grounds, num_users)
     num_grounds, num_users = xs.shape
 
@@ -209,7 +210,7 @@ def plot_location_act():
     
     # Plot default data
     sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
-    ax.set_xlim(-1200,1200)
+    ax.set_xlim(-1200, 1200)
     ax.set_ylim(-2000, 1200)
     ax.grid(True, 'both')
 
