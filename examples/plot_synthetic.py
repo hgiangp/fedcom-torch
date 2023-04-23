@@ -231,7 +231,7 @@ def plot_location_ani():
     # labels = [f'user {i}' for i in range(num_users)]
 
     fig, ax = plt.subplots()
-    sc = ax.scatter(xs[0], ys[0], c=colors)
+    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
     plt.xlim(-1200,1200)
     plt.ylim(-2000,1200)
     plt.grid(True, 'both')
@@ -244,7 +244,7 @@ def plot_location_ani():
     fig.tight_layout()
 
     # Save and show animation
-    ani.save('./figures/location_ani.gif', writer='imagemagick', fps=18)
+    ani.save('./figures/location_ani.gif', writer='imagemagick', fps=24)
 
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
     t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
@@ -286,15 +286,15 @@ def test_fixedi():
 
 def test_system_model(): 
     log_file = './logs/system_model.log'
-    # fig_file_fedl = './figures/plot_synthetic_dy1.png'
-    # fig_file_netopt = './figures/plot_synthetic_dy2.png'
-    # plot_fedl(log_file, fig_file_fedl)
-    # plot_netopt(log_file, fig_file_netopt)
+    fig_file_fedl = './figures/plot_synthetic_dy1.png'
+    fig_file_netopt = './figures/plot_synthetic_dy2.png'
+    plot_fedl(log_file, fig_file_fedl)
+    plot_netopt(log_file, fig_file_netopt)
     plot_gains()
-    # plot_location()
-    # fig_file_time = './figures/plot_synthetic_time.png'
-    # fig_file_ene = './figures/plot_synthetic_ene.png'
-    # plot_tien(log_file, fig_file_time, fig_file_ene)
+    fig_file_time = './figures/plot_synthetic_time.png'
+    fig_file_ene = './figures/plot_synthetic_ene.png'
+    plot_tien(log_file, fig_file_time, fig_file_ene)
+    plot_location_ani()
 
 def test_server_model(): 
     log_file, fig_file = './logs/server_model.log', './figures/plot_synthetic.png'
@@ -348,9 +348,8 @@ def test_combine():
     plt.show()
 
 if __name__=='__main__': 
-    # test_system_model()
-    # plot_location_ani()
-    plot_location_act()
+    test_system_model()
+    # plot_location_act()
     # test_fixedi()
     # test_server_model()
     # test_combine()
