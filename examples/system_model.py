@@ -1,4 +1,5 @@
 import numpy as np 
+np.set_printoptions(precision=6, linewidth=np.inf)
 
 from server_model import BaseFederated 
 from network_optim import NetworkOptim

@@ -5,9 +5,9 @@ tau = 80 # total time threshold
 max_uav = 5 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
-L_Lipschitz = 1.03 # Lipschitz constant of the loss function
+L_Lipschitz = 5 # Lipschitz constant of the loss function
 delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
-gamma_cv = 1.01 # strongly convex constant of the loss function
+gamma_cv = 3 # strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 C_n = 1e4 # TODO: testback # number of cpu cycles per sample 
@@ -20,7 +20,7 @@ epsilon_0 = 1e-3 # global accuracy
 epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
 epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
 compression_ratio = 0.1 # 1-0.95
-s_n = 28100 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
+s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
 delta_t = 0.0 # TODO Based on current results uav's time penalty 
 N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)

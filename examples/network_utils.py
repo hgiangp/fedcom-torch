@@ -11,24 +11,24 @@ def solve_bound_eta(af, bf, tau):
         Return:
             Optimal eta 
         """
-        # print(f"solve_bound_eta tau = {tau}\naf = {af}\nbf = {bf}")
+        print(f"solve_bound_eta tau = {tau}\naf = {af}\nbf = {bf}")
 
         tmp = - tau/af * np.exp((bf - tau)/af)
         w0 = lambertw(tmp, k=0) # (N, ) # lambert at 0 branch (-> eta min) complex number, imaginary part = 0 
         w_1 = lambertw(tmp, k=-1) # (N, ) # lambert at -1 branch (-> eta max) complex number, imaginary part = 0 
-        # print(f"w0 = {w0}\nw_1 = {w_1}")
+        print(f"w0 = {w0}\nw_1 = {w_1}")
 
         xs_min = (bf - tau)/af - w0.real # (N, ) # all negative
         xs_max = (bf - tau)/af - w_1.real # (N, ) # all negative 
-        # print(f"solve_bound_eta tmp = {tmp}\nxs_min = {xs_min}\nxs_max = {xs_max}")
+        print(f"solve_bound_eta tmp = {tmp}\nxs_min = {xs_min}\nxs_max = {xs_max}")
 
         x_min = np.max(xs_min) # 1 
         x_max = np.min(xs_max) # 1 
-        # print(f"x_min = {x_min}\tx_max = {x_max}")
+        print(f"solve_bound_eta x_min = {x_min}\tx_max = {x_max}")
 
         eta_min = np.exp(x_min)
         eta_max = np.exp(x_max)
-        # print(f"eta_min = {eta_min}\neta_max = {eta_max}")
+        # print(f"solve_bound_eta eta_min = {eta_min}\teta_max = {eta_max}")
 
         return eta_min, eta_max
 
