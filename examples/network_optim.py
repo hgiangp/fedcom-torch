@@ -142,9 +142,6 @@ class NetworkOptim:
         eta = dinkelbach_method(af, bf)
         print(f"eta = {eta}")
 
-        ## LOGTRACE
-        ene_opt = self.calc_total_energy(eta, freqs, decs, powers)
-        ## LOGTRACE 
         return eta
 
     def initialize_feasible_solution(self): 
