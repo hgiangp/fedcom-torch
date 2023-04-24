@@ -4,6 +4,9 @@ from server_model import BaseFederated
 from network_optim import NetworkOptim
 from system_utils import * 
 
+seed = 1
+rng = np.random.default_rng(seed=seed)
+
 class SystemModel: 
     def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10, updated_dist=10):
         self.fed_model = self.init_federated(mod_name, mod_dim, dataset_name)
@@ -42,7 +45,7 @@ class SystemModel:
             a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_fake(tau, decs, ground=iter)
             print("At round {} local rounds: {}".format(iter, num_lrounds))
             print("At round {} global rounds: {}".format(iter, num_grounds))
-            print("At round {} tau: {}".format(iter, num_grounds))
+            print("At round {} tau: {}".format(iter, tau))
             
             # TODO: view number of global rounds
             self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
