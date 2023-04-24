@@ -38,12 +38,13 @@ class SystemModel:
 
         tau, t0 = 40, 0.2
         print(f"system_model train() tau = {tau}\tt0 = {t0}")
-        decs = np.random.randint(low=0, high=2, size=10)
+        # decs = np.random.randint(low=0, high=2, size=10)
 
         iter = 0 # TODO: printing only 
         while 1: 
             print(f"Round {iter}\n-------------------------------") 
-            a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_fake(tau, decs, ground=iter)
+            # a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_fake(tau, decs, ground=iter)
+            a_n, num_lrounds, num_grounds = self.net_optim.optimize_network(tau, ground=iter)
             print("At round {} local rounds: {}".format(iter, num_lrounds))
             print("At round {} global rounds: {}".format(iter, num_grounds))
             print("At round {} tau: {}".format(iter, tau))

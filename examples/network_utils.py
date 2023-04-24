@@ -29,7 +29,7 @@ def solve_bound_eta(af, bf, tau):
 
         eta_min = np.exp(x_min)
         eta_max = np.exp(x_max)
-        # print(f"solve_bound_eta eta_min = {eta_min}\teta_max = {eta_max}")
+        print(f"solve_bound_eta eta_min = {eta_min}\teta_max = {eta_max}")
 
         return eta_min, eta_max
 
