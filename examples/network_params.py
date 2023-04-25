@@ -17,7 +17,7 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 # Offloading, global aggregation params 
 xi_factor = 1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
-epsilon_alpha = 1.03 # alpha factor for decreasing the accuracy > 1
+epsilon_alpha = 1.04 # alpha factor for decreasing the accuracy > 1
 epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
 compression_ratio = 0.1 # 1-0.95
 s_n = 502400 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 

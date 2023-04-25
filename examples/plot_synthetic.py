@@ -231,10 +231,20 @@ def plot_location_ani():
     # labels = [f'user {i}' for i in range(num_users)]
 
     fig, ax = plt.subplots()
-    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
-    plt.xlim(-1200,1200)
-    plt.ylim(-2000,1200)
+
+    uav_x, uav_y = 0, 0
+    bs_x, bs_y = -175, 175
+    
+    ax.scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
+    ax.annotate('UAV', (uav_x+10, uav_y+20))
+    ax.scatter([bs_x], [bs_y], marker="s", s=70, alpha=0.7, c='green')
+    ax.annotate('BS', (bs_x-15, bs_y+30))
+
+    plt.xlim(-700,700)
+    plt.ylim(-1000,500)
     plt.grid(True, 'both')
+    
+    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
 
     def animate(i):
         sc.set_offsets(np.c_[xs[i], ys[i]])
@@ -348,8 +358,9 @@ def test_combine():
     plt.show()
 
 if __name__=='__main__': 
-    test_system_model()
+    # test_system_model()
     # plot_location_act()
     # test_fixedi()
     # test_server_model()
     # test_combine()
+    plot_location_ani()

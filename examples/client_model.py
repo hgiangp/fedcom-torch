@@ -3,13 +3,13 @@ import torch.nn as nn
 import torch 
 import copy
 
-from network_params import xi_factor
+from network_params import xi_factor, delta_lr
 from custom_dataset import load_dataloader
 class Client: 
-    def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None, xi_factor=xi_factor):
+    def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None, xi_factor=xi_factor, lr=delta_lr):
         self.id = id 
         self.model = model #CustomLogisticRegression()
-        self.optimizer = optim.SGD(self.model.parameters(), lr=5*1e-3)
+        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
         self.loss_fn = nn.CrossEntropyLoss()
         
         self.train_loader, self.test_loader = load_dataloader(train_data, test_data)
