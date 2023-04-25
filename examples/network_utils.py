@@ -42,7 +42,7 @@ def dinkelbach_method(af, bf):
     acc = 1e-4 # absolute tolerant 
 
     eta = 0.01
-    zeta = af * 1.1 
+    zeta = af * 1.01
     h_prev = af * math.log(1/eta) + bf - zeta * (1 - eta)
 
     while 1:
