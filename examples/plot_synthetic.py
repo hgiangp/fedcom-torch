@@ -358,9 +358,9 @@ def test_combine():
     plt.show()
 
 if __name__=='__main__': 
-    # test_system_model()
+    test_system_model()
     # plot_location_act()
     # test_fixedi()
     # test_server_model()
     # test_combine()
-    plot_location_ani()
+    # plot_location_ani()
