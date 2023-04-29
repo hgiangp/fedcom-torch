@@ -233,7 +233,7 @@ def plot_location_ani():
     fig, ax = plt.subplots()
 
     uav_x, uav_y = 0, 0
-    bs_x, bs_y = -175, 175
+    bs_x, bs_y = -400, 400
     
     ax.scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
     ax.annotate('UAV', (uav_x+10, uav_y+20))

@@ -36,7 +36,7 @@ class SystemModel:
         # tau = int(4 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
         # t0 = t_min / 250 # TODO: set value of t0 
 
-        tau, t0 = 60, 0.2
+        tau, t0 = 50, 0.2
         print(f"system_model train() tau = {tau}\tt0 = {t0}")
         # decs = np.random.randint(low=0, high=2, size=10)
 
