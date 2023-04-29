@@ -237,7 +237,7 @@ class NetworkOptim:
 
             # Update results 
             opt_freqs[i] = norm_factor * 1/inv_freq
-            opt_powers[i]  = 1/opt_bs[i] * np.exp(1/inv_ln_power)
+            opt_powers[i]  = 1/opt_bs[i] * (np.exp(1/inv_ln_power) - 1)
 
         print(f"opt_freqs = {opt_freqs}\nopt_powers = {opt_powers}")
         return opt_freqs, opt_powers

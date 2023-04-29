@@ -182,7 +182,7 @@ def test(a, b, c, kappa, tau, norm_factor, z_min, t_min):
     print(f"x_opt = {x_opt} obj = {opt.objective(x_opt)} Ax - b = {opt.eq_const(x_opt)}")
 
     # Original problem solutions 
-    power = 1/b * np.exp(1/inv_ln_power)
+    power = 1/b * (np.exp(1/inv_ln_power) - 1)
     freq = norm_factor * 1/inv_freq
     print("power = {:3f}\tfreq = {:.3e}".format(power, freq))
     return 
@@ -199,8 +199,8 @@ if __name__=='__main__':
     norm_factor = 1e9
 
     a = 0.03482371435133165	
-    b = 12.717536192138855	
-    c = 0.00936209530457737 * norm_factor
+    b = 10.717536192138855	
+    c = 0.280209530457737 * norm_factor
     tau = 0.2
     # taumin = 0.030631940230047387	z_min = 0.14503226322827228	t_min = 0.5
     kappa = 1e-28 
