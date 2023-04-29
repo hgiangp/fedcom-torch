@@ -196,20 +196,13 @@ if __name__=='__main__':
     # opt_tau = tau * (1-eta)/self.an - penalty_time # (N, )  
 
     print("Normalized parameters") 
-    norm_factor = 1e9 
-
-    # a, b, c = 0.0348, 120, 1*1e8 
-    # a = 0.03482371435133165
-    # b = 16.717536192138855
-    # c = 0.03362095304577377 * norm_factor
-    # power = 0.066290        freq = 1.279e+08 obj = 0.002248790683097171
+    norm_factor = 1e9
 
     a = 0.03482371435133165	
-    b = 9863.430506596913	
-    c = 0.05116275624731778 * norm_factor
-    tau = 0.8098728122557564
+    b = 12.717536192138855	
+    c = 0.00936209530457737 * norm_factor
+    tau = 0.2
     # taumin = 0.030631940230047387	z_min = 0.14503226322827228	t_min = 0.5
-    # iter = 14 converged! (z, t) = (-0.6456984132273457, 16.26883480107134)
     kappa = 1e-28 
 
     import math 
