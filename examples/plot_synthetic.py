@@ -237,7 +237,7 @@ def plot_location_ani():
     
     ax.scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
     ax.annotate('UAV', (uav_x+10, uav_y+20))
-    ax.scatter([bs_x], [bs_y], marker="s", s=70, alpha=0.7, c='green')
+    ax.scatter([bs_x], [bs_y], marker="p", s=70, alpha=0.7, c='green')
     ax.annotate('BS', (bs_x-15, bs_y+30))
 
     plt.xlim(-700,700)

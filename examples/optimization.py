@@ -10,7 +10,11 @@ class NewtonOptim:
         self.A = np.array([self.a, self.c]) #(2, 1)
         self.z_min = z_min # - z + z_min <= 0 
         self.t_min = t_min * norm_factor # - t + t_min <= 0 
-        print(f"a = {self.a}\tb = {self.b}\tc = {self.c}\tkappa = {self.kappa}\ttau = {self.tau}\tself.t_min = {self.t_min}\tself.z_min={self.z_min}")
+
+        # for testing system capacity 
+        taumin = a * z_min + c * t_min
+        print(f"a = {self.a}\tb = {self.b}\tc = {self.c}\tkappa = {self.kappa}")
+        print(f"tau = {self.tau}\ttaumin = {taumin}\tz_min = {self.z_min}\tt_min = {self.t_min}")
          
     def objective(self, x): 
         z, t = x[0], x[1]
@@ -59,7 +63,7 @@ class NewtonOptim:
         hess_pri = np.concatenate((self.A, np.array([0, 0]), np.array([0])), axis=0)[np.newaxis, :] # (1, 5)
 
         hess = np.concatenate((hess_dual, hess_cent, hess_pri), axis=0) # (5, 5)
-        print(f"hessian_dual = \n{hess}")
+        # print(f"hessian_dual = \n{hess}")
         return hess
     
     def r_dual_func(self, x, lambd, v): 
@@ -80,7 +84,7 @@ class NewtonOptim:
         r_cent = - np.matmul(np.diag(lambd), self.ineq_const(x)) - (1/t_dual) # broadcasting (2, 1)
         r_pri = np.array([self.eq_const(x)])[:, np.newaxis] # (1, )
         r = np.concatenate((r_dual, r_cent, r_pri), axis=0) # (5, 1)
-        print(f"residual_t = \n{r}")
+        # print(f"residual_t = \n{r}")
         return r 
 
     def backtracking_line_search(self, x, lambd, v, dir_x, dir_lambd, dir_v, t_dual, alpha=0.01, beta=0.8):
@@ -88,9 +92,17 @@ class NewtonOptim:
         # s_max = sup{s \in [0, 1]| lambd + s * dir_lambd >= 0}
         #       = min{1, min{-lambd_i/dir_lambdi_i} | dir_lambdi_i < 0}
         div = -lambd/dir_lambd
-        step_size = min(1, min(div[div > 0], default=1))
+        s_max = min(1, min(div[div > 0], default=1))
+        step_size = 0.99 * s_max
 
-        print(f"backtracking_line_search x = {x}\tdir_x = {dir_x}")
+        while 1: 
+            x_new = x + step_size * dir_x 
+            ineq = self.ineq_const(x_new).reshape(-1) 
+            if np.all(ineq < 0): 
+                break
+            step_size = step_size * beta 
+
+        # print(f"backtracking_line_search step_size = {step_size}")
         # current residual norm
         r_dual = np.linalg.norm(self.residual_t(x, lambd, v, t_dual)) # 2-norm default 
         while 1: 
@@ -101,13 +113,13 @@ class NewtonOptim:
 
             # new residual norm value  
             r_dual_new = np.linalg.norm(self.residual_t(x_new, lambd_new, v_new, t_dual)) # 2-norm default 
-            print(f"r_dual_new = {r_dual_new} r_dual = {r_dual}")
+            # print(f"r_dual_new = {r_dual_new} r_dual = {r_dual}")
             if r_dual_new <= (1 - alpha * step_size) * r_dual:
-                print("backtracking_line_search terminate!")
+                # print("backtracking_line_search terminate!")
                 break 
             step_size = step_size * beta 
             
-        print(f"backtracking_line_search step_size = {step_size}")
+        # print(f"backtracking_line_search step_size = {step_size}")
         return step_size
 
     def newton_method(self):
@@ -118,12 +130,12 @@ class NewtonOptim:
         # Initialization
         m = 2 # number of inequality constraints 
         mu = 20
-        eps_feas = 1e-5
-        eps = 1e-5
+        eps_feas = 1e-8
+        eps = 1e-8
 
-        x = np.array([1, 1])
-        lambd = np.array([1, 1])
-        v = 1         
+        x = np.array([self.z_min, self.t_min]) + np.random.rand(2) # uniform distribution [0, 1)
+        lambd = np.random.rand(2) # uniform distribution [0, 1) 
+        v = np.random.randn()# normal distribution
 
         dual_gap = - np.matmul(self.ineq_const(x).T, lambd)[-1] # (1)        
         for iter in range(max_iter): 
@@ -142,19 +154,19 @@ class NewtonOptim:
             x = x + step_size * dir_x
             lambd = lambd + step_size * dir_lambd
             v = v + step_size * dir_v 
-            print(f"iter = {iter} x = {x} dir_x = {dir_x}")
-            print(f"iter = {iter} lambd = {lambd} dir_lambd = {dir_lambd}")
-            print(f"iter = {iter} v = {v} dir_v = {dir_v}")
+            # print(f"iter = {iter} x = {x} dir_x = {dir_x}")
+            # print(f"iter = {iter} lambd = {lambd} dir_lambd = {dir_lambd}")
+            # print(f"iter = {iter} v = {v} dir_v = {dir_v}")
 
             # check stopping condition
             norm_rpri = np.linalg.norm(self.eq_const(x))
             norm_rdual = np.linalg.norm(self.r_dual_func(x, lambd, v))
             dual_gap = - np.matmul(self.ineq_const(x).T, lambd)[-1]
 
-            print(f"norm_rpri = {norm_rpri}\tnorm_residual = {norm_rdual}\tdual_gap = {dual_gap}")
+            # print(f"norm_rpri = {norm_rpri}\tnorm_rdual = {norm_rdual}\tdual_gap = {dual_gap}")
 
             if norm_rpri <= eps_feas and norm_rdual <= eps_feas and dual_gap <= eps: 
-                print(f"iter = {iter} converged! ({x[0]}, {x[1]})")
+                print(f"iter = {iter} converged! (z, t) = ({x[0]}, {x[1]})")
                 break 
         
         return x[0], x[1]
@@ -168,9 +180,6 @@ def test(a, b, c, kappa, tau, norm_factor, z_min, t_min):
     print(f"inv_power = {inv_ln_power}\tinv_freq = {inv_freq}")
     x_opt = np.array([inv_ln_power, inv_freq])
     print(f"x_opt = {x_opt} obj = {opt.objective(x_opt)} Ax - b = {opt.eq_const(x_opt)}")
-    tmp = [0.1, 0.1] # broadcasting 
-    print(f"x_opt+tmp = {x_opt+tmp} obj = {opt.objective(x_opt+tmp)} Ax - b = {opt.eq_const(x_opt+tmp)}")
-    print(f"x_opt-tmp = {x_opt-tmp} obj = {opt.objective(x_opt-tmp)} Ax - b = {opt.eq_const(x_opt-tmp)}")
 
     # Original problem solutions 
     power = 1/b * np.exp(1/inv_ln_power)
@@ -186,7 +195,21 @@ if __name__=='__main__':
     # opt_cs = num_lrounds * C_n * self.num_samples # (N, )
     # opt_tau = tau * (1-eta)/self.an - penalty_time # (N, )  
 
-    a, b, c = 0.0348, 120, 1*1e8 # power = 0.005364        freq = 1.619e+08
+    print("Normalized parameters") 
+    norm_factor = 1e9 
+
+    # a, b, c = 0.0348, 120, 1*1e8 
+    # a = 0.03482371435133165
+    # b = 16.717536192138855
+    # c = 0.03362095304577377 * norm_factor
+    # power = 0.066290        freq = 1.279e+08 obj = 0.002248790683097171
+
+    a = 0.03482371435133165	
+    b = 9863.430506596913	
+    c = 0.05116275624731778 * norm_factor
+    tau = 0.8098728122557564
+    # taumin = 0.030631940230047387	z_min = 0.14503226322827228	t_min = 0.5
+    # iter = 14 converged! (z, t) = (-0.6456984132273457, 16.26883480107134)
     kappa = 1e-28 
 
     import math 
@@ -194,14 +217,7 @@ if __name__=='__main__':
     z_min = 1/math.log(1 + 0.1 * b) 
     t_min = 1/f_max
     
-    tmin = a / z_min + c / f_max # 0.13926023763966147 
-    # tau = 0.14 #              power = 0.077522 freq = 8.039e+08 obj = 0.0075417986204784045
-    # tau = 0.13926023763966147 power = 0.078307 freq = 8.082e+08 obj = 0.007619271633460264
-    # tau = 0.15 #              power = 0.068399 freq = 7.492e+08 obj = 0.006606562686656652
-    # tau = 0.2  #              power = 0.042411 freq = 5.599e+08 obj = 0.0038633707860031784
-    tau = 0.14
-    print("Normalized parameters") 
-    norm_factor = 1e9 
+
     test(a, b, c, kappa, tau, norm_factor, z_min, t_min)
 
     ## Non-normalized parameters

@@ -103,7 +103,7 @@ class SystemModel:
         print("Done!")
 
 def test(): 
-    sm = SystemModel(updated_dist=4)
+    sm = SystemModel(updated_dist=2.5)
     sm.train()
 
 def test_fixedi(): 

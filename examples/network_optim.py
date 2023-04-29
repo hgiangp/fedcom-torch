@@ -219,6 +219,9 @@ class NetworkOptim:
         opt_tau = tau * (1-eta)/self.an - penalty_time # (N, ) penalty time for chosing uav # broadcasting   
         print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
 
+        z_min = 1/np.log(1 + power_max * opt_bs) 
+        t_min = 1/freq_max
+
         # Normalization variables for faster convergence 
         norm_factor = 1e9
 
@@ -228,7 +231,8 @@ class NetworkOptim:
 
         for i in range(num_users): 
             print(f"NewtonOptim USER = {i}")
-            opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau[i], kappa=k_switch, norm_factor=norm_factor)
+            opt = NewtonOptim(a=opt_as[i], b=opt_bs[i], c=opt_cs[i], tau=opt_tau[i], 
+                    kappa=k_switch, norm_factor=norm_factor, z_min=z_min[i], t_min=t_min)
             inv_ln_power, inv_freq = opt.newton_method()
 
             # Update results 
@@ -341,7 +345,7 @@ class NetworkOptim:
         return self.an, num_lrounds, num_grounds # (i, n, a_n)
 
         # Stop 
-        return (eta, freqs, decs, powers)
+        # return (eta, freqs, decs, powers)
 
     def solve_freqs_fake(self, eta, decs, tau):
         # power fixed at power_max, decs fixed 
