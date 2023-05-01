@@ -62,7 +62,7 @@ def parse_net_tien(file_name):
             t_co.append(float(search_time.group(2)))
             t_cp.append(float(search_time.group(3)))  
 
-        search_ene = re.search(r'At round (.*) e_co: (.*) e_cp: (.*)', line, re.M|re.I)
+        search_ene = re.search(r'At round (.*) average e_co: (.*) average e_cp: (.*)', line, re.M|re.I)
         if search_ene: 
             e_co.append(float(search_ene.group(2)))
             e_cp.append(float(search_ene.group(3)))    

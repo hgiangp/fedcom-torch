@@ -44,7 +44,7 @@ class SystemModel:
         while 1: 
             print(f"Round {iter}\n-------------------------------") 
             # a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_fake(tau, decs, ground=iter)
-            a_n, num_lrounds, num_grounds = self.net_optim.optimize_network(tau, ground=iter)
+            a_n, num_lrounds, num_grounds, t_iter = self.net_optim.optimize_network(tau, ground=iter)
             print("At round {} local rounds: {}".format(iter, num_lrounds))
             print("At round {} global rounds: {}".format(iter, num_grounds))
             print("At round {} tau: {}".format(iter, tau))
@@ -53,7 +53,7 @@ class SystemModel:
             self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
 
             # check stop condition
-            tau = tau - t0
+            tau = tau - t_iter
             if a_n < 1 or tau < 0: 
                 break 
 

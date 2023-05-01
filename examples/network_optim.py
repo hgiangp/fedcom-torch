@@ -335,21 +335,25 @@ class NetworkOptim:
         self.decs = decs
         
         # calculate time, energy consumption at the current iteration 
-        t_co = self.calc_trans_time(self.decs, self.powers).sum()
-        e_co = self.calc_trans_energy(self.decs, self.powers).sum()
+        t_co = self.calc_trans_time(self.decs, self.powers)
+        e_co = self.calc_trans_energy(self.decs, self.powers)
         
-        t_cp = self.calc_comp_time(num_lrounds, self.freqs).sum()   
-        e_cp = self.calc_comp_energy(num_lrounds, self.freqs).sum()
+        t_cp = self.calc_comp_time(num_lrounds, self.freqs)   
+        e_cp = self.calc_comp_energy(num_lrounds, self.freqs)
 
-        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co/num_users, t_cp/num_users))
-        print("At round {} e_co: {} e_cp: {}".format(ground, e_co, e_cp))
+        # calculate consumed synchronous time 
+        t_iter = max(t_co + t_cp)
+
+        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co.sum()/num_users, t_cp.sum()/num_users))
+        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co.sum()/num_users, e_cp.sum()/num_users))
         print("At round {} eta: {}".format(ground, eta))  
         print("At round {} a_n: {}".format(ground, self.an))
+        print("At round {} t_iter: {}".format(ground, t_iter))
 
         # update a_n for calculating the next global iteration  
         self.update_an(ground=ground)
         
-        return self.an, num_lrounds, num_grounds # (i, n, a_n)
+        return self.an, num_lrounds, num_grounds, t_iter # (i, n, a_n)
 
         # Stop 
         # return (eta, freqs, decs, powers)
