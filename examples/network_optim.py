@@ -265,19 +265,19 @@ class NetworkOptim:
             # Tighten the bound of eta 
             eta_min, eta_max = self.find_bound_eta(freqs, decs, powers, tau)
 
+            # stop condition for boundary eta 
+            if abs(eta_max - eta_min) < eps_eta: 
+                print("Done!")
+                break
+
             # Solve eta
             eta = self.solve_optimal_eta(freqs, decs, powers) 
-
+            
             # Check eta boundary condition 
             if eta > eta_max: 
                 eta = eta_max 
             elif eta < eta_min: 
                 eta = eta_min 
-            
-            # stop condition for boundary eta 
-            if abs(eta_max - eta_min) < eps_eta: 
-                print("Done!")
-                break
 
             # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
             
