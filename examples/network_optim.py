@@ -248,6 +248,8 @@ class NetworkOptim:
         Return: 
             (eta, freqs, decs, powers)
         """
+        eps_eta = 1e-3 # tolerance accuracy of eta
+
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
@@ -271,6 +273,11 @@ class NetworkOptim:
                 eta = eta_max 
             elif eta < eta_min: 
                 eta = eta_min 
+            
+            # stop condition for boundary eta 
+            if abs(eta_max - eta_min) < eps_eta: 
+                print("Done!")
+                break
 
             # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
             
