@@ -201,8 +201,9 @@ class NetworkOptim:
             if (t_max - t_min)/t_max < acc: 
                 break
             iter += 1
-        
-        print(f"initialize_feasible_solution eta = {eta_opt}, tau = {tau}")  
+        num_grounds = self.an / (1 - eta_opt)
+        num_lrounds = v * math.log2(1/eta_opt)
+        print(f"initialize_feasible_solution eta = {eta_opt}, tau = {tau}, num_grounds = {num_grounds}, num_lrounds = {num_lrounds}")  
         return tau, decs_opt
 
     def solve_freqs_powers(self, eta, decs, tau): 
@@ -242,7 +243,7 @@ class NetworkOptim:
         print(f"opt_freqs = {opt_freqs}\nopt_powers = {opt_powers}")
         return opt_freqs, opt_powers
 
-    def optimize_network(self, tau, ground=0): 
+    def optimize_network_bs_uav(self, tau, ground=0): 
         r""" Solve the relay-node selection and resource allocation problem
         Args: 
         Return: 
@@ -324,15 +325,86 @@ class NetworkOptim:
             obj_prev = obj
             iter += 1 
         
-        # Finishing 
-        num_lrounds = v * math.log2(1/eta)
-        num_grounds = self.an / (1 - eta)
+        an, num_lrounds, num_grounds = self.update_n_print(eta, freqs, powers, decs, ground)
+        return an, num_lrounds, num_grounds # (i, n, a_n)
 
+    def optimize_network_bs(self, tau, ground=0): 
+        r""" Solve the relay-node selection and resource allocation problem
+        Args: 
+        Return: 
+            (eta, freqs, decs, powers)
+        """
+        eps_eta = 1e-3 # tolerance accuracy of eta
+
+        # Initialize a feasible solution 
+        freqs = np.ones(num_users) * freq_max
+        powers = np.ones(num_users) * power_max
+        decs = np.zeros(num_users)
+        eta = 0.01
+        
+        obj_prev = self.calc_total_energy(eta, freqs, decs, powers).sum()
+        print(f"obj_prev = {obj_prev}")
+
+        # Repeat
+        iter = 0
+        while 1: 
+            # Tighten the bound of eta 
+            eta_min, eta_max = self.find_bound_eta(freqs, decs, powers, tau)
+
+            # stop condition for boundary eta 
+            if abs(eta_max - eta_min) < eps_eta: 
+                print("Done!")
+                break
+
+            # Solve eta
+            eta = self.solve_optimal_eta(freqs, decs, powers) 
+
+            # Check eta boundary condition 
+            if eta > eta_max: 
+                eta = eta_max 
+            elif eta < eta_min: 
+                eta = eta_min 
+
+            # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
+
+            # check with all connecting to bs
+            bs_freqs, bs_powers = self.solve_freqs_powers(eta, decs, tau)
+            bs_ene = self.calc_total_energy(eta, bs_freqs, decs, bs_powers)
+            print(f"bs_ene = {bs_ene}")
+
+            # update powers, freqs corresponding to the current optimal decision 
+            powers = bs_powers
+            freqs = bs_freqs
+
+            # Check stop condition
+            obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
+            print(f"optimize_network iter = {iter} obj = {obj}")
+            
+            print(f"eta = {eta}")
+            print(f"decs = {decs}")
+            print(f"freqs = {freqs}")
+            print(f"powers = {powers}") 
+
+            if (abs(obj_prev - obj) < acc) or iter == iter_max: 
+                print("Done!")
+                break
+
+            obj_prev = obj
+            iter += 1 
+
+        an, num_lrounds, num_grounds = self.update_n_print(eta, freqs, powers, decs, ground)
+        return an, num_lrounds, num_grounds # (i, n, a_n)
+    
+    def update_n_print(self, eta, freqs, powers, decs, ground): 
         # update optimal result for class 
         self.eta = eta 
         self.freqs = freqs
         self.powers = powers 
         self.decs = decs
+
+        # Finishing 
+        num_lrounds = v * math.log2(1/eta)
+        num_grounds = self.an / (1 - eta)
         
         # calculate time, energy consumption at the current iteration 
         t_co = self.calc_trans_time(self.decs, self.powers)
@@ -348,98 +420,14 @@ class NetworkOptim:
         print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co.sum()/num_users, e_cp.sum()/num_users))
         print("At round {} eta: {}".format(ground, eta))  
         print("At round {} a_n: {}".format(ground, self.an))
+        print("At round {} local rounds: {}".format(ground, num_lrounds))
+        print("At round {} global rounds: {}".format(ground, num_grounds))
+        print("At round {} tau: {}".format(ground, tau))
 
         # update a_n for calculating the next global iteration  
         self.update_an(ground=ground)
-        
-        return self.an, num_lrounds, num_grounds # (i, n, a_n)
 
-        # Stop 
-        # return (eta, freqs, decs, powers)
-
-    def solve_freqs_fake(self, eta, decs, tau):
-        # power fixed at power_max, decs fixed 
-        # calculate coms time 
-        t_co = self.calc_trans_time(decs, power_max) # (N, )
-
-        # calculate number of local, global rounds 
-        num_lrounds = v * math.log2(1/eta)
-        num_grounds = self.an / (1-eta)
-
-        # calculate computation time for one local_round 
-        t_cp_1 = (tau / num_grounds - t_co) / num_lrounds # (N, )
-
-        # Calculate optimal freqs     
-        freqs = C_n * self.num_samples / t_cp_1 # (N, )
-        return freqs
-
-    def optimize_network_fake(self, tau, decs, ground=0):
-        # Initialize a feasible solution 
-        freqs = np.ones(num_users) * freq_max
-        powers = np.ones(num_users) * power_max
-        # decs = np.zeros(num_users) # decs = np.array([1, 0, 1, 1, 0, 0, 1, 1, 0, 0], dtype=int)
-
-        # Repeat
-        iter = 0
-        # tau = 50
-
-        eta = 0.01
-        obj_prev = self.calc_total_energy(eta, freqs, decs, powers).sum()
-        print(f"obj_prev = {obj_prev}")
-
-        while 1: 
-            # find bound eta 
-            eta_min, eta_max = self.find_bound_eta(freqs, decs, powers, tau)
-            print(f"eta_min = {eta_min}\teta_max = {eta_max}")
-            # Solve eta
-            eta = self.solve_optimal_eta(freqs, decs, powers) 
-            
-            if eta > eta_max: 
-                eta = eta_max 
-            elif eta < eta_min: 
-                eta = eta_min 
-
-            # Solve freqs f
-            freqs = self.solve_freqs_fake(eta, decs, tau)
-
-            # Check stop condition
-            obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
-            print(f"optimize_network iter = {iter} obj = {obj}")
-            print(f"eta = {eta}")
-            print(f"freqs = {freqs}")
-
-            if (abs(obj_prev - obj) < acc) or iter == iter_max: 
-                print("Done!")
-                break
-
-            obj_prev = obj
-            iter += 1 
-
-        num_lrounds = v * math.log2(1/eta)
-        num_grounds = self.an / (1 - eta)
-
-        # update optimal result for class 
-        self.eta = eta 
-        self.freqs = freqs
-        self.powers = powers 
-        self.decs = decs
-        
-        # calculate time, energy consumption at the current iteration 
-        t_co = self.calc_trans_time(self.decs, self.powers).sum()
-        e_co = self.calc_trans_energy(self.decs, self.powers).sum()
-        
-        t_cp = self.calc_comp_time(num_lrounds, self.freqs).sum()   
-        e_cp = self.calc_comp_energy(num_lrounds, self.freqs).sum()
-
-        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co/num_users, t_cp/num_users))
-        print("At round {} e_co: {} e_cp: {}".format(ground, e_co, e_cp))
-        print("At round {} eta: {}".format(ground, eta))  
-        print("At round {} a_n: {}".format(ground, self.an))
-
-        # update a_n for calculating the next global iteration  
-        self.update_an(ground=ground)
-        
-        return self.an, num_lrounds, num_grounds # (i, n, a_n)
+        return self.an, num_lrounds, num_grounds
 
     def calc_bs_gains(self, xs, ys): 
         r""" Calculate propagation channel gains, connect to bs 

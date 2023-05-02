@@ -17,8 +17,15 @@ freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency
 # Offloading, global aggregation params 
 xi_factor = 1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
-epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
-epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
+
+# # for dynamic i scenarios (idx_sce = 2, 4)
+# epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
+# epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
+
+# for fixed i scenarios (idx_sce = 1, 3)
+epsilon_alpha = 1 # alpha factor for decreasing the accuracy > 1
+epsilon_a = 1 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
+
 compression_ratio = 0.1 # 1-0.95
 s_n = 100240 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
@@ -31,7 +38,7 @@ x_bs, y_bs = -400, 400 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
-de_r = 3.0 # pathloss exponent, connect to bs 
+de_r = 2.9 # pathloss exponent, connect to bs 
 # dn_r = 1.0 # distance between veh and bs, varies 
 
 # UAV propagation channel params 
@@ -41,7 +48,7 @@ de_r = 3.0 # pathloss exponent, connect to bs
 z_uav = 100 # flighting height of uav 
 g_0 = 1e-5 # -50 dB reference channel gain (10**(x/10))
 alpha = 0.2 # < 1, attenuation effect of NLoS channel 
-de_u = 2.7 # pathloss exponent, connect to uav 
+de_u = 2.9 # pathloss exponent, connect to uav 
 a_env, b_env = 15, 0.5 # evironment constants
 
 # Calculable params 
