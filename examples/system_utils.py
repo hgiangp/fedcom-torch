@@ -38,7 +38,7 @@ def read_options():
                     default=4)
     
     parser.add_argument('--tau',
-                help='index of simulation scenario;',
+                help='deadline of federated learning process;',
                 type=float,
                 default=40)
     
