@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider 
 
-from run_utils import read_options 
+from system_utils import read_options 
 from parse_log import * 
 
 def plot_fedl(log_file, fig_file): 
