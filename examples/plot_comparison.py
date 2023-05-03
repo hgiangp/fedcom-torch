@@ -122,22 +122,22 @@ def plot_tien_bar():
     t_co_3, t_cp_3, e_co_3, e_cp_3 = parse_net_tien(prefix_log + 's3/' + log_file)
     t_co_4, t_cp_4, e_co_4, e_cp_4 = parse_net_tien(prefix_log + 's4/' + log_file)
 
-    max_round = min(len(t_co_1), len(t_co_2), len(t_co_3), len(t_co_4))
+    max_round_fixedi = min(len(t_co_1), len(t_co_3))
     
-    t_co_1 = t_co_1.sum()
-    t_cp_1 = t_cp_1.sum()
-    e_co_1 = e_co_1.sum()
-    e_cp_1 = e_cp_1.sum()
+    t_co_1 = t_co_1[:max_round_fixedi].sum()
+    t_cp_1 = t_cp_1[:max_round_fixedi].sum()
+    e_co_1 = e_co_1[:max_round_fixedi].sum()
+    e_cp_1 = e_cp_1[:max_round_fixedi].sum()
 
     t_co_2 = t_co_2.sum()
     t_cp_2 = t_cp_2.sum()
     e_co_2 = e_co_2.sum()
     e_cp_2 = e_cp_2.sum()
 
-    t_co_3 = t_co_3.sum()
-    t_cp_3 = t_cp_3.sum()
-    e_co_3 = e_co_3.sum()
-    e_cp_3 = e_cp_3.sum()
+    t_co_3 = t_co_3[:max_round_fixedi].sum()
+    t_cp_3 = t_cp_3[:max_round_fixedi].sum()
+    e_co_3 = e_co_3[:max_round_fixedi].sum()
+    e_cp_3 = e_cp_3[:max_round_fixedi].sum()
 
     t_co_4 = t_co_4.sum()
     t_cp_4 = t_cp_4.sum()
@@ -169,7 +169,7 @@ def plot_tien_bar():
 
     # ax.set_xlabel("Number of IDs", fontsize = 12)
     ax.set_ylabel('Time (s) ', fontsize = 12)
-    ax.set_ylim(0, 40)
+    ax.set_ylim(0, 50)
     # plt.grid(True, axis = 'y', color = '0.6', linestyle = '-')
     
     ax.set_xticks(ind+width+space,['t_co', 't_cp', 'total'])
@@ -210,7 +210,7 @@ def plot_tien_bar():
     bar4 = ax.bar(space*3 + ind+width*3, en_4, width,  color = 'none', hatch = 'xx', edgecolor = 'tab:red', linewidth = 1)
 
     ax.set_ylabel('Energy (J) ', fontsize = 12)
-    ax.set_ylim(0, 1.4)
+    ax.set_ylim(0, 0.2)
     # plt.grid(True, axis = 'y', color = '0.6', linestyle = '-')
     
     ax.set_xticks(ind+width+space,['e_co', 'e_cp', 'total'])
@@ -228,7 +228,7 @@ def plot_tien_bar():
     for rect, label in zip(rects, labels):
         height = rect.get_height()
         ax.text(
-            rect.get_x() + rect.get_width() / 2, height + 0.03, label, ha="center", va="bottom"
+            rect.get_x() + rect.get_width() / 2, height + 0.008, label, ha="center", va="bottom"
         )
 
     plt.savefig(prefix_fig + fig_file_ene, bbox_inches='tight')
