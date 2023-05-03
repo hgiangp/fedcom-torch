@@ -50,7 +50,8 @@ class LocationModel:
     
         return xs, ys, dirs
 
-    def update_location(self): 
+    def update_location(self):
+        print("update_location")  
         num_users = self.num_users
 
         delta_xs = np.zeros(num_users, dtype=int)

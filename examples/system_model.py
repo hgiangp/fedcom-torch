@@ -33,30 +33,24 @@ class SystemModel:
     
     def train_dyni(self, idx_sce): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823        
-        # tau = int(4 * t_min) # > t_min (= t_min + const) e.g t_min + t_min/10 TODO 
-        # t0 = t_min / 250 # TODO: set value of t0 
 
         tau, t0 = 40, 0.12
         print(f"system_model train() tau = {tau}\tt0 = {t0}")
-        # decs = np.random.randint(low=0, high=2, size=10)
 
         iter = 0 # TODO: printing only 
         while 1: 
             print(f"Round {iter}\n-------------------------------") 
             if idx_sce == 4: 
-                a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_bs_uav(tau, ground=iter)
-            
+                a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs_uav(tau, ground=iter)
             if idx_sce == 2:
-                a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_bs(tau, ground=iter)
+                a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs(tau, ground=iter)
             
-            # TODO: view number of global rounds
             self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
 
             # check stop condition
-            tau = tau - t0
+            tau = tau - t_total
             if a_n < 1 or tau < t_min: 
                 break 
-
             # not stop, update location for the next global round 
             print("update_location") 
             self.net_optim.update_channel_gains()
@@ -64,49 +58,60 @@ class SystemModel:
 
         print("Done!")
     
-    def train_fixedi(self, idx_sce):
-        t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823
-        
+    def train_bs_fixedi(self):
+        tau, t0 = 40, 0.12
+        print(f"system_model train() tau = {tau}\tt0 = {t0}")
+
+        iter = 0
+        print(f"Round {iter}\n-------------------------------") 
+        a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs(tau, ground=iter)
+        max_round = int(num_grounds)
+
+        # FL training 
+        for iter in range(1, max_round): 
+            print(f"Round {iter}\n-------------------------------")    
+            # Calculate energy consumption in the next iteration 
+            t_total = self.net_optim.update_n_print(ground=iter)
+            # TODO: view number of global rounds
+            self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
+            # not stop, update location for the next global round 
+            self.net_optim.update_channel_gains()
+
+        print("Done!")
+
+    def train_bs_uav_fixedi(self):
         tau, t0 = 40, 0.12
         print(f"system_model train() tau = {tau}\tt0 = {t0}")
         
         # Optimize network at the first iteration 
         iter = 0 # TODO: printing only 
-        if idx_sce == 3: 
-            a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_bs_uav(tau, ground=iter)
+        print(f"Round {iter}\n-------------------------------") 
+        a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs_uav(tau, ground=iter)
+        self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
         
-        if idx_sce == 1:
-            a_n, num_lrounds, num_grounds = self.net_optim.optimize_network_bs(tau, ground=iter)
-
-        max_round = int(num_grounds) - 1
-
+        # iter = 1 
+        max_round = int(num_grounds)
         # FL training 
-        while 1: 
+        for iter in range(1, max_round): 
             print(f"Round {iter}\n-------------------------------")    
             # Calculate energy consumption in the next iteration 
-            if iter > 0:
-                self.net_optim.update_n_print(self.net_optim.eta, self.net_optim.freqs, self.net_optim.powers, self.net_optim.decs, iter)
-
-            # TODO: view number of global rounds
+            tau = tau - t_total
+            a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs_uav_fixedi(tau, iter)
             self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
-
-            # check stop condition 
-            if iter == max_round: 
-                break 
             # not stop, update location for the next global round 
-            print("update_location") 
             self.net_optim.update_channel_gains()
-            iter += 1 
-
-        print("Done!")
+        
+        print("Done!")    
 
 def test(idx_sce=4): 
     sm = SystemModel(updated_dist=2.5)
     if idx_sce == 4 or idx_sce == 2: 
         sm.train_dyni(idx_sce)
-    if idx_sce == 3 or idx_sce == 1: 
-        sm.train_fixedi(idx_sce)
+    if idx_sce == 3: 
+        sm.train_bs_uav_fixedi() 
+    if idx_sce == 1: 
+        sm.train_bs_fixedi()
 
 if __name__=="__main__": 
-    idx_sce = 3
+    idx_sce = 1
     test(idx_sce)

@@ -14,13 +14,16 @@ class NetworkOptim:
         self.updated_dist = updated_dist
         self.loc_model = LocationModel(num_users, updated_dist)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
-        self.an = a_0 # initialize with current round = 0 
-        
+        self.an = a_0 # initialize with current round = 0
+        self.tau = 0  
+         
         # For saving the optimal result 
         self.eta = 0.01
         self.freqs = freq_max 
         self.powers = power_max 
         self.decs = np.zeros(num_users)
+        self.num_lrounds = 0 
+        self.num_grounds = 0
 
     def calc_channel_gains(self): 
         xs, ys = self.loc_model.get_location()
@@ -148,14 +151,7 @@ class NetworkOptim:
         # Solve optimal decision decs
         t_co_uav = self.calc_trans_time(1, power_max)
         t_co_bs = self.calc_trans_time(0, power_max)
-
-        difference = t_co_uav + delta_t - t_co_bs
-        idx = np.argpartition(difference, max_uav)[:max_uav]
-        idx_uav = idx[np.where(difference[idx] < 0)]
-
-        decs_opt = np.zeros(shape=num_users, dtype=int)
-        decs_opt[idx_uav] = 1
-        
+        decs_opt = self.choose_opt_decs(t_co_uav, t_co_bs)        
         return decs_opt
 
     def initialize_feasible_solution(self): 
@@ -249,8 +245,9 @@ class NetworkOptim:
         Return: 
             (eta, freqs, decs, powers)
         """
-        eps_eta = 1e-3 # tolerance accuracy of eta
+        self.tau = tau 
 
+        eps_eta = 1e-3 # tolerance accuracy of eta
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
@@ -294,16 +291,8 @@ class NetworkOptim:
             bs_ene = self.calc_total_energy(eta, bs_freqs, decs, bs_powers)
             print(f"bs_ene = {bs_ene}")
             
-            # find the better decision
-            difference = uav_ene - bs_ene
-            print(f"difference = {difference}")
-            # https://stackoverflow.com/questions/34226400/find-the-index-of-the-k-smallest-values-of-a-numpy-array
-            idx = np.argpartition(difference, max_uav)[:max_uav]
-            idx_uav = idx[np.where(difference[idx] < 0)]
-            
-            # update decisions 
-            decs = np.zeros(num_users, dtype=int)
-            decs[idx_uav] = 1 # (N, )
+            # choose the better decisions 
+            decs = self.choose_opt_decs(uav_ene, bs_ene)
 
             # update powers, freqs corresponding to the current optimal decision 
             powers = decs * uav_powers + (1 - decs) * bs_powers
@@ -325,8 +314,40 @@ class NetworkOptim:
             obj_prev = obj
             iter += 1 
         
-        an, num_lrounds, num_grounds = self.update_n_print(eta, freqs, powers, decs, ground)
-        return an, num_lrounds, num_grounds # (i, n, a_n)
+        # Found optimal solutions for the current round 
+        # Update params 
+        self.update_net_params(eta, freqs, powers, decs)
+        # Calcualte t_total to udpate the remaining tau of the next round 
+        t_total = self.update_n_print(ground)
+        return self.an, self.num_lrounds, self.num_grounds, t_total # (i, n, a_n)
+    
+    def choose_opt_decs(self, val_uav, val_bs): 
+        # find the better decision
+        difference = val_uav - val_bs
+        print(f"difference = {difference}")
+        # https://stackoverflow.com/questions/34226400/find-the-index-of-the-k-smallest-values-of-a-numpy-array
+        idx = np.argpartition(difference, max_uav)[:max_uav]
+        idx_uav = idx[np.where(difference[idx] < 0)]
+        
+        # update decisions 
+        decs = np.zeros(num_users, dtype=int)
+        decs[idx_uav] = 1 # (N, )
+        return decs 
+
+    def optimize_network_bs_uav_fixedi(self, tau, ground=0): 
+        r""" Select the better channel condition 
+        Args: 
+        Return: 
+            (eta, freqs, decs, powers)
+        """
+        decs = self.init_decisions()
+        
+        # Found optimal solutions for the current round 
+        # Update params 
+        self.update_net_params(self.eta, self.freqs, self.powers, decs)
+        # Calcualte t_total to udpate the remaining tau of the next round 
+        t_total = self.update_n_print(ground)
+        return self.an, self.num_lrounds, self.num_grounds, t_total # (i, n, a_n)
 
     def optimize_network_bs(self, tau, ground=0): 
         r""" Solve the relay-node selection and resource allocation problem
@@ -368,13 +389,9 @@ class NetworkOptim:
             # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
 
             # check with all connecting to bs
-            bs_freqs, bs_powers = self.solve_freqs_powers(eta, decs, tau)
-            bs_ene = self.calc_total_energy(eta, bs_freqs, decs, bs_powers)
+            freqs, powers = self.solve_freqs_powers(eta, decs, tau)
+            bs_ene = self.calc_total_energy(eta, freqs, decs, powers)
             print(f"bs_ene = {bs_ene}")
-
-            # update powers, freqs corresponding to the current optimal decision 
-            powers = bs_powers
-            freqs = bs_freqs
 
             # Check stop condition
             obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
@@ -391,43 +408,45 @@ class NetworkOptim:
 
             obj_prev = obj
             iter += 1 
-
-        an, num_lrounds, num_grounds = self.update_n_print(eta, freqs, powers, decs, ground)
-        return an, num_lrounds, num_grounds # (i, n, a_n)
+        
+        # Found optimal solutions for the current round 
+        # Update params 
+        self.update_net_params(eta, freqs, powers, decs)
+        # Calcualte t_total to udpate the remaining tau of the next round 
+        t_total = self.update_n_print(ground)
+        return self.an, self.num_lrounds, self.num_grounds, t_total # (i, n, a_n)
     
-    def update_n_print(self, eta, freqs, powers, decs, ground): 
+    def update_net_params(self, eta, freqs, powers, decs): 
         # update optimal result for class 
         self.eta = eta 
         self.freqs = freqs
         self.powers = powers 
         self.decs = decs
-
-        # Finishing 
-        num_lrounds = v * math.log2(1/eta)
-        num_grounds = self.an / (1 - eta)
-        
+        self.num_lrounds = v * math.log2(1/self.eta)
+        self.num_grounds = self.an/(1-self.eta)
+    
+    def update_n_print(self, ground):
         # calculate time, energy consumption at the current iteration 
-        t_co = self.calc_trans_time(self.decs, self.powers)
-        e_co = self.calc_trans_energy(self.decs, self.powers)
+        t_co = self.calc_trans_time(self.decs, self.powers).sum()/self.num_users
+        e_co = self.calc_trans_energy(self.decs, self.powers).sum()/self.num_users
         
-        t_cp = self.calc_comp_time(num_lrounds, self.freqs)   
-        e_cp = self.calc_comp_energy(num_lrounds, self.freqs)
+        t_cp = self.calc_comp_time(self.num_lrounds, self.freqs).sum()/self.num_users
+        e_cp = self.calc_comp_energy(self.num_lrounds, self.freqs).sum()/self.num_users
 
         # # calculate consumed synchronous time 
         # t_iter = max(t_co + t_cp)
 
-        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co.sum()/num_users, t_cp.sum()/num_users))
-        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co.sum()/num_users, e_cp.sum()/num_users))
-        print("At round {} eta: {}".format(ground, eta))  
+        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co, t_cp))
+        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co, e_cp))
+        print("At round {} eta: {}".format(ground, self.eta))  
         print("At round {} a_n: {}".format(ground, self.an))
-        print("At round {} local rounds: {}".format(ground, num_lrounds))
-        print("At round {} global rounds: {}".format(ground, num_grounds))
-        print("At round {} tau: {}".format(ground, tau))
+        print("At round {} local rounds: {}".format(ground, self.num_lrounds))
+        print("At round {} global rounds: {}".format(ground, self.num_grounds))
+        print("At round {} tau: {}".format(ground, self.tau)) 
 
-        # update a_n for calculating the next global iteration  
-        self.update_an(ground=ground)
-
-        return self.an, num_lrounds, num_grounds
+        self.update_an(ground=ground+1)
+        t_total = t_co + t_cp 
+        return t_total
 
     def calc_bs_gains(self, xs, ys): 
         r""" Calculate propagation channel gains, connect to bs 
