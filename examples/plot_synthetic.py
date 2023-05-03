@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider 
 
+from system_utils import read_options 
+
 from parse_log import * 
 
 def plot_fedl(log_file, fig_file): 
@@ -238,11 +240,14 @@ def test_combine():
     plt.savefig('./figures/plot_synthetic_fedl.png') 
     plt.show()
 
+def main(): 
+    sce_idx = read_options()['sce_idx']
+    test_system_model(index=sce_idx)    
+
 if __name__=='__main__':
-    idx_sce = 1
-    test_system_model(index=idx_sce)
     # plot_location_act()
     # test_fixedi()
     # test_server_model()
     # test_combine()
     # plot_location_ani()
+    main()

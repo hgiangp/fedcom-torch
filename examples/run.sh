@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
-python3 system_model.py| tee logs/system_model.log
-python3 server_model.py| tee logs/server_model.log 
-python3 plot_synthetic.py| tee logs/plot_synthetic.log 
+python3 -u system_model.py --sce_idx=$1 | tee logs/s$1/system_model.log
+python3 -u plot_synthetic.py --sce_idx=$1

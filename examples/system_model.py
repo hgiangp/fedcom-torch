@@ -111,7 +111,11 @@ def test(idx_sce=4):
         sm.train_bs_uav_fixedi() 
     if idx_sce == 1: 
         sm.train_bs_fixedi()
+    
+def main(): 
+    sce_idx = read_options()['sce_idx']
+    print(sce_idx)
+    test(sce_idx)
 
 if __name__=="__main__": 
-    idx_sce = 1
-    test(idx_sce)
+    main()
