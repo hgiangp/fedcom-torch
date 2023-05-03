@@ -16,7 +16,7 @@ xi_factor = 1 # global gradient factor
 epsilon_0 = 1e-3 # global accuracy 
 
 compression_ratio = 0.1 # 1-0.95
-s_n = 100240 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
+s_n = 200240 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw = 1e6 # 1MHz bandwidth 
 delta_t = 0.0 # TODO Based on current results uav's time penalty 
 N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-17.4)*1e6 = 4*1e(-12) (4*1e-15?)

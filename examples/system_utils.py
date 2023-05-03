@@ -37,6 +37,11 @@ def read_options():
                     choices=SCENARIO_IDXES,
                     default=4)
     
+    parser.add_argument('--tau',
+                help='index of simulation scenario;',
+                type=float,
+                default=40)
+    
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))
 

@@ -31,11 +31,10 @@ class SystemModel:
         net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist, sce_idx)
         return net_optim
     
-    def train_dyni(self, idx_sce): 
+    def train_dyni(self, idx_sce, tau): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823        
 
-        tau, t0 = 40, 0.12
-        print(f"system_model train() tau = {tau}\tt0 = {t0}")
+        print(f"system_model train() tau = {tau}")
 
         iter = 0 # TODO: printing only 
         while 1: 
@@ -58,9 +57,8 @@ class SystemModel:
 
         print("Done!")
     
-    def train_bs_fixedi(self):
-        tau, t0 = 40, 0.12
-        print(f"system_model train() tau = {tau}\tt0 = {t0}")
+    def train_bs_fixedi(self, tau=40):
+        print(f"system_model train() tau = {tau}")
 
         iter = 0
         print(f"Round {iter}\n-------------------------------") 
@@ -79,9 +77,8 @@ class SystemModel:
 
         print("Done!")
 
-    def train_bs_uav_fixedi(self):
-        tau, t0 = 40, 0.12
-        print(f"system_model train() tau = {tau}\tt0 = {t0}")
+    def train_bs_uav_fixedi(self, tau=40):
+        print(f"system_model train() tau = {tau}")
         
         # Optimize network at the first iteration 
         iter = 0 # TODO: printing only 
@@ -103,18 +100,19 @@ class SystemModel:
         
         print("Done!")    
 
-def test(idx_sce=4): 
+def test(idx_sce=4, tau=40): 
     sm = SystemModel(updated_dist=2.5, sce_idx=idx_sce)
     if idx_sce == 4 or idx_sce == 2: 
-        sm.train_dyni(idx_sce)
+        sm.train_dyni(idx_sce, tau)
     if idx_sce == 3: 
-        sm.train_bs_uav_fixedi() 
+        sm.train_bs_uav_fixedi(tau) 
     if idx_sce == 1: 
-        sm.train_bs_fixedi()
+        sm.train_bs_fixedi(tau)
     
 def main(): 
-    sce_idx = read_options()['sce_idx']
-    print(sce_idx)
+    parsed = read_options()
+    sce_idx = parsed['sce_idx']
+    tau = parsed['tau']
     test(sce_idx)
 
 if __name__=="__main__": 
