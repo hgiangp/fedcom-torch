@@ -92,8 +92,8 @@ class SystemModel:
         for iter in range(1, max_round): 
             print(f"Round {iter}\n-------------------------------")    
             # Calculate energy consumption in the next iteration 
-            tau = tau - t_total
             a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs_uav_fixedi(tau, iter)
+            tau = tau - t_total
             self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
             # not stop, update location for the next global round 
             self.net_optim.update_channel_gains()
@@ -113,7 +113,8 @@ def main():
     parsed = read_options()
     sce_idx = parsed['sce_idx']
     tau = parsed['tau']
-    test(sce_idx)
+    
+    test(sce_idx, tau)
 
 if __name__=="__main__": 
     main()
