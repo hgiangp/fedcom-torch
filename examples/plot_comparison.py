@@ -170,7 +170,7 @@ def plot_tien_bar():
 
     # ax.set_xlabel("Number of IDs", fontsize = 12)
     ax.set_ylabel('Time (s) ', fontsize = 12)
-    ax.set_ylim(0, 50)
+    # ax.set_ylim(0, 50)
     # plt.grid(True, axis = 'y', color = '0.6', linestyle = '-')
     
     ax.set_xticks(ind+width+space,['t_co', 't_cp', 'total'])
@@ -211,7 +211,7 @@ def plot_tien_bar():
     bar4 = ax.bar(space*3 + ind+width*3, en_4, width,  color = 'none', hatch = 'xx', edgecolor = 'tab:red', linewidth = 1)
 
     ax.set_ylabel('Energy (J) ', fontsize = 12)
-    ax.set_ylim(0, 0.2)
+    # ax.set_ylim(0, 0.2)
     # plt.grid(True, axis = 'y', color = '0.6', linestyle = '-')
     
     ax.set_xticks(ind+width+space,['e_co', 'e_cp', 'total'])
