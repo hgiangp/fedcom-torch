@@ -43,7 +43,8 @@ def plot_feld_performance():
     plt.grid(which='both')
     
     plt.savefig(prefix_fig + 'plot_synthetic_fedl.png') 
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_tien_performance(): 
     prefix_log = './logs/'
@@ -81,7 +82,8 @@ def plot_tien_performance():
     plt.ylabel('Computation time (s)')
     plt.legend()
     plt.savefig(prefix_fig + fig_file_time)
-    plt.show()
+    # plt.show()
+    plt.close()
 
     plt.figure(2, figsize=(10, 5))
     plt.subplot(121)
@@ -102,7 +104,8 @@ def plot_tien_performance():
     plt.ylabel('Computation energy (J)')
     plt.legend()
     plt.savefig(prefix_fig + fig_file_ene)
-    plt.show()
+    plt.close()
+    # plt.show()
 
 def plot_tien_bar():
     import itertools
@@ -146,7 +149,7 @@ def plot_tien_bar():
     width = 0.18
     space = 0.03
 
-    plt.figure(1)
+    # plt.figure(1)
     fig, ax = plt.subplots()
     ax.grid(True, axis = 'y', color = '0.6', linestyle = '-')
 
@@ -166,7 +169,7 @@ def plot_tien_bar():
 
     # ax.set_xlabel("Number of IDs", fontsize = 12)
     ax.set_ylabel('Time (s) ', fontsize = 12)
-    ax.set_ylim(0, 55)
+    ax.set_ylim(0, 40)
     # plt.grid(True, axis = 'y', color = '0.6', linestyle = '-')
     
     ax.set_xticks(ind+width+space,['t_co', 't_cp', 'total'])
@@ -189,9 +192,10 @@ def plot_tien_bar():
         )
 
     plt.savefig(prefix_fig + fig_file_time, bbox_inches='tight')
-    plt.show()
+    # plt.show()
+    plt.close()
 
-    plt.figure(2)
+    # plt.figure(2)
     fig, ax = plt.subplots()
     ax.grid(True, axis = 'y', color = '0.6', linestyle = '-')
 
@@ -228,7 +232,8 @@ def plot_tien_bar():
         )
 
     plt.savefig(prefix_fig + fig_file_ene, bbox_inches='tight')
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_lround():
     prefix_log = './logs/'
@@ -253,11 +258,12 @@ def plot_lround():
     plt.legend()
 
     plt.savefig(prefix_fig + 'plot_synthetic_lround.png') 
-    plt.show()
+    # plt.show()
+    plt.close()
 
 
 if __name__=='__main__':
-    # plot_feld_performance()
-    # plot_tien_performance()
-    # plot_tien_bar()
+    plot_feld_performance()
+    plot_tien_performance()
+    plot_tien_bar()
     plot_lround()

@@ -1,4 +1,5 @@
 import math 
+from run_utils import * 
 
 num_users = 10 # number of participating vehicles 
 tau = 80 # total time threshold
@@ -9,8 +10,8 @@ L_Lipschitz = 5 # Lipschitz constant of the loss function
 delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
 gamma_cv = 3 # strongly convex constant of the loss function
 
-k_switch = 1e-29 # switch capacity, depends on chip's architecture 
-C_n = 3*1e4 # TODO: testback # number of cpu cycles per sample 
+k_switch = 1e-28 # switch capacity, depends on chip's architecture 
+C_n = 0.5*1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
 
@@ -50,14 +51,6 @@ g_0 = 1e-5 # -50 dB reference channel gain (10**(x/10))
 alpha = 0.2 # < 1, attenuation effect of NLoS channel 
 de_u = 2.9 # pathloss exponent, connect to uav 
 a_env, b_env = 15, 0.5 # evironment constants
-
-# Calculable params 
-v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr)
-a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / (epsilon_a * epsilon_0))
-a_alpha = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1/epsilon_alpha) # negative 
-
-print(f"v = {v}")
-print(f"a_0 = {a_0}\ta_alpha = {a_alpha}")
 
 # Optimization params 
 acc = 1e-4 # TODO

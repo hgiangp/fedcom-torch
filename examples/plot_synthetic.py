@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider 
 
-from system_utils import read_options 
-
+from run_utils import read_options 
 from parse_log import * 
 
 def plot_fedl(log_file, fig_file): 
@@ -32,7 +31,8 @@ def plot_fedl(log_file, fig_file):
 
     plt.grid(which='both')
     plt.savefig(fig_file) # plt.savefig('plot_mnist.png')
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_netopt(log_file, fig_file): 
     lrounds, grounds, ans, etas = parse_netopt(log_file)
@@ -61,7 +61,8 @@ def plot_netopt(log_file, fig_file):
     plt.ylabel("eta")
 
     plt.savefig(fig_file)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_gains(log_file, fig_file): 
     uav_gains, bs_gains = parse_gains(file_name=log_file)
@@ -75,7 +76,8 @@ def plot_gains(log_file, fig_file):
     plt.xlabel('Global Rounds')
     plt.ylabel('Channel Gains (dB)')
     plt.savefig(fig_file)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_location_act(): 
     r'''Create interactive plot'''
@@ -112,6 +114,7 @@ def plot_location_act():
     s_rounds.on_changed(update)
     # plt.savefig('./figures/locations.png')
     plt.show()
+    plt.close()
 
 def plot_location_ani(log_file, fig_file): 
     xs, ys = parse_location(log_file) # (num_grounds, num_users)
@@ -166,7 +169,8 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
     plt.ylabel('Time (s)')
     plt.legend()
     plt.savefig(fig_file_time)
-    plt.show()
+    # plt.show()
+    plt.close()
 
     plt.figure(2)
     plt.plot(rounds, e_co, label='temp coms')
@@ -177,7 +181,8 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
     plt.ylabel('Energy (J)')
     plt.legend()
     plt.savefig(fig_file_ene)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def test_fixedi(): 
     log_file = './logs/system_model_fixedi.log'
@@ -238,7 +243,8 @@ def test_combine():
     # plt.legend()
 
     plt.savefig('./figures/plot_synthetic_fedl.png') 
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def main(): 
     sce_idx = read_options()['sce_idx']

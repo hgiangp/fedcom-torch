@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
-python3 -u system_model.py --sce_idx=$1 | tee logs/s$1/system_model.log
-python3 -u plot_synthetic.py --sce_idx=$1
+./run_system.sh 1
+./run_system.sh 2
+./run_system.sh 3
+./run_system.sh 4
+python3 -u plot_comparison.py

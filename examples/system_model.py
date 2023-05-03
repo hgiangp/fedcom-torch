@@ -4,14 +4,15 @@ np.set_printoptions(precision=6, linewidth=np.inf)
 from server_model import BaseFederated 
 from network_optim import NetworkOptim
 from system_utils import * 
+from run_utils import read_options
 
 seed = 1
 rng = np.random.default_rng(seed=seed)
 
 class SystemModel: 
-    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10, updated_dist=10):
+    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10, updated_dist=10, sce_idx=4):
         self.fed_model = self.init_federated(mod_name, mod_dim, dataset_name)
-        self.net_optim = self.init_netoptim(num_users, updated_dist, self.fed_model)
+        self.net_optim = self.init_netoptim(num_users, updated_dist, self.fed_model, sce_idx)
         print("SystemModel __init__!")
 
     def init_federated(self, mod_name, mod_dim, dataset_name):
@@ -22,13 +23,13 @@ class SystemModel:
         fed_model = BaseFederated(model, mod_dim, dataset)
         return fed_model 
     
-    def init_netoptim(self, num_users, updated_dist, fed_model): 
+    def init_netoptim(self, num_users, updated_dist, fed_model, sce_idx): 
         r""" Network Optimization Model"""  
         num_samples = fed_model.get_num_samples()
         msize = fed_model.get_mod_size()
         data_size = np.array([msize for _ in range(num_users)])
         
-        net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist)
+        net_optim = NetworkOptim(num_users, num_samples, data_size, updated_dist, sce_idx)
         return net_optim
     
     def train_dyni(self, idx_sce): 
@@ -49,7 +50,7 @@ class SystemModel:
 
             # check stop condition
             tau = tau - t_total
-            if a_n < 1 or tau < t_min: 
+            if a_n < 1 or tau < 1: 
                 break 
             # not stop, update location for the next global round 
             print("update_location") 
@@ -104,7 +105,7 @@ class SystemModel:
         print("Done!")    
 
 def test(idx_sce=4): 
-    sm = SystemModel(updated_dist=2.5)
+    sm = SystemModel(updated_dist=2.5, sce_idx=idx_sce)
     if idx_sce == 4 or idx_sce == 2: 
         sm.train_dyni(idx_sce)
     if idx_sce == 3: 
