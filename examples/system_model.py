@@ -4,7 +4,6 @@ np.set_printoptions(precision=6, linewidth=np.inf)
 from server_model import BaseFederated 
 from network_optim import NetworkOptim
 from system_utils import * 
-from run_utils import read_options
 
 seed = 1
 rng = np.random.default_rng(seed=seed)

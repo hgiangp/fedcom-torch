@@ -32,8 +32,8 @@ class NetworkOptim:
         self.num_grounds = 0
     
     def set_decay_params(self, sce_idx=4):
-        epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
-        epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
+        epsilon_alpha = 1.05 # alpha factor for decreasing the accuracy > 1
+        epsilon_a = 5 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
         if sce_idx == 1 or sce_idx == 3:
             epsilon_alpha = 1 # alpha factor for decreasing the accuracy > 1
             epsilon_a = 1 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi

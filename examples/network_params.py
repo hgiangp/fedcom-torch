@@ -1,8 +1,4 @@
-import math 
-from run_utils import * 
-
 num_users = 10 # number of participating vehicles 
-tau = 80 # total time threshold
 max_uav = 5 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
@@ -11,21 +7,13 @@ delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function
 gamma_cv = 3 # strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
-C_n = 0.5*1e4 # TODO: testback # number of cpu cycles per sample 
+C_n = 0.8*1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
 
 # Offloading, global aggregation params 
 xi_factor = 1 # global gradient factor 
 epsilon_0 = 1e-3 # global accuracy 
-
-# # for dynamic i scenarios (idx_sce = 2, 4)
-# epsilon_alpha = 1.02 # alpha factor for decreasing the accuracy > 1
-# epsilon_a = 10 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
-
-# for fixed i scenarios (idx_sce = 1, 3)
-epsilon_alpha = 1 # alpha factor for decreasing the accuracy > 1
-epsilon_a = 1 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
 
 compression_ratio = 0.1 # 1-0.95
 s_n = 100240 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
@@ -35,7 +23,7 @@ N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-1
 power_max = 0.1 # W TODO  
 
 # base station propagation channel params 
-x_bs, y_bs = -400, 400 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
+x_bs, y_bs = -300, 300 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
