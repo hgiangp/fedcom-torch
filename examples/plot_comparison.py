@@ -122,22 +122,23 @@ def plot_tien_bar():
     t_co_3, t_cp_3, e_co_3, e_cp_3 = parse_net_tien(prefix_log + 's3/' + log_file)
     t_co_4, t_cp_4, e_co_4, e_cp_4 = parse_net_tien(prefix_log + 's4/' + log_file)
 
+    max_round = min(len(t_co_1), len(t_co_2), len(t_co_3), len(t_co_4))
     max_round_fixedi = min(len(t_co_1), len(t_co_3))
     
-    t_co_1 = t_co_1[:max_round_fixedi].sum()
-    t_cp_1 = t_cp_1[:max_round_fixedi].sum()
-    e_co_1 = e_co_1[:max_round_fixedi].sum()
-    e_cp_1 = e_cp_1[:max_round_fixedi].sum()
+    t_co_1 = t_co_1.sum()
+    t_cp_1 = t_cp_1.sum()
+    e_co_1 = e_co_1.sum()
+    e_cp_1 = e_cp_1.sum()
 
     t_co_2 = t_co_2.sum()
     t_cp_2 = t_cp_2.sum()
     e_co_2 = e_co_2.sum()
     e_cp_2 = e_cp_2.sum()
 
-    t_co_3 = t_co_3[:max_round_fixedi].sum()
-    t_cp_3 = t_cp_3[:max_round_fixedi].sum()
-    e_co_3 = e_co_3[:max_round_fixedi].sum()
-    e_cp_3 = e_cp_3[:max_round_fixedi].sum()
+    t_co_3 = t_co_3.sum()
+    t_cp_3 = t_cp_3.sum()
+    e_co_3 = e_co_3.sum()
+    e_cp_3 = e_cp_3.sum()
 
     t_co_4 = t_co_4.sum()
     t_cp_4 = t_cp_4.sum()
