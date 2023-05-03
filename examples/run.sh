@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-tau=40
+tau=35
 
 ./run_system.sh 1 $tau
 ./run_system.sh 2 $tau
