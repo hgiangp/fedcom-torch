@@ -119,25 +119,40 @@ def plot_location_act():
 def plot_location_ani(log_file, fig_file): 
     xs, ys = parse_location(log_file) # (num_grounds, num_users)
     num_grounds, num_users = xs.shape
-
-    colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
     # labels = [f'user {i}' for i in range(num_users)]
 
-    fig, ax = plt.subplots()
-
-    uav_x, uav_y = 0, 0
-    bs_x, bs_y = -400, 400
+    fig, ax = plt.subplots(figsize=(8, 8))
     
+    # plot road map 
+    x11 = [-410, 500]; x12 = [500, 44] 
+    x21 = [-500, 500]; x22 = [500, 0]
+    x31 = [-500, -500]; x32 = [500, 500]
+    x41 = [-444, -500]; x42 = [500, 444]
+    xmid11 = [500, 22]; xmid12 = [-455, 500]
+    xmid21 = [-472, -500]; xmid22 = [500, 472]
+
+    plt.plot([x11[0], x12[0]], [x11[1], x12[1]], color='blue')
+    plt.plot([x21[0], x22[0]], [x21[1], x22[1]], color='blue')
+    plt.plot([x31[0], x32[0]], [x31[1], x32[1]], color='blue')
+    plt.plot([x41[0], x42[0]], [x41[1], x42[1]], color='blue')
+    
+    plt.plot([xmid11[0], xmid12[0]], [xmid11[1], xmid12[1]], color='orange', linestyle='--')   
+    plt.plot([xmid21[0], xmid22[0]], [xmid21[1], xmid22[1]], color='orange', linestyle='--')
+
+    # plot uav, bs 
+    uav_x, uav_y = 200, 220
+    bs_x, bs_y = 0, -500
     ax.scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
     ax.annotate('UAV', (uav_x+10, uav_y+20))
     ax.scatter([bs_x], [bs_y], marker="p", s=70, alpha=0.7, c='green')
     ax.annotate('BS', (bs_x-15, bs_y+30))
 
-    plt.xlim(-700,700)
-    plt.ylim(-1000,500)
-    plt.grid(True, 'both')
-    
+    # plot users
+    colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
     sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
+    ax.set_xlim(-500, 500)
+    ax.set_ylim(-500, 500)
+    ax.grid(True, 'both')
 
     def animate(i):
         sc.set_offsets(np.c_[xs[i], ys[i]])
@@ -255,5 +270,5 @@ if __name__=='__main__':
     # test_fixedi()
     # test_server_model()
     # test_combine()
-    # plot_location_ani()
-    main()
+    plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
+    # main()
