@@ -7,10 +7,9 @@ from location_model import LocationModel
 from optimization import NewtonOptim
 
 class NetworkOptim:
-    def __init__(self, num_users, num_samples, data_size, updated_dist, sce_idx=4):
-        # Location parameters 
-        self.updated_dist = updated_dist
-        self.loc_model = LocationModel(num_users, updated_dist)
+    def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, sce_idx=4):
+        # Location parameters
+        self.loc_model = LocationModel(num_users, velocity=velocity, timeslot_duration=ts_duration)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
 
         # Federated learning parameters 
@@ -362,6 +361,7 @@ class NetworkOptim:
         Return: 
             (eta, freqs, decs, powers)
         """
+        self.tau = tau
         decs = self.init_decisions()
         
         # Found optimal solutions for the current round 
@@ -377,6 +377,7 @@ class NetworkOptim:
         Return: 
             (eta, freqs, decs, powers)
         """
+        self.tau = tau 
         eps_eta = 1e-3 # tolerance accuracy of eta
 
         # Initialize a feasible solution 
@@ -471,31 +472,12 @@ class NetworkOptim:
         t_total = t_co + t_cp 
         return t_total
 
-def test_with_location():
-    num_users = 10 
-    num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
-    data_size = np.array([s_n for _ in range(num_users)])
-
-    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
-
-    freqs = np.array([1, 0.6, 2, 0.3, 0.4, 0.5, 1.5, 1.2, 0.3, 1]) * 1e9 # max = 2GHz
-    num_rounds = 30
-
-    cp_ene = netopt.calc_comp_energy(num_rounds, freqs)
-    print(f"cp_ene =", cp_ene)
-    cp_time = netopt.calc_comp_time(num_rounds, freqs)
-    print(f"cp_time = {cp_time}")
-
-    decs = np.array([1, 0, 1, 0, 0, 1, 1, 0, 1, 0])
-    eta = 0.15
-    freqs, powers = netopt.solve_freqs_powers(eta, decs, tau=100)
-
 def test_optimize_network(): 
     num_users = 10 
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
     data_size = np.array([s_n for _ in range(num_users)])
 
-    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
+    netopt = NetworkOptim(num_users, num_samples, data_size) 
 
     eta, freqs, decs, powers = netopt.optimize_network_bs_uav()
 
@@ -513,7 +495,7 @@ def test_feasible_solution():
     num_samples = np.array([117, 110, 165, 202, 454, 112, 213, 234, 316, 110])
     data_size = np.array([s_n for _ in range(num_users)])
 
-    netopt = NetworkOptim(num_users, num_samples, data_size, updated_dist=500) 
+    netopt = NetworkOptim(num_users, num_samples, data_size) 
     eta, t_min = netopt.initialize_feasible_solution()
 
     print(f"eta = {eta}")
