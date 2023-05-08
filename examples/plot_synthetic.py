@@ -5,6 +5,8 @@ from matplotlib.widgets import Slider
 
 from system_utils import read_options 
 from parse_log import * 
+from network_params import x_uav, y_uav, x_bs, y_bs
+from network_utils import calc_bs_gains, calc_uav_gains
 
 def plot_fedl(log_file, fig_file): 
     rounds, acc, loss, sim, test_loss = parse_fedl(log_file)
@@ -121,7 +123,23 @@ def plot_location_ani(log_file, fig_file):
     num_grounds, num_users = xs.shape
     # labels = [f'user {i}' for i in range(num_users)]
 
-    fig, ax = plt.subplots(figsize=(8, 8))
+    # plot maps 
+    fig, ax = plot_maps()
+
+    # plot users
+    colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
+    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
+
+    def animate(i):
+        sc.set_offsets(np.c_[xs[i], ys[i]])
+    ani = FuncAnimation(fig, animate, frames=num_grounds, interval=50, repeat=False)
+
+    # Save and show animation
+    ani.save(fig_file, writer='imagemagick', fps=24)
+
+def plot_maps(fig_size=(8, 8)): 
+    # plot map 
+    fig, ax = plt.subplots(figsize=fig_size)
     
     # plot road map 
     x11 = [-410, 500]; x12 = [500, 44] 
@@ -140,29 +158,51 @@ def plot_location_ani(log_file, fig_file):
     plt.plot([xmid21[0], xmid22[0]], [xmid21[1], xmid22[1]], color='orange', linestyle='--')
 
     # plot uav, bs 
-    uav_x, uav_y = 200, 220
-    bs_x, bs_y = 0, -500
+    uav_x, uav_y = x_uav, y_uav
+    bs_x, bs_y = x_bs, y_bs
     ax.scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
     ax.annotate('UAV', (uav_x+10, uav_y+20))
     ax.scatter([bs_x], [bs_y], marker="p", s=70, alpha=0.7, c='green')
     ax.annotate('BS', (bs_x-15, bs_y+30))
 
-    # plot users
-    colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
-    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
     ax.set_xlim(-500, 500)
     ax.set_ylim(-500, 500)
-    ax.grid(True, 'both')
-
-    def animate(i):
-        sc.set_offsets(np.c_[xs[i], ys[i]])
-    ani = FuncAnimation(fig, animate, frames=num_grounds, interval=50, repeat=False) 
-    
+    ax.grid(which='both')
     # Ensure the entire plot is visible 
     fig.tight_layout()
 
-    # Save and show animation
-    ani.save(fig_file, writer='imagemagick', fps=24)
+    return fig, ax 
+
+def plot_gain_density(): 
+    # plot map 
+    
+    x = np.linspace(-500, 500, 1000)
+    y = np.linspace(-500, 500, 1000)
+    X, Y = np.meshgrid(x, y)
+
+    uav_gains = calc_uav_gains(X, Y)
+    bs_gains = calc_bs_gains(X, Y)
+    
+    uav_gains_db = 10 * np.log10(uav_gains)
+    bs_gains_db = 10 * np.log10(bs_gains)
+
+    fig, ax = plot_maps(fig_size=(7, 6))
+    ax.set_xlim(-500, 500)
+    ax.set_ylim(-500, 500)
+    plt.contourf(X, Y, uav_gains_db, 20, cmap='coolwarm')
+    plt.colorbar()
+    plt.title('Uav gains')
+    plt.savefig('./figures/gain_density_uav.png')
+    plt.close()
+
+    fig, ax = plot_maps(fig_size=(7, 6))
+    ax.set_xlim(-500, 500)
+    ax.set_ylim(-500, 500)
+    plt.contourf(X, Y, bs_gains_db, 20, cmap='coolwarm')
+    plt.colorbar()
+    plt.title('Bs gains')
+    plt.savefig('./figures/gain_density_bs.png')
+    plt.close()
 
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
     t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
@@ -270,5 +310,6 @@ if __name__=='__main__':
     # test_fixedi()
     # test_server_model()
     # test_combine()
-    plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
+    # plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
     # main()
+    plot_gain_density()

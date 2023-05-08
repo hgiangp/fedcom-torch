@@ -23,7 +23,7 @@ N_0 = 4*1e-15 # -174 dBm?/Hz, noise density, should be multiplied with bw: 1e(-1
 power_max = 0.1 # W TODO  
 
 # base station propagation channel params 
-x_bs, y_bs = -300, 300 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
+x_bs, y_bs = 0, -500 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
@@ -34,6 +34,7 @@ de_r = 2.9 # pathloss exponent, connect to bs
 
 # Params from: Dynamic Offloading and Trajectory Control for UAV-Enabled 
 # Mobile Edge Computing System With Energy Harvesting Devices
+x_uav, y_uav = 200, 220
 z_uav = 100 # flighting height of uav 
 g_0 = 1e-5 # -50 dB reference channel gain (10**(x/10))
 alpha = 0.2 # < 1, attenuation effect of NLoS channel 

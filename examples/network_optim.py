@@ -56,10 +56,18 @@ class NetworkOptim:
     def calc_num_grounds(self, eta): 
         return self.an/(1 - eta)
 
+    def calc_channel_gains(self): 
+        xs, ys = self.loc_model.get_location()
+        uav_gains = calc_uav_gains(xs, ys)
+        bs_gains = calc_bs_gains(xs, ys)        
+        
+        return uav_gains, bs_gains
+    
     def update_channel_gains(self): 
         r"Update uav_gains, bs_gains of users"
         self.loc_model.update_location()
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # Updated channel gains 
+    
 
     def calc_comp_energy(self, num_rounds, freqs): 
         r""" Calculate local computation energy
@@ -462,50 +470,6 @@ class NetworkOptim:
         self.update_an(ground=ground+1)
         t_total = t_co + t_cp 
         return t_total
-
-    def calc_channel_gains(self): 
-        xs, ys = self.loc_model.get_location()
-
-        uav_gains = self.calc_uav_gains(xs, ys)
-        bs_gains = self.calc_bs_gains(xs, ys)        
-        
-        return uav_gains, bs_gains
-
-    def calc_bs_gains(self, xs, ys): 
-        r""" Calculate propagation channel gains, connect to bs 
-        Args: 
-            dists: distance: dtype=np.array, shape=(N, )
-        Return: 
-            bs_gains: dtype=np.array, shape=(N, )
-        """
-        # Calculate the distances to the basestation
-        dists = np.sqrt(((xs - x_bs) ** 2) + ((ys - y_bs) ** 2))
-        bs_gains = A_d * np.power((c / (4 * np.pi * f_c * dists)), de_r) 
-        
-        # LOG TRACE 
-        print(f"dists_bs = {dists}")
-        print(f"bs_gains = {bs_gains}")
-
-        return bs_gains 
-
-    def calc_uav_gains(self, xs, ys): 
-        r""" Calculate propagation channel gains, connect to uav
-        Args: 
-            xs: x location of vehs: dtype=np.array, shape=(N, )
-            ys: y location of vehs: dtype=np.array, shape=(N, )
-        Return:
-            uav_gains: dtype=np.array, shape=(N, )
-        """
-        dists = np.sqrt((xs ** 2) + (ys ** 2) + (z_uav ** 2)) # (N, )
-        thetas = 180 / np.pi * np.arctan(z_uav / dists) # (N, )
-        pLoSs = 1 / (1 + a_env * np.exp( -b_env * (thetas - a_env))) # (N, )
-        uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
-
-        # LOG TRACE
-        print(f"dists_uav = {dists}")
-        print(f"uav_gains = {uav_gains}")
-
-        return uav_gains
 
 def test_with_location():
     num_users = 10 
