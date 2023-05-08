@@ -128,9 +128,10 @@ def plot_location_ani(log_file, fig_file):
 
     # plot users
     colors = plt.get_cmap('viridis', num_users)(np.linspace(0.2, 0.7, num_users))
-    sc = ax.scatter(xs[0], ys[0], c=colors, alpha=0.5)
+    sc = ax[0, 0].scatter(xs[0], ys[0], c=colors, alpha=0.5)
 
     def animate(i):
+        fig.suptitle(f'round = {i}')
         sc.set_offsets(np.c_[xs[i], ys[i]])
     ani = FuncAnimation(fig, animate, frames=num_grounds, interval=50, repeat=False)
 
@@ -372,8 +373,8 @@ if __name__=='__main__':
     # test_fixedi()
     # test_server_model()
     # test_combine()
-    # plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
+    plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
     # main()
-    plot_gain_density()
+    # plot_gain_density()
     # test_plot_maps(1, 1)
     # plot_SNR()
