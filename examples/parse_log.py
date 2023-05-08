@@ -143,3 +143,15 @@ def parse_solutions(file_name):
     decs = np.asarray(decs).T # transpose # (num_users, num_rounds)
     
     return freqs, decs, powers
+
+def parse_num_samples(file_name): 
+    samples = []
+    for line in open(file_name, 'r'):
+        search_samples = re.search(r'num_samples = \[(.*)\]', line, re.M|re.I)
+        if search_samples: 
+            n_samples = np.fromstring(search_samples.group(1), sep=' ', dtype=int)
+            samples.append(n_samples)
+            break 
+    
+    samples = samples[0][:]
+    return samples

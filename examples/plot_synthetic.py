@@ -305,6 +305,8 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
 def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9): 
     num_users, num_grounds = var_value.shape
     rounds = np.arange(0, num_grounds)
+
+    # indivisual plots 
     for i in range(num_users): 
         fig = plt.figure(i)
         var_i = var_value[i][:]/norm_factor
@@ -315,9 +317,24 @@ def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz
         plt.savefig(f'{fig_file_prefix}{var_name}/user_{i}.png')
         plt.close()
 
+    # all-user plot 
+    labels = [f'user {i}' for i in range(num_users)]
+
+    fig = plt.figure()
+    for i in range(num_users): 
+        var_i = var_value[i][:]/norm_factor
+        plt.plot(rounds, var_i, label=labels[i])
+    
+    plt.legend()    
+    plt.grid(which='both')
+    plt.ylabel(f'optimal {var_name} ({unit})')
+    
+    plt.savefig(f'{fig_file_prefix}{var_name}/all-user-{var_name}.png')
+    plt.close()
+
 def plot_users(log_file, fig_file_prefix): 
     freqs, decs, powers = parse_solutions(log_file)
-    # plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
+    plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
     plot_user_customized(var_value=powers, fig_file_prefix=fig_file_prefix, var_name='powers', unit='dBm', norm_factor=1)
     
 def test_fixedi(): 
