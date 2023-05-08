@@ -302,6 +302,24 @@ def plot_tien(log_file, fig_file_time, fig_file_ene):
     # plt.show()
     plt.close()
 
+def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9): 
+    num_users, num_grounds = var_value.shape
+    rounds = np.arange(0, num_grounds)
+    for i in range(num_users): 
+        fig = plt.figure(i)
+        var_i = var_value[i][:]/norm_factor
+        plt.plot(rounds, var_i)
+        plt.title(f'user {i}')
+        plt.grid(which='both')
+        plt.ylabel(f'optimal {var_name} ({unit})')
+        plt.savefig(f'{fig_file_prefix}{var_name}/user_{i}.png')
+        plt.close()
+
+def plot_users(log_file, fig_file_prefix): 
+    freqs, decs, powers = parse_solutions(log_file)
+    # plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
+    plot_user_customized(var_value=powers, fig_file_prefix=fig_file_prefix, var_name='powers', unit='dBm', norm_factor=1)
+    
 def test_fixedi(): 
     log_file = './logs/system_model_fixedi.log'
     fig_file = './figures/plot_synthetic_fixedi.png'
@@ -316,11 +334,12 @@ def test_system_model(index=4):
     fig_file_time = prefix_figure + 'plot_synthetic_time.png'
     fig_file_ene = prefix_figure + 'plot_synthetic_ene.png'
     fig_file_ani = prefix_figure + 'location_ani.gif'
-    plot_fedl(log_file, fig_file_fedl)
-    plot_netopt(log_file, fig_file_netopt)
-    plot_gains(log_file, fig_file_gain)
-    plot_tien(log_file, fig_file_time, fig_file_ene)
-    plot_location_ani(log_file, fig_file_ani)
+    # plot_fedl(log_file, fig_file_fedl)
+    # plot_netopt(log_file, fig_file_netopt)
+    # plot_gains(log_file, fig_file_gain)
+    # plot_tien(log_file, fig_file_time, fig_file_ene)
+    # plot_location_ani(log_file, fig_file_ani)
+    plot_users(log_file, prefix_figure)
 
 def test_server_model(): 
     log_file, fig_file = './logs/server_model.log', './figures/plot_synthetic.png'

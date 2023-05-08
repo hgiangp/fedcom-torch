@@ -342,7 +342,7 @@ class NetworkOptim:
         
         # Found optimal solutions for the current round 
         # Update params 
-        self.update_net_params(eta, freqs, powers, decs)
+        self.update_net_params(eta, freqs, powers, decs, ground)
         # Calcualte t_total to udpate the remaining tau of the next round 
         t_total = self.update_n_print(ground)
         return self.an, self.num_lrounds, self.num_grounds, t_total # (i, n, a_n)
@@ -371,7 +371,7 @@ class NetworkOptim:
         
         # Found optimal solutions for the current round 
         # Update params 
-        self.update_net_params(self.eta, self.freqs, self.powers, decs)
+        self.update_net_params(self.eta, self.freqs, self.powers, decs, ground)
         # Calcualte t_total to udpate the remaining tau of the next round 
         t_total = self.update_n_print(ground)
         return self.an, self.num_lrounds, self.num_grounds, t_total # (i, n, a_n)
@@ -435,16 +435,16 @@ class NetworkOptim:
                 break
 
             obj_prev = obj
-            iter += 1 
+            iter += 1
         
         # Found optimal solutions for the current round 
         # Update params 
-        self.update_net_params(eta, freqs, powers, decs)
+        self.update_net_params(eta, freqs, powers, decs, ground)
         # Calcualte t_total to udpate the remaining tau of the next round 
         t_total = self.update_n_print(ground)
         return self.an, self.num_lrounds, self.num_grounds, t_total # (i, n, a_n)
     
-    def update_net_params(self, eta, freqs, powers, decs): 
+    def update_net_params(self, eta, freqs, powers, decs, ground=0): 
         # update optimal result for class 
         self.eta = eta 
         self.freqs = freqs
@@ -453,6 +453,11 @@ class NetworkOptim:
 
         self.num_lrounds = self.calc_num_lrounds(eta)
         self.num_grounds = self.calc_num_grounds(eta)
+
+        print("At round {} optimal eta: {}".format(ground, eta))
+        print("At round {} optimal freqs: {}".format(ground, freqs))
+        print("At round {} optimal decs: {}".format(ground, decs)) 
+        print("At round {} optimal powers: {}".format(ground, powers))
     
     def update_n_print(self, ground):
         # calculate time, energy consumption at the current iteration 
@@ -466,8 +471,7 @@ class NetworkOptim:
         # t_iter = max(t_co + t_cp)
 
         print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co, t_cp))
-        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co, e_cp))
-        print("At round {} eta: {}".format(ground, self.eta))  
+        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co, e_cp)) 
         print("At round {} a_n: {}".format(ground, self.an))
         print("At round {} local rounds: {}".format(ground, self.num_lrounds))
         print("At round {} global rounds: {}".format(ground, self.num_grounds))

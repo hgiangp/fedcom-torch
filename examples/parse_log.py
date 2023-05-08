@@ -1,5 +1,6 @@
 import re 
 import numpy as np 
+from network_utils import to_dB
 
 def parse_fedl(file_name): 
     rounds, acc, loss, sim = [], [], [], []
@@ -50,7 +51,7 @@ def parse_netopt(file_name):
         if search_an: 
             ans.append(float(search_an.group(2)))
 
-        search_eta = re.search(r'At round (.*) eta: (.*)', line, re.M|re.I)
+        search_eta = re.search(r'At round (.*) optimal eta: (.*)', line, re.M|re.I)
         if search_eta: 
             etas.append(float(search_eta.group(2)))
     
@@ -116,4 +117,29 @@ def parse_location(file_name):
     # convert to numpy array 
     xs_np = np.array(xs) # (num_grounds, num_users)
     ys_np = np.array(ys) # (num_grounds, num_users)
-    return xs_np, ys_np 
+    return xs_np, ys_np
+
+def parse_solutions(file_name):
+    freqs, decs, powers = [], [], []
+
+    for line in open(file_name, 'r'):
+        search_freqs = re.search(r'At round (.*) optimal freqs: \[(.*)\]', line, re.M|re.I)
+        if search_freqs: 
+            freq = np.fromstring(search_freqs.group(2), sep=' ')
+            freqs.append(freq) # [num_rounds, (num_users)]
+
+        search_decs = re.search(r'At round (.*) optimal decs: (.*)', line, re.M|re.I)
+        if search_decs: 
+            dec = np.fromstring(search_decs.group(2), sep=' ', dtype=int)
+            decs.append(dec) # [num_rounds, (num_users)]
+
+        search_powers = re.search(r'At round (.*) optimal powers: \[(.*)\]', line, re.M|re.I)
+        if search_powers: 
+            power = np.fromstring(search_powers.group(2), sep=' ')
+            powers.append(to_dB(power)) # [num_rounds, (num_users)] # dBm
+    
+    freqs = np.asarray(freqs).T # transpose # (num_users, num_rounds)
+    powers = np.asarray(powers).T # transpose # (num_users, num_rounds)
+    decs = np.asarray(decs).T # transpose # (num_users, num_rounds)
+    
+    return freqs, decs, powers
