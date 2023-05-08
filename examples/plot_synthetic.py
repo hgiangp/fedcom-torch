@@ -137,10 +137,11 @@ def plot_location_ani(log_file, fig_file):
     # Save and show animation
     ani.save(fig_file, writer='imagemagick', fps=24)
 
-def plot_maps(fig_size=(8, 8)): 
+def plot_maps(fig_size=(8, 8), nrows=1, ncols=1): 
     # plot map 
-    fig, ax = plt.subplots(figsize=fig_size)
-    
+    fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=fig_size, squeeze=False)
+    # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, squeeze=False)
+
     # plot road map 
     x11 = [-410, 500]; x12 = [500, 44] 
     x21 = [-500, 500]; x22 = [500, 0]
@@ -149,59 +150,72 @@ def plot_maps(fig_size=(8, 8)):
     xmid11 = [500, 22]; xmid12 = [-455, 500]
     xmid21 = [-472, -500]; xmid22 = [500, 472]
 
-    plt.plot([x11[0], x12[0]], [x11[1], x12[1]], color='blue')
-    plt.plot([x21[0], x22[0]], [x21[1], x22[1]], color='blue')
-    plt.plot([x31[0], x32[0]], [x31[1], x32[1]], color='blue')
-    plt.plot([x41[0], x42[0]], [x41[1], x42[1]], color='blue')
-    
-    plt.plot([xmid11[0], xmid12[0]], [xmid11[1], xmid12[1]], color='orange', linestyle='--')   
-    plt.plot([xmid21[0], xmid22[0]], [xmid21[1], xmid22[1]], color='orange', linestyle='--')
-
     # plot uav, bs 
     uav_x, uav_y = x_uav, y_uav
     bs_x, bs_y = x_bs, y_bs
-    ax.scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
-    ax.annotate('UAV', (uav_x+10, uav_y+20))
-    ax.scatter([bs_x], [bs_y], marker="p", s=70, alpha=0.7, c='green')
-    ax.annotate('BS', (bs_x-15, bs_y+30))
+    for i in range(nrows):
+        for j in range(ncols): 
+            ax[i][j].plot([x11[0], x12[0]], [x11[1], x12[1]], color='blue')
+            ax[i][j].plot([x21[0], x22[0]], [x21[1], x22[1]], color='blue')
+            ax[i][j].plot([x31[0], x32[0]], [x31[1], x32[1]], color='blue')
+            ax[i][j].plot([x41[0], x42[0]], [x41[1], x42[1]], color='blue')
+            
+            ax[i][j].plot([xmid11[0], xmid12[0]], [xmid11[1], xmid12[1]], color='orange', linestyle='--')   
+            ax[i][j].plot([xmid21[0], xmid22[0]], [xmid21[1], xmid22[1]], color='orange', linestyle='--')
 
-    ax.set_xlim(-500, 500)
-    ax.set_ylim(-500, 500)
-    ax.grid(which='both')
-    # Ensure the entire plot is visible 
-    fig.tight_layout()
+            ax[i][j].scatter([uav_x], [uav_y], marker="*", s=100, alpha=0.7, c='red')
+            ax[i][j].annotate('UAV', (uav_x+10, uav_y+20))
+            ax[i][j].scatter([bs_x], [bs_y], marker="p", s=70, alpha=0.7, c='green')
+            ax[i][j].annotate('BS', (bs_x-15, bs_y+30))
 
+            ax[i][j].set_xlim(-500, 500)
+            ax[i][j].set_ylim(-500, 500)
+            ax[i][j].grid(which='both')
+    
+    # Ensure the entire plot is visible
+    # fig.tight_layout()
     return fig, ax 
 
+def test_plot_maps(nrows=1, ncols=1):
+    fig, ax = plot_maps(nrows=nrows, ncols=ncols)
+    plt.savefig("./figures/maps.png")
+
 def plot_gain_density(): 
-    # plot map 
-    
+    # maps 
     x = np.linspace(-500, 500, 1000)
     y = np.linspace(-500, 500, 1000)
     X, Y = np.meshgrid(x, y)
-
+    
+    # calculate gains  
     uav_gains = calc_uav_gains(X, Y)
     bs_gains = calc_bs_gains(X, Y)
     
     uav_gains_db = 10 * np.log10(uav_gains)
     bs_gains_db = 10 * np.log10(bs_gains)
 
-    fig, ax = plot_maps(fig_size=(7, 6))
-    ax.set_xlim(-500, 500)
-    ax.set_ylim(-500, 500)
-    plt.contourf(X, Y, uav_gains_db, 20, cmap='coolwarm')
-    plt.colorbar()
-    plt.title('Uav gains')
-    plt.savefig('./figures/gain_density_uav.png')
-    plt.close()
+    # plot maps 
+    fig, ax = plot_maps(fig_size=(11, 5), nrows=1, ncols=2)
+    
+    # calculate max, min of color level 
+    cmin = min(uav_gains_db.min(), bs_gains_db.min())
+    cmax = max(uav_gains_db.max(), bs_gains_db.max())
+    color_levels = np.linspace(start=cmin, stop=cmax, num=20)
+    color_map = 'coolwarm'
 
-    fig, ax = plot_maps(fig_size=(7, 6))
-    ax.set_xlim(-500, 500)
-    ax.set_ylim(-500, 500)
-    plt.contourf(X, Y, bs_gains_db, 20, cmap='coolwarm')
-    plt.colorbar()
-    plt.title('Bs gains')
-    plt.savefig('./figures/gain_density_bs.png')
+    # plot data 
+    color = ax[0, 0].contourf(X, Y, uav_gains_db, cmap=color_map, levels=color_levels)
+    ax[0, 1].contourf(X, Y, bs_gains_db, cmap=color_map, levels=color_levels)
+
+    # adding color bar
+    cax = fig.add_axes([0.92, 0.11, 0.02, 0.77]) # rect([left, bottom, width, height])
+    cbar = fig.colorbar(color, cax=cax, orientation='vertical')
+
+    # customize the colorbar
+    # cbar.ax.set_ylabel('Gain (dB)', fontweight='bold')
+    # cbar.ax.set_yticks(ticks=[-0.70, -0.35, 0.00, 0.35, 0.7])
+    # cbar.ax.set_yticklabels([-0.70, -0.35, 0.00, 0.35, 0.7], rotation='vertical', va='center')
+
+    plt.savefig('./figures/gain_density.png')
     plt.close()
 
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
@@ -303,7 +317,7 @@ def test_combine():
 
 def main(): 
     sce_idx = read_options()['sce_idx']
-    test_system_model(index=sce_idx)    
+    test_system_model(index=sce_idx)
 
 if __name__=='__main__':
     # plot_location_act()
@@ -313,3 +327,4 @@ if __name__=='__main__':
     # plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
     # main()
     plot_gain_density()
+    # test_plot_maps(1, 1)
