@@ -75,8 +75,8 @@ def calc_bs_gains(xs, ys):
     bs_gains = A_d * np.power((c / (4 * np.pi * f_c * dists)), de_r) 
     
     # LOG TRACE 
-    # print(f"dists_bs = {dists}")
-    # print(f"bs_gains = {bs_gains}")
+    print(f"dists_bs = {dists}")
+    print(f"bs_gains = {bs_gains}")
 
     return bs_gains 
 
@@ -102,7 +102,7 @@ def calc_uav_gains(xs, ys):
     uav_gains = ((pLoSs + alpha * (1 - pLoSs)) * g_0) / (np.power(dists, de_u)) # (N, )
 
     # LOG TRACE
-    # print(f"dists_uav = {dists}")
-    # print(f"uav_gains = {uav_gains}")
+    print(f"dists_uav = {dists}")
+    print(f"uav_gains = {uav_gains}")
 
     return uav_gains

@@ -137,7 +137,7 @@ def plot_location_ani(log_file, fig_file):
     # Save and show animation
     ani.save(fig_file, writer='imagemagick', fps=24)
 
-def plot_maps(fig_size=(8, 8), nrows=1, ncols=1): 
+def plot_maps(fig_size=(8, 8), nrows=1, ncols=1, title=''): 
     # plot map 
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=fig_size, squeeze=False)
     # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, squeeze=False)
@@ -172,6 +172,7 @@ def plot_maps(fig_size=(8, 8), nrows=1, ncols=1):
             ax[i][j].set_ylim(-500, 500)
             ax[i][j].grid(which='both')
     
+    fig.suptitle(title)
     # Ensure the entire plot is visible
     # fig.tight_layout()
     return fig, ax 
@@ -194,7 +195,7 @@ def plot_gain_density():
     bs_gains_db = 10 * np.log10(bs_gains)
 
     # plot maps 
-    fig, ax = plot_maps(fig_size=(11, 5), nrows=1, ncols=2)
+    fig, ax = plot_maps(fig_size=(11, 5), nrows=1, ncols=2, title='Gains (dB)')
     
     # calculate max, min of color level 
     cmin = min(uav_gains_db.min(), bs_gains_db.min())
@@ -239,7 +240,7 @@ def plot_SNR():
     snr_bs_db  = p_t_dBm + bs_gains_db - noise_dBm 
 
     # plot maps 
-    fig, ax = plot_maps(fig_size=(11, 5), nrows=1, ncols=2)
+    fig, ax = plot_maps(fig_size=(11, 5), nrows=1, ncols=2, title='SNR (dB)')
 
     # calculate max, min of color level 
     cmin = min(snr_uav_db.min(), snr_bs_db.min())
@@ -373,6 +374,6 @@ if __name__=='__main__':
     # test_combine()
     # plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
     # main()
-    # plot_gain_density()
+    plot_gain_density()
     # test_plot_maps(1, 1)
-    plot_SNR()
+    # plot_SNR()
