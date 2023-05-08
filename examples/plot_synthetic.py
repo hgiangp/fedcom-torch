@@ -218,6 +218,53 @@ def plot_gain_density():
     plt.savefig('./figures/gain_density.png')
     plt.close()
 
+def plot_SNR(): 
+    # maps 
+    x = np.linspace(-500, 500, 1000)
+    y = np.linspace(-500, 500, 1000)
+    X, Y = np.meshgrid(x, y)
+    
+    # calculate gains  
+    uav_gains = calc_uav_gains(X, Y)
+    bs_gains = calc_bs_gains(X, Y)
+    
+    uav_gains_db = 10 * np.log10(uav_gains)
+    bs_gains_db = 10 * np.log10(bs_gains)
+
+    # calculate snr 
+    noise_dBm = -114 # -174 + 60 
+    p_t_dBm = 20 # max power 
+
+    snr_uav_db = p_t_dBm + uav_gains_db - noise_dBm 
+    snr_bs_db  = p_t_dBm + bs_gains_db - noise_dBm 
+
+    # plot maps 
+    fig, ax = plot_maps(fig_size=(11, 5), nrows=1, ncols=2)
+
+    # calculate max, min of color level 
+    cmin = min(snr_uav_db.min(), snr_bs_db.min())
+    cmax = max(snr_uav_db.max(), snr_bs_db.max())
+
+    # color plot setting 
+    color_levels = np.linspace(start=cmin, stop=cmax, num=20)
+    color_map = 'coolwarm'
+
+    # plot data 
+    color = ax[0, 0].contourf(X, Y, snr_uav_db, cmap=color_map, levels=color_levels)
+    ax[0, 1].contourf(X, Y, snr_bs_db, cmap=color_map, levels=color_levels)
+
+    # adding color bar
+    cax = fig.add_axes([0.92, 0.11, 0.02, 0.77]) # rect([left, bottom, width, height])
+    cbar = fig.colorbar(color, cax=cax, orientation='vertical')
+
+    # customize the colorbar
+    # cbar.ax.set_ylabel('Gain (dB)', fontweight='bold')
+    # cbar.ax.set_yticks(ticks=[-0.70, -0.35, 0.00, 0.35, 0.7])
+    # cbar.ax.set_yticklabels([-0.70, -0.35, 0.00, 0.35, 0.7], rotation='vertical', va='center')
+
+    plt.savefig('./figures/snr.png')
+    plt.close()
+
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
     t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
 
@@ -326,5 +373,6 @@ if __name__=='__main__':
     # test_combine()
     # plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
     # main()
-    plot_gain_density()
+    # plot_gain_density()
     # test_plot_maps(1, 1)
+    plot_SNR()

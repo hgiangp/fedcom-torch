@@ -38,7 +38,7 @@ x_uav, y_uav = 200, 220
 z_uav = 100 # flighting height of uav 
 g_0 = 1e-5 # -50 dB reference channel gain (10**(x/10))
 alpha = 0.2 # < 1, attenuation effect of NLoS channel 
-de_u = 2.9 # pathloss exponent, connect to uav 
+de_u = 2.3 # pathloss exponent, connect to uav 
 a_env, b_env = 15, 0.5 # evironment constants
 
 # Optimization params 

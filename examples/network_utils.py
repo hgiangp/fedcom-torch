@@ -4,6 +4,9 @@ from scipy.special import lambertw
 
 from network_params import *
 
+seed = 1 
+rng = np.random.default_rng(seed=seed)
+
 def solve_bound_eta(af, bf, tau): 
         r""" TODO
         Args:
@@ -76,6 +79,14 @@ def calc_bs_gains(xs, ys):
     # print(f"bs_gains = {bs_gains}")
 
     return bs_gains 
+
+def to_dB(x):
+    x_dB = 10 * np.log10(x)
+    return x_dB
+
+def to_times(x_dB):
+    x = 10 ** (x_dB/10)
+    return x
 
 def calc_uav_gains(xs, ys): 
     r""" Calculate propagation channel gains, connect to uav
