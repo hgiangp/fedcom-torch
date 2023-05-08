@@ -144,6 +144,37 @@ def parse_solutions(file_name):
     
     return freqs, decs, powers
 
+def parse_net_tien_array(file_name):
+    t_co_s, e_co_s, t_cp_s, e_cp_s = [], [], [], []
+
+    for line in open(file_name, 'r'):
+        search_t_co = re.search(r'At round (.*) t_co: \[(.*)\]', line, re.M|re.I)
+        if search_t_co: 
+            t_co = np.fromstring(search_t_co.group(2), sep=' ')
+            t_co_s.append(t_co) # [num_rounds, (num_users)]
+        
+        search_e_co = re.search(r'At round (.*) e_co: \[(.*)\]', line, re.M|re.I)
+        if search_e_co: 
+            e_co = np.fromstring(search_e_co.group(2), sep=' ')
+            e_co_s.append(e_co) # [num_rounds, (num_users)]
+
+        search_t_cp = re.search(r'At round (.*) t_cp: \[(.*)\]', line, re.M|re.I)
+        if search_t_cp: 
+            t_cp = np.fromstring(search_t_cp.group(2), sep=' ')
+            t_cp_s.append(t_cp) # [num_rounds, (num_users)]
+
+        search_e_cp = re.search(r'At round (.*) e_cp: \[(.*)\]', line, re.M|re.I)
+        if search_e_cp: 
+            e_cp = np.fromstring(search_e_cp.group(2), sep=' ')
+            e_cp_s.append(e_cp) # [num_rounds, (num_users)]
+    
+    t_co_s = np.asarray(t_co_s).T # transpose # (num_users, num_rounds)
+    t_cp_s = np.asarray(t_cp_s).T # transpose # (num_users, num_rounds)
+    e_co_s = np.asarray(e_co_s).T # transpose # (num_users, num_rounds)
+    e_cp_s = np.asarray(e_cp_s).T # transpose # (num_users, num_rounds)
+    
+    return t_co_s, t_cp_s, e_co_s, e_cp_s
+
 def parse_num_samples(file_name): 
     samples = []
     for line in open(file_name, 'r'):

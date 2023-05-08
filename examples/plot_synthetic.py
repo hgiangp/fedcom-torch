@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider 
+import os 
 
 from system_utils import read_options 
 from parse_log import * 
@@ -306,6 +307,10 @@ def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz
     num_users, num_grounds = var_value.shape
     rounds = np.arange(0, num_grounds)
 
+    fig_path_dir = fig_file_prefix + var_name
+    if not os.path.exists(os.path.join(fig_file_prefix, var_name)):
+        os.mkdir(os.path.join(fig_file_prefix, var_name))
+    
     # indivisual plots 
     for i in range(num_users): 
         fig = plt.figure(i)
@@ -314,7 +319,7 @@ def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz
         plt.title(f'user {i}')
         plt.grid(which='both')
         plt.ylabel(f'optimal {var_name} ({unit})')
-        plt.savefig(f'{fig_file_prefix}{var_name}/user_{i}.png')
+        plt.savefig(f'{fig_path_dir}/user_{i}.png')
         plt.close()
 
     # all-user plot 
@@ -333,9 +338,15 @@ def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz
     plt.close()
 
 def plot_users(log_file, fig_file_prefix): 
-    freqs, decs, powers = parse_solutions(log_file)
-    plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
-    plot_user_customized(var_value=powers, fig_file_prefix=fig_file_prefix, var_name='powers', unit='dBm', norm_factor=1)
+    # freqs, decs, powers = parse_solutions(log_file)
+    # plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
+    # plot_user_customized(var_value=powers, fig_file_prefix=fig_file_prefix, var_name='powers', unit='dBm', norm_factor=1)
+    
+    t_co_s, t_cp_s, e_co_s, e_cp_s = parse_net_tien_array(log_file)
+    # plot_user_customized(var_value=t_co_s, fig_file_prefix=fig_file_prefix, var_name='time_co', unit='s', norm_factor=1)
+    # plot_user_customized(var_value=t_cp_s, fig_file_prefix=fig_file_prefix, var_name='time_cp', unit='s', norm_factor=1)
+    # plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_co', unit='mJ', norm_factor=1e-3)
+    plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_cp', unit='mJ', norm_factor=1e-3)
     
 def test_fixedi(): 
     log_file = './logs/system_model_fixedi.log'

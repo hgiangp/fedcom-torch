@@ -461,24 +461,31 @@ class NetworkOptim:
     
     def update_n_print(self, ground):
         # calculate time, energy consumption at the current iteration 
-        t_co = self.calc_trans_time(self.decs, self.powers).sum()/self.num_users
-        e_co = self.calc_trans_energy(self.decs, self.powers).sum()/self.num_users
-        
-        t_cp = self.calc_comp_time(self.num_lrounds, self.freqs).sum()/self.num_users
-        e_cp = self.calc_comp_energy(self.num_lrounds, self.freqs).sum()/self.num_users
+        t_co = self.calc_trans_time(self.decs, self.powers)
+        e_co = self.calc_trans_energy(self.decs, self.powers)
+        t_cp = self.calc_comp_time(self.num_lrounds, self.freqs)
+        e_cp = self.calc_comp_energy(self.num_lrounds, self.freqs)
 
-        # # calculate consumed synchronous time 
-        # t_iter = max(t_co + t_cp)
+        print("At round {} t_co: {}".format(ground, t_co))
+        print("At round {} e_co: {}".format(ground, e_co))
+        print("At round {} t_cp: {}".format(ground, t_cp)) 
+        print("At round {} e_cp: {}".format(ground, e_cp))
 
-        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co, t_cp))
-        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co, e_cp)) 
+        # calculate avarage time 
+        t_co_avg = t_co.sum()/self.num_users
+        e_co_avg = e_co.sum()/self.num_users
+        t_cp_avg = t_cp.sum()/self.num_users
+        e_cp_avg = e_cp.sum()/self.num_users
+
+        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co_avg, t_cp_avg))
+        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co_avg, e_cp_avg)) 
         print("At round {} a_n: {}".format(ground, self.an))
         print("At round {} local rounds: {}".format(ground, self.num_lrounds))
         print("At round {} global rounds: {}".format(ground, self.num_grounds))
         print("At round {} tau: {}".format(ground, self.tau)) 
 
         self.update_an(ground=ground+1)
-        t_total = t_co + t_cp 
+        t_total = t_co_avg + t_cp_avg 
         return t_total
 
 def test_optimize_network(): 
