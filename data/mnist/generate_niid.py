@@ -15,11 +15,9 @@ num_labels = 3
 train_path = './data/train/data_niid_seed_0_train_8.json'
 test_path = './data/test/data_niid_seed_0_test_8.json'
 dir_path = os.path.dirname(train_path)
-print(f"dir_path = {dir_path}")
 if not os.path.exists(dir_path): 
     os.makedirs(dir_path)
 dir_path = os.path.dirname(test_path)
-print(f"dir_path = {dir_path}")
 if not os.path.exists(dir_path): 
     os.makedirs(dir_path)
 
