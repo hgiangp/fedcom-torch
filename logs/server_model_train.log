@@ -1,0 +1,23 @@
+v = 22.697160301531774
+a = 91.65029380654791
+['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004']
+5
+dict_keys(['x', 'y'])
+id = f_00000, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 171
+id = f_00001, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 110
+id = f_00002, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 165
+id = f_00003, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 202
+id = f_00004, model = CustomLogisticRegression(
+  (linear): Linear(in_features=5, out_features=3, bias=True)
+), num_samples = 454
+BaseFederated generated!
+num_samples = [171 110 165 202 454]
+msize = 502400
