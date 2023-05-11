@@ -1,12 +1,10 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 from parse_log import * 
+from main import read_options
 
-def plot_feld_performance():
-    # idxes = np.arange(1, 5, 1)
-    prefix_log = './logs/'
+def plot_feld_performance(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     log_file = 'system_model.log'
-    prefix_fig = './figures/comparison/'
 
     rounds_1, acc_1, loss_1, sim_1, tloss_1 = parse_fedl(prefix_log + 's1/' + log_file)
     rounds_2, acc_2, loss_2, sim_2, tloss_2 = parse_fedl(prefix_log + 's2/' + log_file)
@@ -46,10 +44,8 @@ def plot_feld_performance():
     # plt.show()
     plt.close()
 
-def plot_tien_performance(): 
-    prefix_log = './logs/'
+def plot_tien_performance(prefix_log='./logs/', prefix_fig='./figures/comparison/'): 
     log_file = 'system_model.log'
-    prefix_fig = './figures/comparison/'
     fig_file_time = 'synthetic_time.png'
     fig_file_ene = 'synthetic_ene.png'
 
@@ -107,13 +103,11 @@ def plot_tien_performance():
     plt.close()
     # plt.show()
 
-def plot_tien_bar():
+def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     import itertools
-    plt.rcParams.update({'font.family':'Helvetica'})
+    # plt.rcParams.update({'font.family':'Helvetica'})
 
-    prefix_log = './logs/'
     log_file = 'system_model.log'
-    prefix_fig = './figures/comparison/'
     fig_file_time = 'synthetic_time_bar.png'
     fig_file_ene = 'synthetic_ene_bar.png'
 
@@ -236,10 +230,8 @@ def plot_tien_bar():
     # plt.show()
     plt.close()
 
-def plot_lround():
-    prefix_log = './logs/'
+def plot_lround(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     log_file = 'system_model.log'
-    prefix_fig = './figures/comparison/'
 
     lrounds_1, _, _, _ = parse_netopt(prefix_log + 's1/' + log_file)
     lrounds_2, _, _, _ = parse_netopt(prefix_log + 's2/' + log_file)
@@ -264,7 +256,13 @@ def plot_lround():
 
 
 if __name__=='__main__':
-    plot_feld_performance()
-    plot_tien_performance()
-    plot_tien_bar()
-    plot_lround()
+    options, _ = read_options()
+    dataset=options['dataset']
+    
+    prefix_log = f'./logs/{dataset}/'
+    prefix_fig = f'./figures/{dataset}/comparison/'
+
+    plot_feld_performance(prefix_log, prefix_fig)
+    plot_tien_performance(prefix_log, prefix_fig)
+    plot_tien_bar(prefix_log, prefix_fig)
+    plot_lround(prefix_log, prefix_fig)

@@ -354,9 +354,9 @@ def test_fixedi():
     fig_file = './figures/plot_synthetic_fixedi.png'
     plot_fedl(log_file, fig_file)
 
-def test_system_model(index=4):
-    log_file = f'./logs/s{index}/system_model.log'
-    prefix_figure = f'./figures/s{index}/' 
+def test_system_model(index=4, dataset='synthetic'):
+    log_file = f'./logs/{dataset}/s{index}/system_model.log'
+    prefix_figure = f'./figures/{dataset}/s{index}/' 
     fig_file_fedl = prefix_figure + 'plot_synthetic_dy1.png'
     fig_file_netopt = prefix_figure + 'plot_synthetic_dy2.png'
     fig_file_gain = prefix_figure + 'channel_gains.png'
@@ -414,7 +414,7 @@ def test_combine():
 
 def main(): 
     options, _ = read_options()
-    test_system_model(index=options['sce_idx'])
+    test_system_model(index=options['sce_idx'], dataset=options['dataset'])
 
 if __name__=='__main__':
     # plot_location_act()
