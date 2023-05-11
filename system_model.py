@@ -3,33 +3,38 @@ np.set_printoptions(precision=6, linewidth=np.inf)
 
 from server_model import BaseFederated 
 from network_optim import NetworkOptim
-from system_utils import * 
 
 seed = 1
 rng = np.random.default_rng(seed=seed)
 
 class SystemModel: 
-    def __init__(self, mod_name='CustomLogisticRegression', mod_dim=(5, 3), dataset_name='synthetic', num_users=10, velocity=11, ts_duration=0.4, sce_idx=4):
-        self.fed_model = self.init_federated(mod_name, mod_dim, dataset_name)
-        self.net_optim = self.init_netoptim(num_users, velocity, ts_duration, self.fed_model, sce_idx)
+    def __init__(self, params, model, dataset, num_users=10, velocity=11, ts_duration=0.4):
+        # transfer parameters to self
+        for key, val in params.items(): setattr(self, key, val)
+        print(f"params['model_params'] = {params['model_params']}")
+        self.fed_model = BaseFederated(model, params['model_params'], dataset)
+        self.net_optim = self.init_netoptim(num_users, velocity, ts_duration)
         print("SystemModel __init__!")
-
-    def init_federated(self, mod_name, mod_dim, dataset_name):
-        r""" TODO
-        """
-        model = load_model(mod_name)
-        dataset = load_data(dataset_name)
-        fed_model = BaseFederated(model, mod_dim, dataset)
-        return fed_model 
     
-    def init_netoptim(self, num_users, velocity, ts_duration, fed_model, sce_idx): 
+    def init_netoptim(self, num_users, velocity, ts_duration): 
         r""" Network Optimization Model"""  
-        num_samples = fed_model.get_num_samples()
-        msize = fed_model.get_mod_size()
+        num_samples = self.fed_model.get_num_samples()
+        msize = self.fed_model.get_smodel()
         data_size = np.array([msize for _ in range(num_users)])
         
-        net_optim = NetworkOptim(num_users, num_samples, data_size, velocity, ts_duration, sce_idx)
+        net_optim = NetworkOptim(num_users, num_samples, data_size, velocity, ts_duration, self.sce_idx)
         return net_optim
+
+    def run(self): 
+        scenario_idx = self.sce_idx
+        tau = self.tau 
+        if scenario_idx == 4 or scenario_idx == 2: 
+            self.train_dyni(scenario_idx, tau)
+        if scenario_idx == 3: 
+            self.train_bs_uav_fixedi(tau) 
+        if scenario_idx == 1: 
+            self.train_bs_fixedi(tau)
+      
     
     def train_dyni(self, idx_sce, tau): 
         t_min, decs = self.net_optim.initialize_feasible_solution() # eta = 0.317, t_min = 66.823        
@@ -98,23 +103,4 @@ class SystemModel:
             # not stop, update location for the next global round 
             self.net_optim.update_channel_gains()
         
-        print("Done!")    
-
-def test(idx_sce=4, tau=40): 
-    sm = SystemModel(sce_idx=idx_sce)
-    if idx_sce == 4 or idx_sce == 2: 
-        sm.train_dyni(idx_sce, tau)
-    if idx_sce == 3: 
-        sm.train_bs_uav_fixedi(tau) 
-    if idx_sce == 1: 
-        sm.train_bs_fixedi(tau)
-    
-def main(): 
-    parsed = read_options()
-    sce_idx = parsed['sce_idx']
-    tau = parsed['tau']
-    
-    test(sce_idx, tau)
-
-if __name__=="__main__": 
-    main()
+        print("Done!")

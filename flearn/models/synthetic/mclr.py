@@ -4,9 +4,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 
 class Net(nn.Module): 
-    def __init__(self, num_inputs=5, num_classes=3): 
+    def __init__(self, model_dim=(5, 3)): 
         super(Net, self).__init__()
-        self.linear = nn.Linear(num_inputs, num_classes)
+        self.linear = nn.Linear(model_dim[0], model_dim[1])
 
     def forward(self, x): 
         outputs = self.linear(x)
@@ -33,8 +33,8 @@ class Model:
         https://aaronkub.com/2020/02/12/logistic-regression-with-pytorch.html
         https://discuss.pytorch.org/t/multi-class-cross-entropy-loss-and-softmax-in-pytorch/24920/9
     """
-    def __init__(self, num_inputs=2, num_classes=3):
-        self.model = Net(num_inputs, num_classes)
+    def __init__(self, model_dim=(5, 3)):
+        self.model = Net(model_dim)
         self.optimizer = optim.SGD(self.model.parameters(), lr=1e-3) # TODO
         self.loss_fn = nn.CrossEntropyLoss()
         self.xi = 1 # TODO
@@ -103,9 +103,9 @@ class Model:
 
                 # print log
                 loss, current = loss.item(), (batch+1)*len(X)
-                print(f"train() {t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]  surr: {surr_term:>7f}")
+                # print(f"train() {t}-{batch} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]  surr: {surr_term:>7f}")
     
-        print("Done!")
+        # print("Done!")
         # soln = self.get_params()
         # return soln 
     
@@ -122,7 +122,7 @@ class Model:
         
         test_loss /= num_batches
         # correct /= size 
-        print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
+        # print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
         return  correct, test_loss
 
 

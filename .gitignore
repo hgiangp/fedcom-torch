@@ -5,3 +5,5 @@ examples/logs/*
 copy_research.sh
 data/mnist/data/sklearn/
 data/mnist/data/MNIST/
+flearn/models/synthetic/__pycache__/
+__pycache__/

@@ -1,0 +1,33 @@
+	%12s : %s
+Arguments:
+	     dataset : synthetic
+	       model : mclr
+	model_params : (5, 3)
+	     sce_idx : 4
+	         tau : 40.0
+['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
+10
+dict_keys(['x', 'y'])
+params['model_params'] = (5, 3)
+id = f_00000, model = <flearn.models.synthetic.mclr.Model object at 0x1429c89a0>, num_samples = 126
+id = f_00001, model = <flearn.models.synthetic.mclr.Model object at 0x1429d6a30>, num_samples = 265
+id = f_00002, model = <flearn.models.synthetic.mclr.Model object at 0x143140100>, num_samples = 124
+id = f_00003, model = <flearn.models.synthetic.mclr.Model object at 0x143140610>, num_samples = 43
+id = f_00004, model = <flearn.models.synthetic.mclr.Model object at 0x143140970>, num_samples = 306
+id = f_00005, model = <flearn.models.synthetic.mclr.Model object at 0x14314f220>, num_samples = 146
+id = f_00006, model = <flearn.models.synthetic.mclr.Model object at 0x14314f580>, num_samples = 54
+id = f_00007, model = <flearn.models.synthetic.mclr.Model object at 0x14314fbe0>, num_samples = 179
+id = f_00008, model = <flearn.models.synthetic.mclr.Model object at 0x14315d340>, num_samples = 130
+id = f_00009, model = <flearn.models.synthetic.mclr.Model object at 0x14315da90>, num_samples = 118
+BaseFederated generated!
+num_samples = [126 265 124  43 306 146  54 179 130 118]
+msize = 300240
+xs = [-280.  400. -385. -350. -200. -100.  400. -180.  500.  425.]
+ys = [-300.  355. -400.  455.  385.  335.   60. -200.   10.  385.]
+dists_uav = [714.702735 261.199158 858.268606 606.403331 444.100214 336.489227 274.954542 575.152154 379.605058 296.395007]
+uav_gains = [5.494875e-13 1.802536e-11 3.593089e-13 8.081917e-13 1.762643e-12 4.643011e-12 1.366745e-11 9.167988e-13 2.857829e-12 8.947599e-12]
+dists_bs = [ 344.093011  943.941206  397.775062 1017.116021  907.317475  840.966706  688.186021  349.857114  714.212853  981.758626]
+bs_gains = [3.377405e-12 1.809684e-13 2.218167e-12 1.457366e-13 2.029744e-13 2.529791e-13 4.524766e-13 3.218549e-12 4.062963e-13 1.614840e-13]
+v = 67.51054852320674
+a_0 = 29.435096480822423	a_alpha = -0.32371615624431044
+SystemModel __init__!

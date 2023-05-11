@@ -6,11 +6,11 @@ from client_model import Client
 from network_params import s_n
 
 class BaseFederated: 
-    def __init__(self, model, dim, dataset):
+    def __init__(self, model, model_dim, dataset):
         r"""Federated Learning Model
         Args: dim = (in_dim, out_dim) # input, output dimension
         """
-        self.client_model = model(input_dim=dim[0], output_dim=dim[1]) # (5, 3) # (784, 10)
+        self.client_model = model(model_dim) # (5, 3) # (784, 10)
         self.clients = self.setup_clients(self.client_model, dataset)
         self.latest_model = self.client_model.get_params() # TODO: latest_model updated 
         print("BaseFederated generated!")
@@ -66,14 +66,10 @@ class BaseFederated:
         difference = self.calc_dissimilarity(agrads=agrads, wgrads=wgrads)
         print('gradient difference: {}'.format(difference))
 
-        # broadcast the global params and difference grads 
-        for c in self.clients:
-            c.calc_delta_grads(agrads)
-
         # clients train the local surrogate models
         wsolns = [] # buffer for receiving clients' solution
         for c in self.clients:
-            wsolns.append(c.train(num_epochs)) 
+            wsolns.append(c.train(num_epochs, agrads)) 
 
         # aggregate the global parameters and broadcast to all uses 
         self.latest_model = self.aggregate(wsolns)
@@ -120,7 +116,7 @@ class BaseFederated:
         print(f"num_samples = {num_samples}")
         return num_samples 
     
-    def get_mod_size(self): 
+    def get_smodel(self): 
         r""" Get model size"""
         msize = s_n # msize = self.client_model.get_model_size()
         print(f"msize = {msize}")
@@ -134,9 +130,9 @@ def test_aggregate(server):
     soln = server.aggregate(wsolns)
     print(f"soln=\n{soln}")
 
-def test_calc_msize(server): 
+def test_calc_msize(server: BaseFederated): 
     print(server.latest_model)
-    return server.get_model_size()
+    return server.get_smodel()
     
 def test(model_dim=(5, 3), dataset_name='synthetic'):
     model_name = 'CustomLogisticRegression'

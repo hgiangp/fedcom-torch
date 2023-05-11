@@ -1,5 +1,3 @@
-import torch
-
 from custom_dataset import load_dataloader
 
 class Client: 
@@ -55,27 +53,19 @@ class Client:
         tot_correct, loss = self.model.test(self.train_loader)
         return self.num_samples, tot_correct, loss 
 
-def test_test(): 
-    print("test_test()")
-    from custom_model import CustomLogisticRegression
-    from custom_dataset import test_load_data 
+def test():
+    import torch
+    from flearn.models.synthetic.mclr import Model
+    from custom_dataset import test_load_data
+    model = Model(5, 3)
 
-    model = CustomLogisticRegression(input_dim=5, output_dim=3)
-
-    user_id = 4
+    user_id = 1
     train_data, test_data = test_load_data(user_id)
     client = Client(user_id, train_data, test_data, model)
-    num_epochs = 30
-
-    # Receive global grads 
-    client.fake_set_grads()
-    ## Train 
-    client.train(num_epochs)
-
-    ## Test
-    print("Test Loss\n-------------------------------")
-    client.test()
-
+    
+    lparams = client.model.get_params()
+    ggrads = {k: torch.zeros_like(v) for k, v in lparams.items()}
+    client.train(num_epochs = 30, ggrads=ggrads)
 
 if __name__ == '__main__':
-    test_test()
+    test()

@@ -4,7 +4,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider 
 import os 
 
-from system_utils import read_options 
+from main import read_options 
 from parse_log import * 
 from network_params import x_uav, y_uav, x_bs, y_bs
 from network_utils import calc_bs_gains, calc_uav_gains
@@ -138,6 +138,7 @@ def plot_location_ani(log_file, fig_file):
 
     # Save and show animation
     ani.save(fig_file, writer='imagemagick', fps=20)
+    plt.close()
 
 def plot_maps(fig_size=(8, 8), nrows=1, ncols=1, title=''): 
     # plot map 
@@ -338,14 +339,14 @@ def plot_user_customized(var_value, fig_file_prefix, var_name='freqs', unit='GHz
     plt.close()
 
 def plot_users(log_file, fig_file_prefix): 
-    # freqs, decs, powers = parse_solutions(log_file)
-    # plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
-    # plot_user_customized(var_value=powers, fig_file_prefix=fig_file_prefix, var_name='powers', unit='dBm', norm_factor=1)
+    freqs, decs, powers = parse_solutions(log_file)
+    plot_user_customized(var_value=freqs, fig_file_prefix=fig_file_prefix, var_name='freqs', unit='GHz', norm_factor=1e9)
+    plot_user_customized(var_value=powers, fig_file_prefix=fig_file_prefix, var_name='powers', unit='dBm', norm_factor=1)
     
     t_co_s, t_cp_s, e_co_s, e_cp_s = parse_net_tien_array(log_file)
-    # plot_user_customized(var_value=t_co_s, fig_file_prefix=fig_file_prefix, var_name='time_co', unit='s', norm_factor=1)
-    # plot_user_customized(var_value=t_cp_s, fig_file_prefix=fig_file_prefix, var_name='time_cp', unit='s', norm_factor=1)
-    # plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_co', unit='mJ', norm_factor=1e-3)
+    plot_user_customized(var_value=t_co_s, fig_file_prefix=fig_file_prefix, var_name='time_co', unit='s', norm_factor=1)
+    plot_user_customized(var_value=t_cp_s, fig_file_prefix=fig_file_prefix, var_name='time_cp', unit='s', norm_factor=1)
+    plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_co', unit='mJ', norm_factor=1e-3)
     plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_cp', unit='mJ', norm_factor=1e-3)
     
 def test_fixedi(): 
@@ -362,12 +363,12 @@ def test_system_model(index=4):
     fig_file_time = prefix_figure + 'plot_synthetic_time.png'
     fig_file_ene = prefix_figure + 'plot_synthetic_ene.png'
     fig_file_ani = prefix_figure + 'location_ani.gif'
-    # plot_fedl(log_file, fig_file_fedl)
-    # plot_netopt(log_file, fig_file_netopt)
-    # plot_gains(log_file, fig_file_gain)
-    # plot_tien(log_file, fig_file_time, fig_file_ene)
+    plot_fedl(log_file, fig_file_fedl)
+    plot_netopt(log_file, fig_file_netopt)
+    plot_gains(log_file, fig_file_gain)
+    plot_tien(log_file, fig_file_time, fig_file_ene)
     plot_location_ani(log_file, fig_file_ani)
-    # plot_users(log_file, prefix_figure)
+    plot_users(log_file, prefix_figure)
 
 def test_server_model(): 
     log_file, fig_file = './logs/server_model.log', './figures/plot_synthetic.png'
@@ -412,16 +413,16 @@ def test_combine():
     plt.close()
 
 def main(): 
-    sce_idx = read_options()['sce_idx']
-    test_system_model(index=sce_idx)
+    options, _ = read_options()
+    test_system_model(index=options['sce_idx'])
 
 if __name__=='__main__':
     # plot_location_act()
     # test_fixedi()
     # test_server_model()
     # test_combine()
-    plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
+    # plot_location_ani('./logs/location_model.log', './figures/location_ani.gif')
     # plot_gain_density()
     # test_plot_maps(1, 1)
     # plot_SNR()
-    # main()
+    main()
