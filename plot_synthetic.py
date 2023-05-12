@@ -6,8 +6,8 @@ import os
 
 from main import read_options 
 from parse_log import * 
-from network_params import x_uav, y_uav, x_bs, y_bs
-from network_utils import calc_bs_gains, calc_uav_gains
+from src.network_params import x_uav, y_uav, x_bs, y_bs
+from src.network_utils import calc_bs_gains, calc_uav_gains
 
 def plot_fedl(log_file, fig_file): 
     rounds, acc, loss, sim, test_loss = parse_fedl(log_file)

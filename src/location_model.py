@@ -16,7 +16,7 @@ class LocationModel:
         self.x_inter, self.y_inter = (200, 172) # intersection point
 
     def init_location(self):
-        file_name = 'location_data.txt'
+        file_name = './src/location_data.txt'
         xs, ys, dirs1, dirs2 = read_data(file_name)
         return xs, ys, dirs1, dirs2
 
