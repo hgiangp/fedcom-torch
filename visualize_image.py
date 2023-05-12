@@ -6,7 +6,7 @@ import torch
 from tqdm import trange
 from sklearn.manifold import TSNE
 import pandas as pd 
-import seaborn as sn 
+import seaborn as sns 
 
 from src.custom_dataset import * 
 
@@ -100,23 +100,26 @@ def view_SNE():
     # set marker size 
     dist = np.abs(y_pred_all - y_all) 
     widx = np.where(dist > 0)[0]
-    default_size = 50.0 
-    s = np.ones(y_all.size) * default_size
-    s[widx] = 100.0
+    s = np.ones(y_all.size) * 1
+    s[widx] = 3
     
     print(f"s.size = {s.size} widx.shape = {widx.shape}")
 
     # Creating a new data frame which helps us in ploting the result data
-    tsne_data = np.vstack((tsne_data.T, y_pred_all)).T
-    tsne_df = pd.DataFrame(data=tsne_data, columns=("dim_1", "dim_2", "label"))
+    tsne_data = np.vstack((tsne_data.T, y_all, y_pred_all, s)).T
+    tsne_df = pd.DataFrame(data=tsne_data, columns=("dim_1", "dim_2", "label", "pred", "size"))
 
     # Ploting the result of tsne
-    sn.FacetGrid(tsne_df, hue="label", height=9).map(plt.scatter, 'dim_1', 'dim_2', alpha=0.8, s=s).add_legend()
-    #Use size if height results in warning.
-    plt.savefig(f'./figures/mnist/images/tSNE.png')
+    sns.relplot(x="dim_1", y="dim_2", hue="label", size="size",  sizes=(40, 200), palette="bright", alpha=.8, height=9, legend="auto", data=tsne_df)
+    plt.savefig(f'./figures/mnist/images/tSNE_label.png')
     plt.close()
 
-    plt.show()
+    sns.relplot(x="dim_1", y="dim_2", hue="pred", size="size",  sizes=(40, 200), palette="bright", alpha=.8, height=9, legend="auto", data=tsne_df)
+    # legends = [str(i) for i in range(10)]
+    # plt.legend(frameon=False, labels=legends, loc='upper left', bbox_to_anchor=(1, 1))
+    plt.savefig(f'./figures/mnist/images/tSNE_pred.png')
+    plt.close()
+    # plt.show()
 
 if __name__=='__main__': 
     # view_data()
