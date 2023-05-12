@@ -52,7 +52,7 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
-def load_dataloader(train_dict, test_dict): 
+def load_dataloader(train_dict, test_dict, shuffle=True): 
     batch_size = 32
 
     # Init CustomDataset 
@@ -60,12 +60,12 @@ def load_dataloader(train_dict, test_dict):
     test_data = CustomDataset(test_dict)
 
     # Init DataLoader 
-    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True, drop_last=True)
-    testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True, drop_last=False)
+    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=shuffle, drop_last=True)
+    testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=shuffle, drop_last=False)
     return traindata_loader, testdata_loader
 
-def test_load_data(user_id, dataset_name='synthetic'):
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
+def test_load_data(user_id=1, dataset_name='synthetic'):
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     train_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'train')
     test_dir = os.path.join(parent_dir, 'data', dataset_name, 'data', 'test')
 

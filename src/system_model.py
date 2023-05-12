@@ -1,4 +1,6 @@
-import numpy as np 
+import numpy as np
+import os
+
 np.set_printoptions(precision=6, linewidth=np.inf)
 
 from src.server_model import BaseFederated 
@@ -104,3 +106,13 @@ class SystemModel:
             self.net_optim.update_channel_gains()
         
         print("Done!")
+    
+    def save_model(self): 
+        r""" Save the federated learning model"""
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        save_dir = os.path.join(parent_dir, 'models', self.dataset, f's{str(self.sce_idx)}')
+        if not os.path.exists(save_dir): 
+            os.makedirs(save_dir)
+        
+        self.fed_model.save_model(save_dir)
+        print(f"Model saved in {save_dir}")

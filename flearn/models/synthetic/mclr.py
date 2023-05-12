@@ -109,7 +109,7 @@ class Model:
         # soln = self.get_params()
         # return soln 
     
-    def test(self, dataloader: DataLoader): 
+    def test(self, dataloader: DataLoader, debug=False): 
         size = len(dataloader.dataset) # number of samples of train set or test set 
         num_batches = len(dataloader)
         test_loss, correct = 0, 0 
@@ -122,7 +122,10 @@ class Model:
         
         test_loss /= num_batches
         # correct /= size 
-        # print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
+        
+        if debug: 
+            print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
+        
         return  correct, test_loss
 
 

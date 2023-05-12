@@ -1,6 +1,6 @@
 import copy 
 import torch
-import numpy as np 
+import numpy as np
 
 from src.client_model import Client
 from src.network_params import s_n
@@ -12,7 +12,7 @@ class BaseFederated:
         """
         self.client_model = model(model_dim) # (5, 3) # (784, 10)
         self.clients = self.setup_clients(self.client_model, dataset)
-        self.latest_model = self.client_model.get_params() # TODO: latest_model updated 
+        self.model_dict = self.client_model.get_params() # TODO: latest_model updated 
         print("BaseFederated generated!")
     
     def setup_clients(self, model, dataset): 
@@ -72,9 +72,13 @@ class BaseFederated:
             wsolns.append(c.train(num_epochs, agrads)) 
 
         # aggregate the global parameters and broadcast to all uses 
-        self.latest_model = self.aggregate(wsolns)
+        self.model_dict = self.aggregate(wsolns)
+
         for c in self.clients: 
-            c.set_params(self.latest_model)
+            c.set_params(self.model_dict)
+        
+        # update global model 
+        self.client_model.set_params(self.model_dict) 
 
         # Test model
         stats = self.test() # (list num_samples, list total_correct)  
@@ -111,6 +115,9 @@ class BaseFederated:
         
         return num_samples, tot_correct, losses
     
+    def save_model(self, save_dir):
+        self.client_model.save(save_dir)
+    
     def get_num_samples(self): 
         num_samples = np.array([client.num_samples for client in self.clients])
         print(f"num_samples = {num_samples}")
@@ -122,7 +129,7 @@ class BaseFederated:
         print(f"msize = {msize}")
         return msize
     
-def test_aggregate(server):
+def test_aggregate(server: BaseFederated):
     soln1 = {k: torch.ones_like(v) for k, v in server.latest_model.items()} 
     soln2 = {k: torch.ones_like(v)*2 for k, v in server.latest_model.items()} 
     soln3 = {k: torch.ones_like(v)*3 for k, v in server.latest_model.items()} 

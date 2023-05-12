@@ -109,7 +109,7 @@ class Model:
         # soln = self.get_params()
         # return soln 
     
-    def test(self, dataloader: DataLoader): 
+    def test(self, dataloader: DataLoader, debug=False): 
         size = len(dataloader.dataset) # number of samples of train set or test set 
         num_batches = len(dataloader)
         test_loss, correct = 0, 0 
@@ -122,9 +122,33 @@ class Model:
         
         test_loss /= num_batches
         # correct /= size 
-        # print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
+        
+        if debug: 
+            print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
+        
         return  correct, test_loss
 
+    def predict(self, dataloader: DataLoader, debug=False): 
+        size = len(dataloader.dataset) # number of samples of train set or test set 
+        num_batches = len(dataloader)
+        y_pred = []
+        
+        with torch.no_grad(): 
+            for X, y in dataloader: 
+                preds = self.model(X).argmax(1).tolist()
+                y_pred.append(preds)
+    
+        # Flatten the list 
+        y_pred_flat = [item for sublist in y_pred for item in sublist]
+
+        if debug:
+            print(f"y_pred = {y_pred_flat}")
+            print(f"predict() len(y_pred) = {len(y_pred_flat)}")
+        
+        return y_pred_flat
+    
+    def save(self, save_dir):
+        torch.save(self.model.state_dict(), f'{save_dir}/model_weights.pth') 
 
 def test():
     import torch
