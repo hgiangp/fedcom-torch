@@ -76,42 +76,46 @@ def view_SNE():
 
     # load data 
     num_users = 10
+    X_all, y_pred_all, y_all = np.array([]), np.array([]), np.array([])
 
-    test_data, _ = test_load_data(user_id=0, dataset_name='mnist')
-    y_pred = load_model(test_data)
-    X, y = test_data['x'], test_data['y']
-    X_reshape = np.array([np.asarray(x) for x in X])
-    y_pred = np.asarray(y_pred)
-
-    X_all = X_reshape
-    y_all = y 
-
-    for user in range(1, num_users, 1): 
-        print(user)
+    for user in range(num_users):
         test_data, _ = test_load_data(user_id=user, dataset_name='mnist')
         y_pred = load_model(test_data)
         X, y = test_data['x'], test_data['y']
         
         X_reshape = np.array([np.asarray(x) for x in X])
+        y = np.array(y)
         y_pred = np.asarray(y_pred)
 
-        X_all = np.concatenate((X_all, X_reshape), axis=0)
-        y_all = np.concatenate((y_all, y_pred), axis=0)
+        X_all = np.concatenate((X_all, X_reshape), axis=0) if X_all.size else X_reshape
+        y_pred_all = np.concatenate((y_pred_all, y_pred), axis=0) if y_pred_all.size else y_pred
+        y_all = np.concatenate((y_all, y), axis=0) if y_all.size else y 
     
     print(f"X_all.shape = {X_all.shape}")
     print(f"y_all.shape = {y_all.shape}")
 
     tsne_data = model.fit_transform(X_all)
+    print(f"tsne_data.shape = {tsne_data.shape}")
+
+    # set marker size 
+    dist = np.abs(y_pred_all - y_all) 
+    widx = np.where(dist > 0)[0]
+    default_size = 50.0 
+    s = np.ones(y_all.size) * default_size
+    s[widx] = 100.0
+    
+    print(f"s.size = {s.size} widx.shape = {widx.shape}")
 
     # Creating a new data frame which helps us in ploting the result data
-    tsne_data = np.vstack((tsne_data.T, np.asarray(y_all))).T
+    tsne_data = np.vstack((tsne_data.T, y_pred_all)).T
     tsne_df = pd.DataFrame(data=tsne_data, columns=("dim_1", "dim_2", "label"))
 
     # Ploting the result of tsne
-    sn.FacetGrid(tsne_df, hue="label", height=8).map(plt.scatter, 'dim_1', 'dim_2', alpha=0.8).add_legend()
+    sn.FacetGrid(tsne_df, hue="label", height=9).map(plt.scatter, 'dim_1', 'dim_2', alpha=0.8, s=s).add_legend()
     #Use size if height results in warning.
-
     plt.savefig(f'./figures/mnist/images/tSNE.png')
+    plt.close()
+
     plt.show()
 
 if __name__=='__main__': 
