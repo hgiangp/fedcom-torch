@@ -5,15 +5,16 @@ import importlib
 import torch
 from tqdm import trange
 
-from src.custom_dataset import test_load_data, load_dataloader
+from src.custom_dataset import * 
 
 def view_data(): 
     num_users = 10
     for user_id in trange(num_users): 
-        train_data, test_data = test_load_data(user_id=user_id, dataset_name='mnist')
-        X, y = train_data['x'], train_data['y']
-        y_pred = load_model(user_id)
+        train_data, _ = test_load_data(user_id=user_id, dataset_name='mnist')
 
+        X, y = train_data['x'], train_data['y']
+        
+        y_pred = load_model(train_data)
         y_pred = np.asarray(y_pred)
         y = np.asarray(y) 
         dist = np.abs(y_pred - y) 
@@ -36,7 +37,7 @@ def view_data():
         plt.savefig(f'./figures/mnist/images/image_user{user_id}.png')
         plt.show()
 
-def load_model(user_id=1):
+def load_model(train_data: dict):
     options={'dataset': 'mnist', 'sce_idx': 4, 'model': 'mclr', 'model_params': (784, 10)}
         
     # load selected model 
@@ -54,8 +55,8 @@ def load_model(user_id=1):
     model_mclr.model.load_state_dict(torch.load(model_path))
     print('Model loaded!')
 
-    train_data, test_data = test_load_data(user_id=user_id, dataset_name='mnist')
-    train_dataloader, test_dataloader = load_dataloader(train_data, test_data, shuffle=False, drop_last=False)
+    training_data =  CustomDataset(train_data)
+    train_dataloader = DataLoader(training_data, batch_size=32, shuffle=False, drop_last=False)
 
     # evaluate on the train set
     y_pred = model_mclr.predict(train_dataloader, debug=False)
