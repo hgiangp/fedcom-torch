@@ -14,9 +14,17 @@ def view_data():
         X, y = train_data['x'], train_data['y']
         y_pred = load_model(user_id)
 
+        y_pred = np.asarray(y_pred)
+        y = np.asarray(y) 
+        dist = np.abs(y_pred - y) 
+
+        widx = np.where(dist > 0)[0]
+        cidx = np.where(dist == 0)[0]
+        idxes = np.concatenate((widx, cidx), axis=0) if widx.size else cidx 
+
         fig, axs = plt.subplots(nrows=7, ncols=7, figsize=(7, 7))
-        for idx, ax in enumerate(axs.ravel()):
-            # select color of title 
+        for i, ax in enumerate(axs.ravel()):
+            idx = idxes[i]
             color = 'blue' if y_pred[idx] == y[idx] else 'red'
             # plot image 
             image = np.asarray(X[idx]).reshape((28, 28))
@@ -26,7 +34,7 @@ def view_data():
 
         _ = fig.suptitle(f"MNIST user_id = {user_id}")
         plt.savefig(f'./figures/mnist/images/image_user{user_id}.png')
-        # plt.show()
+        plt.show()
 
 def load_model(user_id=1):
     options={'dataset': 'mnist', 'sce_idx': 4, 'model': 'mclr', 'model_params': (784, 10)}
@@ -47,7 +55,7 @@ def load_model(user_id=1):
     print('Model loaded!')
 
     train_data, test_data = test_load_data(user_id=user_id, dataset_name='mnist')
-    train_dataloader, test_dataloader = load_dataloader(train_data, test_data, shuffle=False)
+    train_dataloader, test_dataloader = load_dataloader(train_data, test_data, shuffle=False, drop_last=False)
 
     # evaluate on the train set
     y_pred = model_mclr.predict(train_dataloader, debug=False)

@@ -52,7 +52,7 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
-def load_dataloader(train_dict, test_dict, shuffle=True): 
+def load_dataloader(train_dict, test_dict, shuffle=True, drop_last=True): 
     batch_size = 32
 
     # Init CustomDataset 
@@ -60,7 +60,7 @@ def load_dataloader(train_dict, test_dict, shuffle=True):
     test_data = CustomDataset(test_dict)
 
     # Init DataLoader 
-    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=shuffle, drop_last=True)
+    traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=shuffle, drop_last=drop_last)
     testdata_loader = DataLoader(test_data, batch_size=batch_size, shuffle=shuffle, drop_last=False)
     return traindata_loader, testdata_loader
 
