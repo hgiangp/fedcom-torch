@@ -2,8 +2,8 @@ import copy
 import torch
 import numpy as np 
 
-from client_model import Client
-from network_params import s_n
+from src.client_model import Client
+from src.network_params import s_n
 
 class BaseFederated: 
     def __init__(self, model, model_dim, dataset):

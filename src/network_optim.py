@@ -1,10 +1,10 @@
 import numpy as np
 np.set_printoptions(precision=6, linewidth=np.inf)
 
-from network_params import * 
-from network_utils import * 
-from location_model import LocationModel
-from optimization import NewtonOptim
+from src.network_params import * 
+from src.network_utils import * 
+from src.location_model import LocationModel
+from src.optimization import NewtonOptim
 
 class NetworkOptim:
     def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, sce_idx=4):

@@ -2,8 +2,8 @@ import argparse
 import importlib
 import os
 
-from custom_dataset import read_data
-from system_model import SystemModel
+from src.custom_dataset import read_data
+from src.system_model import SystemModel
 
 # GLOBAL PARAMETERS
 SCENARIO_IDXES = [1, 2, 3, 4]

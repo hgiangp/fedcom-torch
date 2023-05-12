@@ -1,6 +1,6 @@
 import re 
 import numpy as np 
-from network_utils import to_dB
+from src.network_utils import to_dB
 
 def parse_fedl(file_name): 
     rounds, acc, loss, sim = [], [], [], []

@@ -132,7 +132,7 @@ def test():
 
     parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     sys.path.append(parent_dir)
-    from custom_dataset import test_load_data, load_dataloader
+    from src.custom_dataset import test_load_data, load_dataloader
     
     train_data, test_data = test_load_data(user_id=1)
     train_loader, test_loader = load_dataloader(train_data, test_data)

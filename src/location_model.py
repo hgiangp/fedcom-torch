@@ -1,7 +1,7 @@
 import numpy as np
 np.set_printoptions(precision=6, linewidth=np.inf)
 
-from location_utils import read_data
+from src.location_utils import read_data
 
 seed = 1
 rng = np.random.default_rng(seed=seed)

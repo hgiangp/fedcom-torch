@@ -2,7 +2,7 @@ import numpy as np
 import math 
 from scipy.special import lambertw 
 
-from network_params import *
+from src.network_params import *
 
 seed = 1 
 rng = np.random.default_rng(seed=seed)

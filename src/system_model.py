@@ -1,8 +1,8 @@
 import numpy as np 
 np.set_printoptions(precision=6, linewidth=np.inf)
 
-from server_model import BaseFederated 
-from network_optim import NetworkOptim
+from src.server_model import BaseFederated 
+from src.network_optim import NetworkOptim
 
 seed = 1
 rng = np.random.default_rng(seed=seed)

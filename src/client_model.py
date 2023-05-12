@@ -1,4 +1,4 @@
-from custom_dataset import load_dataloader
+from src.custom_dataset import load_dataloader
 
 class Client: 
     def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None):
@@ -56,7 +56,7 @@ class Client:
 def test():
     import torch
     from flearn.models.synthetic.mclr import Model
-    from custom_dataset import test_load_data
+    from src.custom_dataset import test_load_data
     model = Model(5, 3)
 
     user_id = 1
