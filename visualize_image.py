@@ -107,14 +107,15 @@ def view_SNE():
 
     # Creating a new data frame which helps us in ploting the result data
     tsne_data = np.vstack((tsne_data.T, y_all, y_pred_all, s)).T
-    tsne_df = pd.DataFrame(data=tsne_data, columns=("dim_1", "dim_2", "label", "pred", "size"))
+    columns =(r'${dim}_1$', r'${dim}_2$', "label", "pred", "size")
+    tsne_df = pd.DataFrame(data=tsne_data, columns=columns)
 
     # Ploting the result of tsne
-    sns.relplot(x="dim_1", y="dim_2", hue="label", size="size",  sizes=(40, 200), palette="bright", alpha=.8, height=9, legend="auto", data=tsne_df)
+    sns.relplot(x=columns[0], y=columns[1], hue=columns[2], size=columns[4],  sizes=(40, 200), palette="bright", alpha=.8, height=9, legend="auto", data=tsne_df)
     plt.savefig(f'./figures/mnist/images/tSNE_label.png')
     plt.close()
 
-    sns.relplot(x="dim_1", y="dim_2", hue="pred", size="size",  sizes=(40, 200), palette="bright", alpha=.8, height=9, legend="auto", data=tsne_df)
+    sns.relplot(x=columns[0], y=columns[1], hue=columns[3], size=columns[4],  sizes=(40, 200), palette="bright", alpha=.8, height=9, legend="auto", data=tsne_df)
     # legends = [str(i) for i in range(10)]
     # plt.legend(frameon=False, labels=legends, loc='upper left', bbox_to_anchor=(1, 1))
     plt.savefig(f'./figures/mnist/images/tSNE_pred.png')
