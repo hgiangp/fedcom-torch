@@ -13,8 +13,7 @@ class SystemModel:
     def __init__(self, params, model, dataset, num_users=10, velocity=11, ts_duration=0.4):
         # transfer parameters to self
         for key, val in params.items(): setattr(self, key, val)
-        print(f"params['model_params'] = {params['model_params']}")
-        self.fed_model = BaseFederated(model, params['model_params'], dataset)
+        self.fed_model = BaseFederated(model, params, dataset)
         self.net_optim = self.init_netoptim(num_users, velocity, ts_duration)
         print("SystemModel __init__!")
     

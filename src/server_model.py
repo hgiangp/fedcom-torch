@@ -6,11 +6,11 @@ from src.client_model import Client
 from src.network_params import s_n
 
 class BaseFederated: 
-    def __init__(self, model, model_dim, dataset):
+    def __init__(self, model, params, dataset):
         r"""Federated Learning Model
         Args: dim = (in_dim, out_dim) # input, output dimension
         """
-        self.client_model = model(model_dim) # (5, 3) # (784, 10)
+        self.client_model = model(params['model_params'], params['learning_rate']) # (5, 3) # (784, 10)
         self.clients = self.setup_clients(self.client_model, dataset)
         self.model_dict = self.client_model.get_params() # TODO: latest_model updated 
         print("BaseFederated generated!")

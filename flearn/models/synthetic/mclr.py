@@ -33,9 +33,9 @@ class Model:
         https://aaronkub.com/2020/02/12/logistic-regression-with-pytorch.html
         https://discuss.pytorch.org/t/multi-class-cross-entropy-loss-and-softmax-in-pytorch/24920/9
     """
-    def __init__(self, model_dim=(5, 3)):
+    def __init__(self, model_dim=(5, 3), lr=1e-3):
         self.model = Net(model_dim)
-        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-3) # TODO
+        self.optimizer = optim.SGD(self.model.parameters(), lr=lr) # TODO
         self.loss_fn = nn.CrossEntropyLoss()
         self.xi = 1 # TODO
     

@@ -3,9 +3,10 @@
 tau=$1
 dataset=$2
 model=$3
+learning_rate=$4
 
-./run_main.sh 1 $tau $dataset $model
-./run_main.sh 2 $tau $dataset $model
-./run_main.sh 3 $tau $dataset $model
+./run_main.sh 1 $tau $dataset $model $learning_rate
+./run_main.sh 2 $tau $dataset $model $learning_rate
+./run_main.sh 3 $tau $dataset $model $learning_rate
 # ./run_main.sh 5 $tau $dataset $model
 python3 -u plot_comparison.py --dataset=$dataset

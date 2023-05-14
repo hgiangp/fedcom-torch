@@ -33,6 +33,10 @@ def read_options():
                         help='name of model;',
                         type=str,
                         default='mclr')
+    parser.add_argument('--learning_rate',
+                        help='learning rate of local model;',
+                        type=float,
+                        default=0.001)
     
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))
