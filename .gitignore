@@ -6,3 +6,4 @@ data/mnist/data/sklearn/
 data/mnist/data/MNIST/
 flearn/models/synthetic/__pycache__/
 __pycache__/
+data/emnist/data/EMNIST/
