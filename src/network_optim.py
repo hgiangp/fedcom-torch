@@ -7,7 +7,7 @@ from src.location_model import LocationModel
 from src.optimization import NewtonOptim
 
 class NetworkOptim:
-    def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, sce_idx=4):
+    def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, sce_idx=4, delta_lr=1e-3):
         # Location parameters
         self.loc_model = LocationModel(num_users, velocity=velocity, timeslot_duration=ts_duration)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
@@ -16,7 +16,7 @@ class NetworkOptim:
         self.num_users = num_users
         self.num_samples = num_samples # np.array (num_users, )
         self.data_size = data_size        
-        self.v, self.a_0, self.a_alpha = self.set_decay_params(sce_idx)
+        self.v, self.a_0, self.a_alpha = self.set_decay_params(sce_idx, delta_lr)
         self.an = self.a_0 # initialize with current round = 0
 
         # Optimal parameters 
@@ -30,7 +30,7 @@ class NetworkOptim:
         self.num_lrounds = 0 
         self.num_grounds = 0
     
-    def set_decay_params(self, sce_idx=4):
+    def set_decay_params(self, sce_idx=4, delta_lr=1e-3):
         epsilon_alpha = 1.06 # alpha factor for decreasing the accuracy > 1
         epsilon_a = 5 # 10 100 1 > 1 n \approx 151 for dynamic, 1 for fixedi
 

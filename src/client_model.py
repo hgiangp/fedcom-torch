@@ -11,9 +11,9 @@ class Client:
         self.init_train() # for generating the initial grads
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
         
-    def init_train(self): 
+    def init_train(self, num_epochs=1): 
         r""" Train one epoch to update gradients for the first iteration"""
-        self.model.train(num_epochs=5, train_loader=self.train_loader)
+        self.model.train(num_epochs=num_epochs, train_loader=self.train_loader)
 
     def get_wparams(self): 
         r"""Get weighted model.parameters()"""
@@ -29,8 +29,10 @@ class Client:
         self.model.set_params(params)
         # print(f"set_params arx_params = {self.arx_params}")
     
-    def get_wgrads(self): 
+    def get_wgrads(self, ground: int): 
         r"""Get weighted model.parameters() gradients"""
+        if ground == 0:
+            self.init_train(num_epochs=1) 
         return (self.num_samples, self.model.get_grads())
     
     def get_grads(self): 
