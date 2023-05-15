@@ -121,7 +121,7 @@ class Model:
                 correct += (pred.argmax(1) == y).type(torch.float).sum().item()
         
         test_loss /= num_batches
-        # correct /= size 
+        correct /= size 
         
         if debug: 
             print(f"Test Error: Accuracy: {correct:>0.1f}, Avg loss: {test_loss:>8f}")
