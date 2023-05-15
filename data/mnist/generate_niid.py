@@ -12,8 +12,12 @@ num_users = 10
 num_labels = 3
 
 # Setup directory for train/test data 
-train_path = './data/train/data_niid_seed_0_train_8.json'
-test_path = './data/test/data_niid_seed_0_test_8.json'
+train_file = 'data_niid_seed_0_train_8.json'
+test_file = 'data_niid_seed_0_test_8.json'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(current_dir, 'data')
+train_path = os.path.join(data_dir, 'train', train_file)
+test_path = os.path.join(data_dir, 'test', test_file)
 dir_path = os.path.dirname(train_path)
 if not os.path.exists(dir_path): 
     os.makedirs(dir_path)
@@ -22,7 +26,7 @@ if not os.path.exists(dir_path):
     os.makedirs(dir_path)
 
 # Get MNIST data, normalize, divide by level 
-mnist_train = datasets.MNIST(root='./data', train=True, download=True)
+mnist_train = datasets.MNIST(root=data_dir, train=True, download=True)
 # mnist_test = datasets.MNIST(root='./data', train=False, download=True)
 
 # Tranform data from Image to numpy array 
@@ -52,7 +56,7 @@ print(f"Number of samples of each label: {len_data}\t{np.asarray(len_data).sum()
 
 # CREATE USER DATA SPLIT 
 # Assign 90 samples to each users, 3 labels, 20 samples each
-sams_per_lab = 25 
+sams_per_lab = 50
 X = [[] for _ in range(num_users)]
 y = [[] for _ in range(num_users)]
 idx = np.zeros(10, dtype=int) # 10 labels 0 - 9
@@ -67,8 +71,10 @@ for user in range(num_users):
 print(f"idx = {idx}") #  90 * 10 / 10 = 60 
 
 # Assign remaining samples by power law 
-props = rng.lognormal(0, 2.0, (10, 45, 3)) # 10 classes, 10 users, 3 labels
-props = np.array([[[len(v)-75]] for v in mnist_data]) * props/np.sum(props, axis=(1, 2), keepdims=True)
+allocated_samples = np.ceil(sams_per_lab*num_labels*10/num_users)
+
+props = rng.lognormal(0, 2.0, (10, 40, 3)) # 10 classes, 10 users, 3 labels
+props = np.array([[[len(v)-allocated_samples]] for v in mnist_data]) * props/np.sum(props, axis=(1, 2), keepdims=True)
 # print(f"props = {props}")
 
 for user in range(num_users): 
