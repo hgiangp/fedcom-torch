@@ -69,6 +69,8 @@ class SystemModel:
         iter = 0
         print(f"Round {iter}\n-------------------------------") 
         a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs(tau, ground=iter)
+        self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
+        self.net_optim.update_channel_gains()
         max_round = int(num_grounds)
 
         # FL training 
@@ -91,7 +93,8 @@ class SystemModel:
         print(f"Round {iter}\n-------------------------------") 
         a_n, num_lrounds, num_grounds, t_total = self.net_optim.optimize_network_bs_uav(tau, ground=iter)
         self.fed_model.train(num_epochs=int(num_lrounds), ground=iter)
-        
+        self.net_optim.update_channel_gains()
+
         # iter = 1 
         max_round = int(num_grounds)
         # FL training 

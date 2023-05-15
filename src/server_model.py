@@ -43,8 +43,8 @@ class BaseFederated:
         difference = 0
         for _, grads in wgrads: 
             for k in grads.keys(): 
-                # difference += torch.square(agrads[k] - grads[k]).sum()
-                difference += (agrads[k] - grads[k]).sum()
+                difference += torch.square(agrads[k] - grads[k]).sum()
+                # difference += (agrads[k] - grads[k]).sum()
         difference = difference * 1.0 / len(self.clients)
         
         return difference
