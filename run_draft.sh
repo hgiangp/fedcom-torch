@@ -11,4 +11,4 @@
 # python3 visualize_image.py |tee logs/visualize_image.log 
 python3 ./data/mnist/generate_niid.py | tee ./data/mnist/generate_niid.log
 # ./run_main.sh 4 80 mnist mclr 0.01
-./run.sh 80 mnist mclr 0.01
+./run.sh 90 mnist mclr 0.01
