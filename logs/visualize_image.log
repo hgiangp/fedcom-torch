@@ -1,64 +1,74 @@
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 138
-len(test_data['y']) = 35
+len(train_data['y'] = 300
+len(test_data['y']) = 76
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 67
-len(test_data['y']) = 17
+len(train_data['y'] = 308
+len(test_data['y']) = 78
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 109
-len(test_data['y']) = 28
+len(train_data['y'] = 353
+len(test_data['y']) = 89
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 185
-len(test_data['y']) = 47
+len(train_data['y'] = 711
+len(test_data['y']) = 178
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 91
-len(test_data['y']) = 23
+len(train_data['y'] = 339
+len(test_data['y']) = 85
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 94
-len(test_data['y']) = 24
+len(train_data['y'] = 426
+len(test_data['y']) = 107
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 73
-len(test_data['y']) = 19
+len(train_data['y'] = 551
+len(test_data['y']) = 138
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 107
-len(test_data['y']) = 27
+len(train_data['y'] = 316
+len(test_data['y']) = 80
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 76
-len(test_data['y']) = 19
+len(train_data['y'] = 307
+len(test_data['y']) = 77
+__init__ is_cuda:  False
 Model loaded!
 ['f_00000', 'f_00001', 'f_00002', 'f_00003', 'f_00004', 'f_00005', 'f_00006', 'f_00007', 'f_00008', 'f_00009']
 10
 dict_keys(['x', 'y'])
-len(train_data['y'] = 220
-len(test_data['y']) = 55
+len(train_data['y'] = 304
+len(test_data['y']) = 76
+__init__ is_cuda:  False
 Model loaded!
-X_all.shape = (1160, 784)
-y_all.shape = (1160,)
-tsne_data.shape = (1160, 2)
-s.size = 1160 widx.shape = (47,)
+X_all.shape = (3915, 784)
+y_all.shape = (3915,)
+tsne_data.shape = (3915, 2)
+s.size = 3915 widx.shape = (93,)
