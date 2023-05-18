@@ -33,16 +33,13 @@ class Model:
         https://aaronkub.com/2020/02/12/logistic-regression-with-pytorch.html
         https://discuss.pytorch.org/t/multi-class-cross-entropy-loss-and-softmax-in-pytorch/24920/9
     """
-    def __init__(self, model_dim=(5, 3), lr=1e-3):
+    def __init__(self, model_dim=(5, 3), lr=1e-3, device=torch.device('cuda')):
         self.model = Net(model_dim)
-        # setting device on GPU if available, else CPU
-        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # print('Using device:', device)
-        # # move model to available device 
-        # self.model.to(device)
-        # # check whether the current device on cuda 
+        self.model.to(device) # move model to device 
+        # check whether the current device on cuda 
         print('__init__ is_cuda: ', next(self.model.parameters()).is_cuda)
 
+        # init optimizer and loss function 
         self.optimizer = optim.SGD(self.model.parameters(), lr=lr) # TODO
         self.loss_fn = nn.CrossEntropyLoss()
         self.xi = 1 # TODO

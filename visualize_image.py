@@ -64,7 +64,8 @@ def view_data():
 
         _ = fig.suptitle(f"MNIST user_id = {user_id}")
         plt.savefig(f'./figures/mnist/images/image_user{user_id}.png')
-        plt.show()
+        plt.close()
+        # plt.show()
 
 def view_SNE():
     # configure TSNE model 
@@ -123,6 +124,6 @@ def view_SNE():
     # plt.show()
 
 if __name__=='__main__': 
-    # view_data()
+    view_data()
     # load_model()
     view_SNE()

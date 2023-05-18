@@ -1,14 +1,26 @@
 from src.custom_dataset import load_dataloader
+import torch 
 
 class Client: 
-    def __init__(self, id, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}, model=None):
+    def __init__(self, id, model, params, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}):
         self.id = id 
-        self.model = model # Model
-        self.train_loader, self.test_loader = load_dataloader(train_data, test_data)
+        device = self.check_device() # check available device
+        
+        # load model, data to availble device 
+        self.model = model(params['model_params'], params['learning_rate'], device) 
+        self.train_loader, self.test_loader = load_dataloader(train_data, test_data, device)
+
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
-
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
+
+    def check_device(self): 
+        # setting device on GPU if available, else CPU
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print('Using device:', device)
+        # move model to available device 
+        # self.model.to(device)
+        return device
         
     def init_train(self, num_epochs=1): 
         r""" Train one epoch to update gradients for the first iteration"""

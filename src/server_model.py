@@ -11,13 +11,13 @@ class BaseFederated:
         Args: dim = (in_dim, out_dim) # input, output dimension
         """
         self.client_model = model(params['model_params'], params['learning_rate']) # (5, 3) # (784, 10)
-        self.clients = self.setup_clients(self.client_model, dataset)
+        self.clients = self.setup_clients(model, params, dataset)
         self.model_dict = self.client_model.get_params() # TODO: latest_model updated 
         print("BaseFederated generated!")
     
-    def setup_clients(self, model, dataset): 
+    def setup_clients(self, model, params, dataset): 
         clients, train_data, test_data = dataset
-        all_clients = [Client(id, train_data[id], test_data[id], copy.deepcopy(model)) for id in clients]
+        all_clients = [Client(id, model, params, train_data[id], test_data[id]) for id in clients]
         return all_clients
     
     def aggregate(self, wsolns):
@@ -55,7 +55,12 @@ class BaseFederated:
             num_epochs: number of local rounds # network opt 
             num_rounds: number of global rounds 
         """
-        # Test model
+
+        # send model parameters to users 
+        for c in self.clients: 
+            c.set_params(self.model_dict)
+        
+        # users test model
         stats = self.test() # (list num_samples, list total_correct)  
         stats_train = self.train_error_and_loss() # (list num_samples, list total_correct, list losses)
         print("At round {} accuracy: {}".format(ground, np.sum(stats[1])*1.0/np.sum(stats[0])))
@@ -81,21 +86,10 @@ class BaseFederated:
 
         # aggregate the global parameters and broadcast to all uses 
         self.model_dict = self.aggregate(wsolns)
-
-        for c in self.clients: 
-            c.set_params(self.model_dict)
-        
+    
         # update global model 
-        self.client_model.set_params(self.model_dict) 
-
-        # # Test model
-        # stats = self.test() # (list num_samples, list total_correct)  
-        # stats_train = self.train_error_and_loss() # (list num_samples, list total_correct, list losses)
-        # print("At round {} accuracy: {}".format(ground, np.sum(stats[1])*1.0/np.sum(stats[0])))
-        # print("At round {} training accuracy: {}".format(ground, np.sum(stats_train[1])*1.0/np.sum(stats_train[0])))
-        # print("At round {} training loss: {}".format(ground, np.dot(stats_train[2], stats_train[0])*1.0/np.sum(stats_train[0])))
-        # print("At round {} test loss: {}".format(ground, np.dot(stats[2], stats[0])*1.0/np.sum(stats[0])))
-        
+        self.client_model.set_params(self.model_dict)
+          
     
     def test(self):
         num_samples = []

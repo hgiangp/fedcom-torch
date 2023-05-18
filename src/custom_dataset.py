@@ -5,16 +5,17 @@ import os
 import json
 
 class CustomDataset(Dataset): 
-    def __init__(self, input_dict):
+    def __init__(self, input_dict, device):
         self.input_dict = input_dict # dict {'x': [], 'y': []}
+        self.device = device 
     
     def __len__(self):
         r""" Return number of samples in our dataset""" 
         return len(self.input_dict['y'])
     
     def __getitem__(self, idx):
-        data = torch.tensor(self.input_dict['x'][idx])
-        target = torch.tensor(self.input_dict['y'][idx], dtype=int)
+        data = torch.tensor(self.input_dict['x'][idx]).to(self.device)
+        target = torch.tensor(self.input_dict['y'][idx], dtype=int).to(self.device)
         return data, target 
 
 def read_data(train_data_dir, test_data_dir):
@@ -52,12 +53,12 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
-def load_dataloader(train_dict, test_dict, shuffle=True, drop_last=True): 
+def load_dataloader(train_dict, test_dict, device, shuffle=True, drop_last=True): 
     batch_size = 32
 
     # Init CustomDataset 
-    training_data = CustomDataset(train_dict)
-    test_data = CustomDataset(test_dict)
+    training_data = CustomDataset(train_dict, device)
+    test_data = CustomDataset(test_dict, device)
 
     # Init DataLoader 
     traindata_loader = DataLoader(training_data, batch_size=batch_size, shuffle=shuffle, drop_last=drop_last)

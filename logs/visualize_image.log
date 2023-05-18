@@ -68,7 +68,3 @@ len(train_data['y'] = 304
 len(test_data['y']) = 76
 __init__ is_cuda:  False
 Model loaded!
-X_all.shape = (3915, 784)
-y_all.shape = (3915,)
-tsne_data.shape = (3915, 2)
-s.size = 3915 widx.shape = (93,)
