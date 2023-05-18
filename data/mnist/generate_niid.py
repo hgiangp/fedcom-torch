@@ -56,7 +56,7 @@ print(f"Number of samples of each label: {len_data}\t{np.asarray(len_data).sum()
 
 # CREATE USER DATA SPLIT 
 # Assign 90 samples to each users, 3 labels, 20 samples each
-sams_per_lab = 120
+sams_per_lab = 25
 X = [[] for _ in range(num_users)]
 y = [[] for _ in range(num_users)]
 idx = np.zeros(10, dtype=int) # 10 labels 0 - 9
