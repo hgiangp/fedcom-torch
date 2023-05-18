@@ -8,7 +8,6 @@ class Client:
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
 
-        self.init_train() # for generating the initial grads
         print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
         
     def init_train(self, num_epochs=1): 

@@ -38,6 +38,14 @@ class Model:
         self.optimizer = optim.SGD(self.model.parameters(), lr=lr) # TODO
         self.loss_fn = nn.CrossEntropyLoss()
         self.xi = 1 # TODO
+        
+        # setting device on GPU if available, else CPU
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print('Using device:', device)
+        # move model to available device 
+        self.model.to(device)
+        # check whether the current device on cuda 
+        print(next('is_cuda: ', self.model.parameters()).is_cuda)
     
     def get_params(self): 
         return self.model.get_params()

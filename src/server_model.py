@@ -149,23 +149,38 @@ def test_calc_msize(server: BaseFederated):
     print(server.latest_model)
     return server.get_smodel()
     
-def test(model_dim=(5, 3), dataset_name='synthetic'):
-    model_name = 'CustomLogisticRegression'
-    from system_utils import load_model, load_data 
-    model = load_model(model_name)
-    dataset = load_data(dataset_name)
+def test():
+    # load selected model 
+    parsed = {}
+    parsed['dataset'] = 'mnist'
+    parsed['model'] = 'mclr'
+    parsed['model_params'] = (784, 10)
     
-    t = BaseFederated(model, model_dim, dataset)
+    import importlib
+    model_path = '%s.%s.%s.%s' % ('flearn', 'models', parsed['dataset'], parsed['model'])
+    mod = importlib.import_module(model_path)
+    model = getattr(mod, 'Model')
+    
+    # load dataset 
+    import os 
+    # read data 
+    train_dir = os.path.join('data', parsed['dataset'], 'data', 'train')
+    test_dir = os.path.join('data', parsed['dataset'], 'data', 'test')
+    from custom_dataset import read_data
+    dataset = read_data(train_dir, test_dir)
+
+    t = BaseFederated(model, parsed, dataset)
+
     # test_aggregate(t)
     # t.train(num_rounds=10)
     # t.get_num_samples()
     # t.get_mod_size()
     # print("test_calc_msize()", test_calc_msize(t))
-    num_rounds = 250 
-    for i in range(num_rounds):
-        t.train(num_epochs=10, ground=i)
+    # num_rounds = 250 
+    # for i in range(num_rounds):
+    #     t.train(num_epochs=10, ground=i)
     
 
 if __name__=="__main__": 
-    test() # test synthetic dataset 
+    test()  
     # test(model_dim=(784, 19), dataset_name='mnist') # test mnist dataset 

@@ -35,9 +35,18 @@ class Model:
     """
     def __init__(self, model_dim=(5, 3), lr=1e-3):
         self.model = Net(model_dim)
+        # setting device on GPU if available, else CPU
+        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # print('Using device:', device)
+        # # move model to available device 
+        # self.model.to(device)
+        # # check whether the current device on cuda 
+        print('__init__ is_cuda: ', next(self.model.parameters()).is_cuda)
+
         self.optimizer = optim.SGD(self.model.parameters(), lr=lr) # TODO
         self.loss_fn = nn.CrossEntropyLoss()
         self.xi = 1 # TODO
+    
     
     def get_params(self): 
         return self.model.get_params()
@@ -57,6 +66,7 @@ class Model:
 
     def train(self, num_epochs: int, train_loader: DataLoader): 
         r"""Train model"""
+        # print('train is_cuda: ', next(self.model.parameters()).is_cuda)
         for t in range(num_epochs): 
             # print(f"Epoch {t+1}\n-------------------------------")
             for batch, (X, y) in enumerate(train_loader):
@@ -78,6 +88,7 @@ class Model:
         Return:
             soln: dict: model.parameters()
         """
+        # print('train_fed is_cuda: ', next(self.model.parameters()).is_cuda)
         # Calculate delta grads at the begining of ground 
         delta_grads = {}
         lgrads = self.model.get_grads() # curent local grads 
@@ -110,6 +121,7 @@ class Model:
         # return soln 
     
     def test(self, dataloader: DataLoader, debug=False): 
+        # print('test is_cuda: ', next(self.model.parameters()).is_cuda)
         size = len(dataloader.dataset) # number of samples of train set or test set 
         num_batches = len(dataloader)
         test_loss, correct = 0, 0 
