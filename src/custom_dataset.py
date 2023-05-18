@@ -6,16 +6,18 @@ import json
 
 class CustomDataset(Dataset): 
     def __init__(self, input_dict, device):
-        self.input_dict = input_dict # dict {'x': [], 'y': []}
+        # self.input_dict = input_dict # dict {'x': [], 'y': []}
+        self.data = torch.tensor(input_dict['x'], device=device)
+        self.label = torch.tensor(input_dict['y'], dtype=int, device=device)
         self.device = device 
     
     def __len__(self):
         r""" Return number of samples in our dataset""" 
-        return len(self.input_dict['y'])
+        return len(self.label)
     
     def __getitem__(self, idx):
-        data = torch.tensor(self.input_dict['x'][idx]).to(self.device)
-        target = torch.tensor(self.input_dict['y'][idx], dtype=int).to(self.device)
+        data = self.data[idx]
+        target = self.label[idx]
         return data, target 
 
 def read_data(train_data_dir, test_data_dir):
