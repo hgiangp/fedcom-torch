@@ -44,6 +44,52 @@ def plot_feld_performance(prefix_log='./logs/', prefix_fig='./figures/comparison
     # plt.show()
     plt.close()
 
+def plot_feld(prefix_log='./logs/', prefix_fig='./figures/comparison/'): 
+    log_file = 'system_model.log'
+
+    rounds_1, acc_1, loss_1, sim_1, tloss_1 = parse_fedl(prefix_log + 's1/' + log_file)
+    rounds_2, acc_2, loss_2, sim_2, tloss_2 = parse_fedl(prefix_log + 's2/' + log_file)
+    rounds_3, acc_3, loss_3, sim_3, tloss_3 = parse_fedl(prefix_log + 's3/' + log_file)
+    rounds_4, acc_4, loss_4, sim_4, tloss_4 = parse_fedl(prefix_log + 's4/' + log_file)
+
+    max_round = min(len(rounds_1), len(rounds_2), len(rounds_3), len(rounds_4))
+
+    plt.figure(1)
+    plt.plot(rounds_1[:max_round], acc_1[:max_round], label='bs-fixedi')
+    plt.plot(rounds_2[:max_round], acc_2[:max_round], label='bs-dyni')
+    plt.plot(rounds_3[:max_round], acc_3[:max_round], label='bs-uav-fixedi')
+    plt.plot(rounds_4[:max_round], acc_4[:max_round], label='bs-uav-dyni')
+    plt.yticks([20, 40, 60, 80, 90])
+    plt.ylabel("Train Accuracy")
+    plt.grid(which='both')
+    plt.legend()
+    plt.savefig(prefix_fig + 'plot_fedl_train_acc.png')
+    plt.close()
+
+    plt.figure(2)
+    plt.plot(rounds_1[:max_round], loss_1[:max_round], label='bs-fixedi')
+    plt.plot(rounds_2[:max_round], loss_2[:max_round], label='bs-dyni')
+    plt.plot(rounds_3[:max_round], loss_3[:max_round], label='bs-uav-fixedi')
+    plt.plot(rounds_4[:max_round], loss_4[:max_round], label='bs-uav-dyni')
+    plt.yticks([0.1, 0.5, 1, 1.5, 2.0, 2.5])
+    plt.ylabel("Train Loss")
+    plt.legend()
+    plt.grid(which='both')
+    plt.savefig(prefix_fig + 'plot_fedl_train_loss.png')
+    plt.close()
+
+    plt.figure(3)
+    plt.plot(rounds_1[:max_round], tloss_1[:max_round], label='bs-fixedi')
+    plt.plot(rounds_2[:max_round], tloss_2[:max_round], label='bs-dyni')
+    plt.plot(rounds_3[:max_round], tloss_3[:max_round], label='bs-uav-fixedi')
+    plt.plot(rounds_4[:max_round], tloss_4[:max_round], label='bs-uav-dyni')
+    plt.yticks([0.35, 0.5, 1, 1.5, 2.0, 2.5])
+    plt.ylabel("Test Loss")
+    plt.grid(which='both')
+    plt.legend()
+    plt.savefig(prefix_fig + 'plot_fedl_test_loss.png')
+    plt.close()
+
 def plot_tien_performance(prefix_log='./logs/', prefix_fig='./figures/comparison/'): 
     log_file = 'system_model.log'
     fig_file_time = 'synthetic_time.png'
@@ -262,7 +308,8 @@ if __name__=='__main__':
     prefix_log = f'./logs/{dataset}/'
     prefix_fig = f'./figures/{dataset}/comparison/'
 
-    plot_feld_performance(prefix_log, prefix_fig)
+    # plot_feld_performance(prefix_log, prefix_fig)
     plot_tien_performance(prefix_log, prefix_fig)
     plot_tien_bar(prefix_log, prefix_fig)
     plot_lround(prefix_log, prefix_fig)
+    plot_feld(prefix_log, prefix_fig)
