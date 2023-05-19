@@ -35,9 +35,7 @@ class Model:
     """
     def __init__(self, model_dim=(5, 3), lr=1e-3, device=torch.device('cuda')):
         self.model = Net(model_dim)
-        self.model.to(device) # move model to device 
-        # check whether the current device on cuda 
-        print('__init__ is_cuda: ', next(self.model.parameters()).is_cuda)
+        self.model.to(device) # move model to device
 
         # init optimizer and loss function 
         self.optimizer = optim.SGD(self.model.parameters(), lr=lr) # TODO

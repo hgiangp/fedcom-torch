@@ -2,9 +2,11 @@ from src.custom_dataset import load_dataloader
 import torch 
 
 class Client: 
-    def __init__(self, id, model, params, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}):
+    def __init__(self, id, model, params, train_data={'x':[],'y':[]}, test_data={'x':[],'y':[]}):        
         self.id = id 
-        device = self.check_device() # check available device
+
+        # check available device
+        device = self.check_device()
         
         # load model, data to availble device 
         self.model = model(params['model_params'], params['learning_rate'], device) 
@@ -12,14 +14,11 @@ class Client:
 
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
-        print(f"id = {id}, model = {model}, num_samples = {self.num_samples}")
+        print(f"id = {id}, model = {model}, device = {device}, num_samples = {self.num_samples}")
 
     def check_device(self): 
         # setting device on GPU if available, else CPU
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        print('Using device:', device)
-        # move model to available device 
-        # self.model.to(device)
         return device
         
     def init_train(self, num_epochs=1): 
