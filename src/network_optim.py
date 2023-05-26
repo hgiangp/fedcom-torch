@@ -487,6 +487,125 @@ class NetworkOptim:
         self.update_an(ground=ground+1)
         t_total = t_co_avg + t_cp_avg 
         return t_total
+    
+    def update_n_print_test(self, ground):
+        # calculate time, energy consumption at the current iteration 
+        t_co = self.calc_trans_time(self.decs, self.powers)
+        e_co = self.calc_trans_energy(self.decs, self.powers)
+        t_cp = self.calc_comp_time(self.num_lrounds, self.freqs)
+        e_cp = self.calc_comp_energy(self.num_lrounds, self.freqs)
+
+        print("At round {} t_co: {}".format(ground, t_co))
+        print("At round {} e_co: {}".format(ground, e_co))
+        print("At round {} t_cp: {}".format(ground, t_cp)) 
+        print("At round {} e_cp: {}".format(ground, e_cp))
+
+        # calculate avarage time 
+        t_co_avg = t_co.sum()/self.num_users
+        e_co_avg = e_co.sum()/self.num_users
+        t_cp_avg = t_cp.sum()/self.num_users
+        e_cp_avg = e_cp.sum()/self.num_users
+
+        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co_avg, t_cp_avg))
+        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co_avg, e_cp_avg)) 
+        print("At round {} a_n: {}".format(ground, self.an))
+        print("At round {} local rounds: {}".format(ground, self.num_lrounds))
+        print("At round {} global rounds: {}".format(ground, self.num_grounds))
+        print("At round {} tau: {}".format(ground, self.tau)) 
+
+        # self.update_an(ground=ground+1)
+        t_total = max(t_co + t_cp)
+        return t_total
+    
+    def update_an_test(self, remain_eps): 
+        self.an = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / remain_eps)
+    
+    def optimize_network_bs_uav_test(self, tau, ground=0): 
+        r""" Solve the relay-node selection and resource allocation problem
+        Args: 
+        Return: 
+            (eta, freqs, decs, powers)
+        """
+        self.tau = tau 
+
+        eps_eta = 1e-3 # tolerance accuracy of eta
+        # Initialize a feasible solution 
+        freqs = np.ones(num_users) * freq_max
+        powers = np.ones(num_users) * power_max
+        decs = self.init_decisions()
+        eta = 0.01
+        
+        obj_prev = self.calc_total_energy(eta, freqs, decs, powers).sum()
+        print(f"obj_prev = {obj_prev}")
+
+        # Repeat
+        iter = 0
+        while 1: 
+            # Tighten the bound of eta 
+            eta_min, eta_max = self.find_bound_eta(freqs, decs, powers, tau)
+
+            # stop condition for boundary eta 
+            if abs(eta_max - eta_min) < eps_eta: 
+                print("Done!")
+                break
+
+            # Solve eta
+            eta = self.solve_optimal_eta(freqs, decs, powers) 
+
+            # Check eta boundary condition 
+            if eta > eta_max: 
+                eta = eta_max 
+            elif eta < eta_min: 
+                eta = eta_min 
+
+            # Solve powers p, freqs f and apply heursitic method for choosing decisions x 
+            
+            # check with all connecting to uav
+            decs = np.ones(shape=num_users, dtype=int)  
+            uav_freqs, uav_powers = self.solve_freqs_powers(eta, decs, tau)
+            uav_ene = self.calc_total_energy(eta, uav_freqs, decs, uav_powers)
+            print(f"uav_ene = {uav_ene}")
+
+            # check with all connecting to bs
+            decs = np.zeros(shape=num_users, dtype=int)
+            bs_freqs, bs_powers = self.solve_freqs_powers(eta, decs, tau)
+            bs_ene = self.calc_total_energy(eta, bs_freqs, decs, bs_powers)
+            print(f"bs_ene = {bs_ene}")
+            
+            # choose the better decisions 
+            decs = self.choose_opt_decs(uav_ene, bs_ene)
+
+            # update powers, freqs corresponding to the current optimal decision 
+            powers = decs * uav_powers + (1 - decs) * bs_powers
+            freqs = decs * uav_freqs + (1 - decs) * bs_freqs
+
+            # Check stop condition
+            obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
+            print(f"optimize_network iter = {iter} obj = {obj}")
+            
+            print(f"eta = {eta}")
+            print(f"decs = {decs}")
+            print(f"freqs = {freqs}")
+            print(f"powers = {powers}") 
+
+            if (abs(obj_prev - obj) < acc) or iter == iter_max: 
+                print("Done!")
+                break
+
+            obj_prev = obj
+            iter += 1 
+        
+        # Found optimal solutions for the current round 
+        # Update params 
+        self.update_net_params(eta, freqs, powers, decs, ground)
+        # Calcualte t_total to udpate the remaining tau of the next round 
+        t_max = self.update_n_print_test(ground)
+        return self.eta , t_max # (i, n, a_n)
+    
+    def optimize_new_design(self, remain_eps, remain_tau, ground):
+        self.update_an_test(remain_eps) 
+        eta_n, t_n = self.optimize_network_bs_uav_test(remain_tau, ground)
+        return eta_n, t_n
 
 def test_optimize_network(): 
     num_users = 10 

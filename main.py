@@ -68,8 +68,9 @@ def main():
     
     # call system model 
     sys_mod = SystemModel(options, model, dataset)
-    sys_mod.run()
-    sys_mod.save_model()
+    # sys_mod.run()
+    sys_mod.test_new_design()
+    # sys_mod.save_model()
 
 if __name__=='__main__':
     main()
