@@ -147,6 +147,9 @@ class SystemModel:
         while remain_eps < 1 and remain_tau > 0: # or remain_tau > 0 
             eta_n, t_n = self.net_optim.optimize_new_design(remain_eps, remain_tau, ground, is_uav, is_dynamic)
             eps_n = 1 - (1 - eta_n) * (gamma_cv ** 2) * xi / (2 * (L_Lipschitz ** 2))
+            num_lrounds = self.net_optim.calc_num_lrounds(eta_n)
+
+            self.fed_model.train(int(num_lrounds), ground)
             
             # update epsilon_0, t_max
             remain_eps = remain_eps / eps_n 

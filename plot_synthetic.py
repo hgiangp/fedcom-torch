@@ -270,7 +270,7 @@ def plot_SNR():
     plt.close()
 
 def plot_tien(log_file, fig_file_time, fig_file_ene): 
-    t_co, t_cp, e_co, e_cp = parse_net_tien(log_file)
+    t_co, t_cp, _, e_co, e_cp, _ = parse_net_tien(log_file)
 
     round_max = 185
     t_co = np.asarray(t_co)[:round_max]
@@ -347,7 +347,7 @@ def plot_users(log_file, fig_file_prefix):
     plot_user_customized(var_value=t_co_s, fig_file_prefix=fig_file_prefix, var_name='time_co', unit='s', norm_factor=1)
     plot_user_customized(var_value=t_cp_s, fig_file_prefix=fig_file_prefix, var_name='time_cp', unit='s', norm_factor=1)
     plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_co', unit='mJ', norm_factor=1e-3)
-    plot_user_customized(var_value=e_co_s, fig_file_prefix=fig_file_prefix, var_name='energy_cp', unit='mJ', norm_factor=1e-3)
+    plot_user_customized(var_value=e_cp_s, fig_file_prefix=fig_file_prefix, var_name='energy_cp', unit='mJ', norm_factor=1e-3)
     
 def test_fixedi(): 
     log_file = './logs/system_model_fixedi.log'

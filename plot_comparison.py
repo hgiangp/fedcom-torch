@@ -95,10 +95,10 @@ def plot_tien_performance(prefix_log='./logs/', prefix_fig='./figures/comparison
     fig_file_time = 'synthetic_time.png'
     fig_file_ene = 'synthetic_ene.png'
 
-    t_co_1, t_cp_1, e_co_1, e_cp_1 = parse_net_tien(prefix_log + 's1/' + log_file)
-    t_co_2, t_cp_2, e_co_2, e_cp_2 = parse_net_tien(prefix_log + 's2/' + log_file)
-    t_co_3, t_cp_3, e_co_3, e_cp_3 = parse_net_tien(prefix_log + 's3/' + log_file)
-    t_co_4, t_cp_4, e_co_4, e_cp_4 = parse_net_tien(prefix_log + 's4/' + log_file)
+    t_co_1, t_cp_1, t_1, e_co_1, e_cp_1, e_1 = parse_net_tien(prefix_log + 's1/' + log_file)
+    t_co_2, t_cp_2, t_2, e_co_2, e_cp_2, e_2 = parse_net_tien(prefix_log + 's2/' + log_file)
+    t_co_3, t_cp_3, t_3, e_co_3, e_cp_3, e_3 = parse_net_tien(prefix_log + 's3/' + log_file)
+    t_co_4, t_cp_4, t_4, e_co_4, e_cp_4, e_4 = parse_net_tien(prefix_log + 's4/' + log_file)
 
     max_round = min(len(t_co_1), len(t_co_2), len(t_co_3), len(t_co_4))
 
@@ -157,11 +157,11 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     fig_file_time = 'synthetic_time_bar.png'
     fig_file_ene = 'synthetic_ene_bar.png'
 
-    t_co_1, t_cp_1, e_co_1, e_cp_1 = parse_net_tien(prefix_log + 's1/' + log_file)
-    t_co_2, t_cp_2, e_co_2, e_cp_2 = parse_net_tien(prefix_log + 's2/' + log_file)
-    t_co_3, t_cp_3, e_co_3, e_cp_3 = parse_net_tien(prefix_log + 's3/' + log_file)
-    t_co_4, t_cp_4, e_co_4, e_cp_4 = parse_net_tien(prefix_log + 's4/' + log_file)
-
+    t_co_1, t_cp_1, t_1, e_co_1, e_cp_1, e_1 = parse_net_tien(prefix_log + 's1/' + log_file)
+    t_co_2, t_cp_2, t_2, e_co_2, e_cp_2, e_2 = parse_net_tien(prefix_log + 's2/' + log_file)
+    t_co_3, t_cp_3, t_3, e_co_3, e_cp_3, e_3 = parse_net_tien(prefix_log + 's3/' + log_file)
+    t_co_4, t_cp_4, t_4, e_co_4, e_cp_4, e_4 = parse_net_tien(prefix_log + 's4/' + log_file)
+    
     max_round = min(len(t_co_1), len(t_co_2), len(t_co_3), len(t_co_4))
     max_round_fixedi = min(len(t_co_1), len(t_co_3))
     
@@ -184,6 +184,11 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     t_cp_4 = t_cp_4.sum()
     e_co_4 = e_co_4.sum()
     e_cp_4 = e_cp_4.sum()
+
+    t_1 = t_1.sum()
+    t_2 = t_2.sum()
+    t_3 = t_3.sum()
+    t_4 = t_4.sum()
     
     N = 3
     ind = np.arange(N) 
@@ -194,10 +199,10 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     fig, ax = plt.subplots()
     ax.grid(True, axis = 'y', color = '0.6', linestyle = '-')
 
-    ti_1 = np.array([t_co_1, t_cp_1, t_co_1 + t_cp_1])
-    ti_2 = np.array([t_co_2, t_cp_2, t_co_2 + t_cp_2])
-    ti_3 = np.array([t_co_3, t_cp_3, t_co_3 + t_cp_3])
-    ti_4 = np.array([t_co_4, t_cp_4, t_co_4 + t_cp_4])
+    ti_1 = np.array([t_co_1, t_cp_1, t_1])
+    ti_2 = np.array([t_co_2, t_cp_2, t_2])
+    ti_3 = np.array([t_co_3, t_cp_3, t_3])
+    ti_4 = np.array([t_co_4, t_cp_4, t_4])
 
     # greedy_vals = [720, 771, 812, 866]
     bar1 = ax.bar(ind, ti_1, width, color = 'none', hatch= 'xx', edgecolor = 'tab:blue', linewidth = 1 )

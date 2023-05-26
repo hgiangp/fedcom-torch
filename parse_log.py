@@ -63,24 +63,28 @@ def parse_netopt(file_name):
     return lrounds, grounds, ans, etas
 
 def parse_net_tien(file_name): 
-    t_co, t_cp, e_co, e_cp = [], [], [], []
+    t_co, t_cp, t, e_co, e_cp, e = [], [], [], [], [], []
 
     for line in open(file_name, 'r'):
-        search_time = re.search(r'At round (.*) average t_co: (.*) average t_cp: (.*)', line, re.M|re.I)
+        search_time = re.search(r'At round (.*) average t_co: (.*) average t_cp: (.*) t: (.*)', line, re.M|re.I)
         if search_time: 
             t_co.append(float(search_time.group(2)))
             t_cp.append(float(search_time.group(3)))  
+            t.append(float(search_time.group(4))) 
 
-        search_ene = re.search(r'At round (.*) average e_co: (.*) average e_cp: (.*)', line, re.M|re.I)
+        search_ene = re.search(r'At round (.*) average e_co: (.*) average e_cp: (.*) e: (.*)', line, re.M|re.I)
         if search_ene: 
             e_co.append(float(search_ene.group(2)))
             e_cp.append(float(search_ene.group(3)))
+            e.append(float(search_ene.group(4))) 
 
     t_co = np.asarray(t_co)
     t_cp = np.asarray(t_cp)
+    t = np.asarray(t)
     e_co = np.asarray(e_co)
     e_cp = np.asarray(e_cp) 
-    return t_co, t_cp, e_co, e_cp
+    e = np.asarray(e)
+    return t_co, t_cp, t, e_co, e_cp, e
 
 def parse_gains(file_name): 
     uav_gains, bs_gains = [], []

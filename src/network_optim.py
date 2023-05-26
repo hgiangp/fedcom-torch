@@ -370,15 +370,8 @@ class NetworkOptim:
         print("At round {} e_co: {}".format(ground, e_co))
         print("At round {} t_cp: {}".format(ground, t_cp)) 
         print("At round {} e_cp: {}".format(ground, e_cp))
-
-        # calculate avarage time 
-        t_co_avg = t_co.sum()/self.num_users
-        e_co_avg = e_co.sum()/self.num_users
-        t_cp_avg = t_cp.sum()/self.num_users
-        e_cp_avg = e_cp.sum()/self.num_users
-
-        print("At round {} average t_co: {} average t_cp: {}".format(ground, t_co_avg, t_cp_avg))
-        print("At round {} average e_co: {} average e_cp: {}".format(ground, e_co_avg, e_cp_avg)) 
+        print("At round {} average t_co: {} average t_cp: {} t: {}".format(ground, max(t_co), max(t_cp), max(t_co + t_cp)))
+        print("At round {} average e_co: {} average e_cp: {} e: {}".format(ground, sum(e_co), sum(e_cp), sum(e_co + e_cp))) 
         print("At round {} a_n: {}".format(ground, self.an))
         print("At round {} local rounds: {}".format(ground, self.num_lrounds))
         print("At round {} global rounds: {}".format(ground, self.num_grounds))
@@ -417,14 +410,6 @@ class NetworkOptim:
         freqs = decs * uav_freqs + (1 - decs) * bs_freqs
         
         return freqs, decs, powers
-    
-    def optimize_network_test(self, tau, ground=0, is_uav=True, is_dynamic=True): 
-        if ground == 0 or is_dynamic: 
-            eta, t_max = self.optimize_network_dyni_test(tau, ground, is_uav)
-        else: # fixedi, ground != 0
-            eta, t_max = self.optimize_network_fixedi_test(tau, ground, is_uav)
-
-        return eta, t_max
 
     def optimize_network_dyni_test(self, tau, ground=0, is_uav=True): 
         r""" Solve the relay-node selection and resource allocation problem
@@ -474,8 +459,9 @@ class NetworkOptim:
             (eta, freqs, decs, powers)
         """
         self.tau = tau 
-        
-        decs = self.init_decisions(self.powers)
+        decs = self.decs
+        if is_uav: 
+            decs = self.init_decisions(self.powers)
         
         # Found optimal solutions for the current round 
         # Update params 
@@ -484,11 +470,17 @@ class NetworkOptim:
         t_max = self.update_n_print_test(ground)
         return self.eta , t_max # (i, n, a_n)
     
-    def optimize_new_design(self, remain_eps, remain_tau, ground, is_uav, is_dynamic):
-        self.update_an_test(remain_eps) 
-        # eta_n, t_n = self.optimize_network_bs_uav_test(remain_tau, ground)
-        eta_n, t_n = self.optimize_network_test(remain_tau, ground, is_uav, is_dynamic)
-        return eta_n, t_n
+    def optimize_new_design(self, remain_eps, remain_tau, ground, is_uav, is_dynamic): 
+        if ground == 0: 
+            self.update_an_test(remain_eps)
+            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav)
+        elif is_dynamic: 
+            self.update_an_test(remain_eps)
+            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav)
+        else: # fixedi, ground != 0
+            eta, t_max = self.optimize_network_fixedi_test(remain_tau, ground, is_uav)
+        
+        return eta, t_max
 
 def test_optimize_network(): 
     num_users = 10 
