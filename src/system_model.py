@@ -144,7 +144,7 @@ class SystemModel:
         remain_tau = tau 
         ground = 0 
 
-        while remain_eps < 1: # or remain_tau > 0 
+        while remain_eps < 1 and remain_tau > 0: # or remain_tau > 0 
             eta_n, t_n = self.net_optim.optimize_new_design(remain_eps, remain_tau, ground, is_uav, is_dynamic)
             eps_n = 1 - (1 - eta_n) * (gamma_cv ** 2) * xi / (2 * (L_Lipschitz ** 2))
             
@@ -152,6 +152,7 @@ class SystemModel:
             remain_eps = remain_eps / eps_n 
             remain_tau = remain_tau - t_n
             ground += 1 
+            print(f"ground = {ground} remain_eps = {remain_eps}\tremain_tau = {remain_tau}")
 
             # update location 
             self.net_optim.update_channel_gains()

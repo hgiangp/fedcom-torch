@@ -17,11 +17,13 @@ def read_data(file_name='location_data.txt'):
         data = line.strip().split(',')
         if len(data) < 6:
             print('data corruptted!')
+
+        data = [float(xi) for xi in data]
         
-        xs.append(float(data[0]))
-        ys.append(float(data[1]))
-        dirs_1.append(float(data[2]))
-        dirs_2.append(float(data[3]))
+        xs.append(data[0])
+        ys.append(data[1])
+        dirs_1.append(data[2])
+        dirs_2.append(data[3])
     
     # shuffle the location 
     combined = list(zip(xs, ys, dirs_1, dirs_2))

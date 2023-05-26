@@ -169,10 +169,10 @@ class NetworkOptim:
 
         return eta
     
-    def init_decisions(self): 
+    def init_decisions(self, powers): 
         # Solve optimal decision decs
-        t_co_uav = self.calc_trans_time(1, power_max)
-        t_co_bs = self.calc_trans_time(0, power_max)
+        t_co_uav = self.calc_trans_time(1, powers)
+        t_co_bs = self.calc_trans_time(0, powers)
         decs_opt = self.choose_opt_decs(t_co_uav, t_co_bs)        
         return decs_opt
 
@@ -184,7 +184,7 @@ class NetworkOptim:
             eta, T_min
         """
         ### Find af, bf efficient 
-        decs_opt = self.init_decisions()
+        decs_opt = self.init_decisions(power_max)
 
         # TODO: check delta_t
 
@@ -306,7 +306,7 @@ class NetworkOptim:
             (eta, freqs, decs, powers)
         """
         self.tau = tau
-        decs = self.init_decisions()
+        decs = self.init_decisions(power_max)
         
         # Found optimal solutions for the current round 
         # Update params 
@@ -437,7 +437,7 @@ class NetworkOptim:
         # Initialize a feasible solution 
         freqs = np.ones(num_users) * freq_max
         powers = np.ones(num_users) * power_max
-        decs = self.init_decisions()
+        decs = self.init_decisions(power_max)
         eta = 0.01
         obj_prev = self.calc_total_energy(eta, freqs, decs, powers).sum()
         print(f"obj_prev = {obj_prev}")
@@ -475,7 +475,7 @@ class NetworkOptim:
         """
         self.tau = tau 
         
-        _, decs, _ = self.allocate_resource(self.eta, tau, is_uav)
+        decs = self.init_decisions(self.powers)
         
         # Found optimal solutions for the current round 
         # Update params 
