@@ -124,14 +124,28 @@ class SystemModel:
         L_Lipschitz = 5 # Lipschitz constant of the loss function
         gamma_cv = 3 # strongly convex constant of the loss function
         xi = 1
-        tau = 50 
 
+        scenario_idx = self.sce_idx
+        tau = self.tau 
+
+        # scenario = 4 
+        is_uav = True  
+        is_dynamic = True 
+
+        if scenario_idx == 1: 
+            is_uav = False 
+            is_dynamic = False
+        if scenario_idx == 2: 
+            is_uav = False 
+        if scenario_idx == 3: 
+            is_dynamic = False
+        
         remain_eps = eps_g
         remain_tau = tau 
         ground = 0 
 
         while remain_eps < 1: # or remain_tau > 0 
-            eta_n, t_n = self.net_optim.optimize_new_design(remain_eps, remain_tau, ground)
+            eta_n, t_n = self.net_optim.optimize_new_design(remain_eps, remain_tau, ground, is_uav, is_dynamic)
             eps_n = 1 - (1 - eta_n) * (gamma_cv ** 2) * xi / (2 * (L_Lipschitz ** 2))
             
             # update epsilon_0, t_max

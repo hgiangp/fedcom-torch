@@ -33,7 +33,7 @@ class Model:
         https://aaronkub.com/2020/02/12/logistic-regression-with-pytorch.html
         https://discuss.pytorch.org/t/multi-class-cross-entropy-loss-and-softmax-in-pytorch/24920/9
     """
-    def __init__(self, model_dim=(5, 3), lr=1e-3, device=torch.device('cuda')):
+    def __init__(self, model_dim=(5, 3), lr=1e-3, device=torch.device('cpu')):
         self.model = Net(model_dim)
         self.model.to(device) # move model to device
 

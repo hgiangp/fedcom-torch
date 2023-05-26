@@ -17,5 +17,5 @@
 # python -m torch.utils.bottleneck main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate \
     # | tee logs/$dataset/s$sce_idx/system_model.log
 
-# ./run_main.sh 4 40 mnist mclr 0.01
-./run.sh 40 mnist mclr 0.01
+./run_main.sh 3 40 mnist mclr 0.01
+# ./run.sh 40 mnist mclr 0.01
