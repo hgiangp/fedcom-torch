@@ -13,8 +13,8 @@ class NewtonOptim:
 
         # for testing system capacity 
         taumin = a * z_min + c * t_min
-        print(f"a = {self.a}\tb = {self.b}\tc = {self.c}\tkappa = {self.kappa}")
-        print(f"tau = {self.tau}\ttaumin = {taumin}\tz_min = {self.z_min}\tt_min = {self.t_min}")
+        # print(f"a = {self.a}\tb = {self.b}\tc = {self.c}\tkappa = {self.kappa}")
+        # print(f"tau = {self.tau}\ttaumin = {taumin}\tz_min = {self.z_min}\tt_min = {self.t_min}")
          
     def objective(self, x): 
         z, t = x[0], x[1]

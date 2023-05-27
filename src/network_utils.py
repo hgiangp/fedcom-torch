@@ -60,7 +60,7 @@ def dinkelbach_method(af, bf):
         
         zeta = ((af * math.log(1/eta)) + bf) / (1 - eta) # update zeta
     
-    # print(f"eta = {eta}")
+    print(f"eta = {eta}")
     return eta
 
 def calc_bs_gains(xs, ys): 

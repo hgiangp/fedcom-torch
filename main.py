@@ -60,7 +60,6 @@ def read_options():
 
 def main(): 
     options, model = read_options()
-    
     # read data 
     train_dir = os.path.join('data', options['dataset'], 'data', 'train')
     test_dir = os.path.join('data', options['dataset'], 'data', 'test')
@@ -68,9 +67,8 @@ def main():
     
     # call system model 
     sys_mod = SystemModel(options, model, dataset)
-    # sys_mod.run()
-    sys_mod.test_new_design()
-    # sys_mod.save_model()
+    sys_mod.run()
+    sys_mod.save_model()
 
 if __name__=='__main__':
     main()

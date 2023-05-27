@@ -5,7 +5,7 @@ import os
 import json
 
 class CustomDataset(Dataset): 
-    def __init__(self, input_dict, device):
+    def __init__(self, input_dict, device=torch.device('cpu')):
         # self.input_dict = input_dict # dict {'x': [], 'y': []}
         self.data = torch.tensor(input_dict['x'], device=device)
         self.label = torch.tensor(input_dict['y'], dtype=int, device=device)
@@ -55,7 +55,7 @@ def read_data(train_data_dir, test_data_dir):
     
     return clients, train_data, test_data
 
-def load_dataloader(train_dict, test_dict, device, shuffle=True, drop_last=True): 
+def load_dataloader(train_dict, test_dict, device=torch.device('cpu'), shuffle=True, drop_last=True): 
     batch_size = 32
 
     # Init CustomDataset 
