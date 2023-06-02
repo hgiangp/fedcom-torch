@@ -11,7 +11,7 @@
     # | tee logs/$dataset/s$sce_idx/system_model.log
 
 # ./run_main.sh 4 40 mnist mclr 0.01
-./run.sh 40 mnist mclr 0.01
+./run.sh 35 mnist mclr 0.01
 
 # sce_idx=4
 # tau=40

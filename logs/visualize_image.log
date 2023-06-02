@@ -121,4 +121,4 @@ Model loaded!
 X_all.shape = (1684, 784)
 y_all.shape = (1684,)
 tsne_data.shape = (1684, 2)
-s.size = 1684 widx.shape = (47,)
+s.size = 1684 widx.shape = (45,)
