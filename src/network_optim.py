@@ -264,6 +264,7 @@ class NetworkOptim:
     
     def update_an(self, remain_eps): 
         self.an = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / remain_eps)
+        print(f"update_an = {self.an}")
 
     def allocate_resource(self, eta, tau, is_uav): 
         r"""Solve powers p, freqs f and apply heursitic method for choosing decisions x """
