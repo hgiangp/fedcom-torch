@@ -54,9 +54,10 @@ class SystemModel:
         remain_eps = epsilon_0
         remain_tau = tau 
         ground = 0 
+        optimize = False
 
         while remain_eps < 1 and remain_tau > 0: # or remain_tau > 0 
-            eta_n, t_n = self.net_optim.optimize_network(remain_eps, remain_tau, ground, is_uav, is_dynamic)
+            eta_n, t_n = self.net_optim.optimize_network(remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize)
 
             num_lrounds = self.net_optim.calc_num_lrounds(eta_n)
             self.fed_model.train(int(num_lrounds), ground)

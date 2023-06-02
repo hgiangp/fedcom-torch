@@ -354,8 +354,8 @@ def test_fixedi():
     fig_file = './figures/plot_synthetic_fixedi.png'
     plot_fedl(log_file, fig_file)
 
-def test_system_model(index=4, dataset='synthetic'):
-    log_file = f'./logs/{dataset}/s{index}/system_model.log'
+def test_system_model(index=4, dataset='synthetic', log_name='system_model.log'):
+    log_file = f'./logs/{dataset}/s{index}/{log_name}'
     prefix_figure = f'./figures/{dataset}/s{index}/' 
     if not os.path.exists(prefix_figure): 
         os.makedirs(prefix_figure)
@@ -429,3 +429,4 @@ if __name__=='__main__':
     # test_plot_maps(1, 1)
     # plot_SNR()
     main()
+    # test_system_model(index=4, dataset='mnist', log_name='system_model_unoptim.log')

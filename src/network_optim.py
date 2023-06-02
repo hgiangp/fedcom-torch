@@ -292,7 +292,7 @@ class NetworkOptim:
         
         return freqs, decs, powers
 
-    def optimize_network_dyni_test(self, tau, ground=0, is_uav=True): 
+    def optimize_network_dyni_test(self, tau, ground=0, is_uav=True, optimize=True): 
         r""" Solve the relay-node selection and resource allocation problem
         Args: 
         Return: 
@@ -313,7 +313,11 @@ class NetworkOptim:
             eta, is_break = self.find_optimal_eta(freqs, decs, powers, tau)
             if is_break: 
                 break
-            freqs, decs, powers = self.allocate_resource(eta, tau, is_uav)
+            
+            if optimize: 
+                freqs, decs, powers = self.allocate_resource(eta, tau, is_uav)
+            else:
+                decs = self.init_decisions(power_max, is_uav)
 
             # Check stop condition
             obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
@@ -347,12 +351,12 @@ class NetworkOptim:
         t_max = self.update_n_print(ground)
         return self.eta , t_max # (i, n, a_n)
     
-    def optimize_network(self, remain_eps, remain_tau, ground, is_uav, is_dynamic): 
+    def optimize_network(self, remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize=True): 
         if ground == 0: 
-            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav)
+            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav, optimize)
         elif is_dynamic: 
             self.update_an(remain_eps)
-            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav)
+            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav, optimize)
         else: # fixedi, ground != 0
             eta, t_max = self.optimize_network_fixedi_test(remain_tau, ground, is_uav)
         
