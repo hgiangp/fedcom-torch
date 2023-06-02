@@ -54,7 +54,7 @@ class SystemModel:
         remain_eps = epsilon_0
         remain_tau = tau 
         ground = 0 
-        optimize = False
+        optimize = True
 
         while remain_eps < 1 and remain_tau > 0: # or remain_tau > 0 
             eta_n, t_n = self.net_optim.optimize_network(remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize)
@@ -65,14 +65,18 @@ class SystemModel:
             # calculate instataneous global accuracy 
             eps_n = 1 - (1 - eta_n) * (gamma_cv ** 2) * xi_factor / (2 * (L_Lipschitz ** 2))
 
-            num_grounds = self.net_optim.calc_num_grounds(eta=eta_n)
-            if int(num_grounds) == 1: 
-                print(f"Done!")
-                break
             # update epsilon_0, t_max
             remain_eps = remain_eps / eps_n 
             remain_tau = remain_tau - t_n
             ground += 1 
             print(f"ground = {ground} remain_eps = {remain_eps}\tremain_tau = {remain_tau}")
+            
+            # check last ground 
+            num_grounds = self.net_optim.calc_num_grounds(eta=eta_n)
+            if int(num_grounds) == 1: 
+                print(f"Done!")
+                break
+            
             # update location 
             self.net_optim.update_channel_gains()
+            
