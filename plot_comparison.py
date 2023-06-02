@@ -190,6 +190,11 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     t_3 = t_3.sum()
     t_4 = t_4.sum()
     
+    e_1 = e_1.sum()
+    e_2 = e_2.sum()
+    e_3 = e_3.sum()
+    e_4 = e_4.sum()
+    
     N = 3
     ind = np.arange(N) 
     width = 0.18
@@ -245,10 +250,10 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/'):
     fig, ax = plt.subplots()
     ax.grid(True, axis = 'y', color = '0.6', linestyle = '-')
 
-    en_1 = np.array([e_co_1, e_cp_1, e_co_1 + e_cp_1])
-    en_2 = np.array([e_co_2, e_cp_2, e_co_2 + e_cp_2])
-    en_3 = np.array([e_co_3, e_cp_3, e_co_3 + e_cp_3])
-    en_4 = np.array([e_co_4, e_cp_4, e_co_4 + e_cp_4])
+    en_1 = np.array([e_co_1, e_cp_1, e_1])
+    en_2 = np.array([e_co_2, e_cp_2, e_2])
+    en_3 = np.array([e_co_3, e_cp_3, e_3])
+    en_4 = np.array([e_co_4, e_cp_4, e_4])
 
     bar1 = ax.bar(ind, en_1, width, color = 'none', hatch= 'xx', edgecolor = 'tab:blue', linewidth = 1 )
     bar2 = ax.bar(space + ind+width, en_2, width, color = 'none', hatch= '\\\\', edgecolor='tab:orange', linewidth = 1) 

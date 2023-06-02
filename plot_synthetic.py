@@ -357,6 +357,9 @@ def test_fixedi():
 def test_system_model(index=4, dataset='synthetic'):
     log_file = f'./logs/{dataset}/s{index}/system_model.log'
     prefix_figure = f'./figures/{dataset}/s{index}/' 
+    if not os.path.exists(prefix_figure): 
+        os.makedirs(prefix_figure)
+
     fig_file_fedl = prefix_figure + 'plot_synthetic_dy1.png'
     fig_file_netopt = prefix_figure + 'plot_synthetic_dy2.png'
     fig_file_gain = prefix_figure + 'channel_gains.png'

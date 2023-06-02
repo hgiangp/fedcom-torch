@@ -7,3 +7,6 @@ data/mnist/data/MNIST/
 flearn/models/synthetic/__pycache__/
 __pycache__/
 data/emnist/data/EMNIST/
+data/cifar10/data/cifar*
+data/cifar10/data
+backup

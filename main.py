@@ -7,10 +7,11 @@ from src.system_model import SystemModel
 
 # GLOBAL PARAMETERS
 SCENARIO_IDXES = [1, 2, 3, 4]
-DATASETS = ['synthetic', 'mnist']
+DATASETS = ['synthetic', 'mnist', 'cifar10']
 MODEL_PARAMS = {
     'synthetic.mclr': (5, 3), # num_inputs, num_classes,
-    'mnist.mclr': (784, 10) # num_classes
+    'mnist.mclr': (784, 10), # num_classes
+    'cifar10.mclr': (3, 32, 32) # 32x32x3 color channel
 }
 
 def read_options(): 

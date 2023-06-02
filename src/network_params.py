@@ -2,12 +2,12 @@ num_users = 10 # number of participating vehicles
 max_uav = 5 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
-L_Lipschitz = 5 # Lipschitz constant of the loss function
+L_Lipschitz = 2.4 # Lipschitz constant of the loss function
 # delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
-gamma_cv = 3 # strongly convex constant of the loss function
+gamma_cv = 2 # strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
-C_n = 1.5*1e4 # TODO: testback # number of cpu cycles per sample 
+C_n = 0.5*1e4 # TODO: testback # number of cpu cycles per sample 
 # D_n = 100 # data size, number of samples, varies  
 freq_max = 2 * 1e9 # 2GHz -> Hz, maximum cpu computation frequency 
 
@@ -27,7 +27,7 @@ x_bs, y_bs = 0, -500 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
-de_r = 2.9 # pathloss exponent, connect to bs 
+de_r = 2.5 # pathloss exponent, connect to bs 
 # dn_r = 1.0 # distance between veh and bs, varies 
 
 # UAV propagation channel params 
