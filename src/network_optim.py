@@ -291,8 +291,54 @@ class NetworkOptim:
             freqs, powers = self.solve_freqs_powers(eta, decs, tau)
         
         return freqs, decs, powers
+    
+    def allocate_power(self, eta, tau, is_uav): 
+        r'fixed freqs = freq_max, optimize power'
+        num_lrounds = self.calc_num_lrounds(eta)
+        num_grounds = self.calc_num_grounds(eta)
+        freqs = np.ones(num_users) * freq_max
+        t_cp = self.calc_comp_time(num_lrounds, freqs)
+        t_co = tau/num_grounds - t_cp
 
-    def optimize_network_dyni_test(self, tau, ground=0, is_uav=True, optimize=True): 
+        if is_uav: 
+            # check with all connecting to bs
+            decs = np.zeros(shape=num_users, dtype=int)
+            bs_powers = (np.exp(s_n/bw * np.log(2) / t_co) - 1) * N_0 / self.bs_gains 
+            bs_ene = self.calc_total_energy(eta, freqs, decs, bs_powers)
+            print(f"bs_ene = {bs_ene}")    
+            
+            # check with all connecting to uav
+            decs = np.ones(shape=num_users, dtype=int)
+            ti_penalty = decs * delta_t 
+            uav_powers = (np.exp(s_n/bw * np.log(2) / (t_co - ti_penalty)) - 1) * N_0 / self.uav_gains 
+            uav_ene = self.calc_total_energy(eta, freqs, decs, uav_powers)
+            print(f"uav_ene = {uav_ene}")
+
+            # choose the better decisions 
+            decs = self.choose_opt_decs(uav_ene, bs_ene)  
+            # update powers, freqs corresponding to the current optimal decision 
+            powers = decs * uav_powers + (1 - decs) * bs_powers
+        else: 
+            decs = np.zeros(shape=num_users, dtype=int)
+            powers = (np.exp(s_n/bw * np.log(2) / t_co) - 1) * N_0 / self.bs_gains 
+        
+        return freqs, decs, powers
+
+    def allocate_freq(self, eta, tau, is_uav): 
+        r'fixed freqs = freq_max, optimize power'
+        num_lrounds = self.calc_num_lrounds(eta)
+        num_grounds = self.calc_num_grounds(eta)
+        powers = np.ones(num_users) * power_max
+        decs = self.init_decisions(power_max, is_uav)
+        t_co = self.calc_trans_time(decs, powers)
+        t_cp = tau/num_grounds - t_co
+
+        freqs = num_lrounds * C_n * self.num_samples / t_cp
+        
+        return freqs, decs, powers
+
+
+    def optimize_network_dyni_test(self, tau, ground=0, is_uav=True, optimize=True, optim_freq=False, optim_power=False): 
         r""" Solve the relay-node selection and resource allocation problem
         Args: 
         Return: 
@@ -316,9 +362,14 @@ class NetworkOptim:
             
             if optimize: 
                 freqs, decs, powers = self.allocate_resource(eta, tau, is_uav)
-            else:
+            elif optim_freq:
+                freqs, decs, powers = self.allocate_freq(eta, tau, is_uav)
+            elif optim_power: 
+                freqs, decs, powers = self.allocate_power(eta, tau, is_uav)
+            else: 
                 decs = self.init_decisions(power_max, is_uav)
 
+            # print(f'TESTED {eta}\n{freqs}\n{decs}\n{powers}')
             # Check stop condition
             obj = self.calc_total_energy(eta, freqs, decs, powers).sum()
             print(f"optimize_network iter = {iter} obj = {obj}")
@@ -351,12 +402,12 @@ class NetworkOptim:
         t_max = self.update_n_print(ground)
         return self.eta , t_max # (i, n, a_n)
     
-    def optimize_network(self, remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize=True): 
+    def optimize_network(self, remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize=True, optim_freq=False, optim_power=False): 
         if ground == 0: 
-            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav, optimize)
+            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav, optimize, optim_freq, optim_power)
         elif is_dynamic: 
             self.update_an(remain_eps)
-            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav, optimize)
+            eta, t_max = self.optimize_network_dyni_test(remain_tau, ground, is_uav, optimize, optim_freq, optim_power)
         else: # fixedi, ground != 0
             eta, t_max = self.optimize_network_fixedi_test(remain_tau, ground, is_uav)
         

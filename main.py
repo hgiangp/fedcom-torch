@@ -13,6 +13,7 @@ MODEL_PARAMS = {
     'mnist.mclr': (784, 10), # num_classes
     'cifar10.mclr': (3, 32, 32) # 32x32x3 color channel
 }
+OPTIM_OPTIONS = [1, 2, 3, 4]
 
 def read_options(): 
     parser = argparse.ArgumentParser()
@@ -38,6 +39,11 @@ def read_options():
                         help='learning rate of local model;',
                         type=float,
                         default=0.001)
+    parser.add_argument('--optim',
+                        help='power and freq is optimized;',
+                        type=int,
+                        choices=OPTIM_OPTIONS,
+                        default=1)
     
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))

@@ -10,17 +10,27 @@
 # python -m torch.utils.bottleneck main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate \
     # | tee logs/$dataset/s$sce_idx/system_model.log
 
-# ./run_main.sh 4 8 mnist mclr 0.01
-./run.sh 8 mnist mclr 0.01
-
-# sce_idx=4
-# tau=8
-# dataset=mnist 
-# model=mclr 
-# learning_rate=0.01
+# ./run_main.sh 4 8 mnist mclr 0.01 True
+# ./run.sh 8 mnist mclr 0.01 True
 
 # python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate
 # python3 plot_synthetic.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate
 # ./run_main.sh 4 100 cifar10 mclr 0.001
 
 # python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
+sce_idx=4
+tau=7
+dataset=mnist 
+model=mclr 
+learning_rate=0.01
+optim=4
+
+if [ $optim -eq 1 ]; then
+    ./run_main.sh $sce_idx $tau $dataset $model $learning_rate $optim
+elif [ $optim -eq 2 ]; then 
+    python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee logs/$dataset/s$sce_idx/system_model_optim_freq.log
+elif [ $optim -eq 3 ]; then 
+    python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee logs/$dataset/s$sce_idx/system_model_optim_power.log
+else
+    python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
+fi 

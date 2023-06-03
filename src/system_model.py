@@ -50,14 +50,26 @@ class SystemModel:
             is_uav = False 
         if scenario_idx == 3: 
             is_dynamic = False
-        
+
+        # optimze = True
+        optimize = True # self.optim == 1 
+        optim_power = False 
+        optim_freq = False 
+        if self.optim == 2:
+            optimize = False
+            optim_freq = True
+        elif self.optim == 3: 
+            optimize = False
+            optim_power = True
+        elif self.optim == 4:
+            optimize = False 
+
         remain_eps = epsilon_0
         remain_tau = tau 
         ground = 0 
-        optimize = True
 
         while remain_eps < 1 and remain_tau > 0: # or remain_tau > 0 
-            eta_n, t_n = self.net_optim.optimize_network(remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize)
+            eta_n, t_n = self.net_optim.optimize_network(remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize, optim_freq, optim_power)
 
             num_lrounds = self.net_optim.calc_num_lrounds(eta_n)
             self.fed_model.train(int(num_lrounds), ground)
