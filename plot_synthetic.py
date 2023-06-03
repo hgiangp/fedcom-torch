@@ -354,7 +354,8 @@ def test_fixedi():
     fig_file = './figures/plot_synthetic_fixedi.png'
     plot_fedl(log_file, fig_file)
 
-def test_system_model(index=4, dataset='synthetic', log_name='system_model.log'):
+def test_system_model(index=4, dataset='synthetic', tau=15):
+    log_name=f'system_model_tau{tau}.log'
     log_file = f'./logs/{dataset}/s{index}/{log_name}'
     prefix_figure = f'./figures/{dataset}/s{index}/' 
     if not os.path.exists(prefix_figure): 
@@ -417,7 +418,7 @@ def test_combine():
 
 def main(): 
     options, _ = read_options()
-    test_system_model(index=options['sce_idx'], dataset=options['dataset'])
+    test_system_model(index=options['sce_idx'], dataset=options['dataset'], tau=options['tau'])
 
 if __name__=='__main__':
     # plot_location_act()

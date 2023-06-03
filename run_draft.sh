@@ -19,18 +19,26 @@
 
 # python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
 sce_idx=4
-tau=7
+tau=9.0
 dataset=mnist 
 model=mclr 
 learning_rate=0.01
-optim=4
+optim=1
 
-if [ $optim -eq 1 ]; then
-    ./run_main.sh $sce_idx $tau $dataset $model $learning_rate $optim
-elif [ $optim -eq 2 ]; then 
-    python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee logs/$dataset/s$sce_idx/system_model_optim_freq.log
-elif [ $optim -eq 3 ]; then 
-    python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee logs/$dataset/s$sce_idx/system_model_optim_power.log
-else
-    python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
-fi 
+for sce_idx in 1 2 3 4
+do
+    for tau in 12.0 18.0 22.0
+    do
+        if [ $optim -eq 1 ]; then
+            log_file=logs/$dataset/s$sce_idx/system_model_tau$tau.log
+        elif [ $optim -eq 2 ]; then 
+            log_file=logs/$dataset/s$sce_idx/system_model_optim_freq.log
+        elif [ $optim -eq 3 ]; then 
+            log_file=logs/$dataset/s$sce_idx/system_model_optim_power.log
+        else
+            log_file=logs/$dataset/s$sce_idx/system_model_unoptim.log
+        fi
+
+        python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee $log_file
+    done
+done
