@@ -7,7 +7,7 @@ from src.location_model import LocationModel
 from src.optimization import NewtonOptim
 
 class NetworkOptim:
-    def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, delta_lr=1e-3):
+    def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, delta_lr=1e-3, xi_factor=1):
         # Location parameters
         self.loc_model = LocationModel(num_users, velocity=velocity, timeslot_duration=ts_duration)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
@@ -15,7 +15,8 @@ class NetworkOptim:
         # Federated learning parameters 
         self.num_users = num_users
         self.num_samples = num_samples # np.array (num_users, )
-        self.data_size = data_size        
+        self.data_size = data_size
+        self.xi_factor = xi_factor        
         self.v, self.an = self.set_decay_params(delta_lr)
 
         # Optimal parameters 
@@ -31,7 +32,7 @@ class NetworkOptim:
     
     def set_decay_params(self, delta_lr=1e-3):
         v = 2 / ((2 - L_Lipschitz * delta_lr) * gamma_cv * delta_lr)
-        a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / (epsilon_0))
+        a_0 = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * self.xi_factor) * math.log(1 / (epsilon_0))
         print(f"v = {v} a_0 = {a_0}")
         return v, a_0
     
@@ -263,7 +264,7 @@ class NetworkOptim:
         return t_total
     
     def update_an(self, remain_eps): 
-        self.an = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * xi_factor) * math.log(1 / remain_eps)
+        self.an = 2 * (L_Lipschitz**2) / ((gamma_cv**2) * self.xi_factor) * math.log(1 / remain_eps)
         print(f"update_an = {self.an}")
 
     def allocate_resource(self, eta, tau, is_uav): 

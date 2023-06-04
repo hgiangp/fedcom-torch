@@ -5,23 +5,36 @@ from main import read_options
 plt.rcParams["font.family"] = "Times New Roman"
 
 def plot_feld(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_file = 'system_model.log'):
+    log_file = 'system_model_tau20.0_gamma2.0_cn0.5.log' # xi = 1
+    # log_file_2 = 'system_model_tau20.0_gamma2.0_cn0.5_xi1.2.log'
+    files = [log_file]
+
     rounds, acc, loss, sim, tloss = [], [], [], [], []
     sce_idxes = [1, 2, 3, 4]
     prefixes = [prefix_log + f's{sce_idx}/' for sce_idx in sce_idxes]
 
-    for prefix in prefixes: 
-        rounds_tmp, acc_tmp, loss_tmp, sim_tmp, tloss_tmp = parse_fedl(prefix + log_file)
-        rounds.append(rounds_tmp)
-        acc.append(acc_tmp)
-        loss.append(loss_tmp)
-        sim.append(sim_tmp)
-        tloss.append(tloss_tmp)
+    for file in files: 
+        roundsf, accf, lossf, simf, tlossf = [], [], [], [], []
+        for prefix in prefixes: 
+            rounds_tmp, acc_tmp, loss_tmp, sim_tmp, tloss_tmp = parse_fedl(prefix + file)
+            roundsf.append(rounds_tmp)
+            accf.append(acc_tmp)
+            lossf.append(loss_tmp)
+            simf.append(sim_tmp)
+            tlossf.append(tloss_tmp)
+        rounds.append(roundsf)
+        acc.append(accf)
+        loss.append(lossf)
+        sim.append(simf)
+        tloss.append(tlossf)
+    
+    num_sces = len(sce_idxes)
+    num_logs = len(files)
 
-    max_round = min(len(rounds[i]) for i in range(len(sce_idxes)))
-
-    ylabels = ["Train Accuracy", "Train Loss", "Test Loss"]
-    legends = ['bs-fixedi', 'bs-dyni', 'bs-uav-fixedi', 'bs-uav-dyni']
-    fignames = ['train_acc.png', 'train_loss.png', 'test_loss.png']
+    max_round = min(len(rounds[i][j]) for i in range(num_logs) for j in range(num_sces))
+    ylabels = ["Training Accuracy", "Training Loss", "Testing Loss"]
+    legends = ['BSTA', 'BDYN', 'UBSTA', 'UBDYN']
+    fignames = ['train_acc', 'train_loss', 'test_loss']
     ys = [acc, loss, tloss]
 
     ystick1 = [20, 40, 60, 80, 90]
@@ -32,12 +45,19 @@ def plot_feld(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_file
     for t in range(len(ys)): 
         fig, ax = plt.subplots()
         ax.grid(which='both')
-        for i in range(len(sce_idxes)): 
-            ax.plot(rounds[i][:max_round], acc[i][:max_round], label=legends[i])
+        vals = ys[t]
+        for k in range(num_logs): 
+            for i in range(num_sces): 
+                ax.plot(rounds[k][i][:max_round], vals[k][i][:max_round], label=legends[i])
+            
         ax.legend()
         ax.set_yticks(ysticks[t])
         ax.set_ylabel(ylabels[t])
-        plt.savefig(prefix_fig + fignames[t], bbox_inches='tight')
+        ax.set_xticks([10, 20, 30, 40, 50, 60, 70, 80])
+        ax.set_xlim(0, 85)
+        ax.set_xlabel('Global Rounds')
+        plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
+        plt.savefig(f'{prefix_fig}{fignames[t]}.png', bbox_inches='tight')
         plt.close()
 
 def plot_tien_performance(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_file = 'system_model.log'): 
@@ -136,8 +156,6 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_
             bars.append(ax.bar(space*i+ind+width*i, ys[t][i], width, color='none', hatch=hatches[i], edgecolor=edgecolors[i], linewidth=1))
         
         ax.set_xticks(ind+1.5*width+1.5*space, xsticks)
-        # ax.legend((bars[i] for i in range(len(bars))), legends, handlelength = 2, handleheight = 2, fontsize = 12)
-        # ax.set_ylabel(ylabels[t], fontsize = 12)
         ax.legend((bars[i] for i in range(len(bars))), legends, handlelength = 2, handleheight = 2)
         ax.set_ylabel(ylabels[t])
         
@@ -187,7 +205,7 @@ if __name__=='__main__':
     prefix_fig = f'./figures/{dataset}/comparison/'
     log_file = 'system_model_tau20.0_gamma2.0_cn0.5.log'
 
-    plot_tien_performance(prefix_log, prefix_fig, log_file)
-    plot_tien_bar(prefix_log, prefix_fig, log_file)
-    plot_lround(prefix_log, prefix_fig, log_file)
+    # plot_tien_performance(prefix_log, prefix_fig, log_file)
+    # plot_tien_bar(prefix_log, prefix_fig, log_file)
+    # plot_lround(prefix_log, prefix_fig, log_file)
     plot_feld(prefix_log, prefix_fig, log_file)

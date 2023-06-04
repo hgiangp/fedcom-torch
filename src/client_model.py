@@ -9,7 +9,7 @@ class Client:
         device = self.check_device()
         
         # load model, data to availble device 
-        self.model = model(params['model_params'], params['learning_rate'], device) 
+        self.model = model(params['model_params'], params['learning_rate'], params['xi_factor'], device) 
         self.train_loader, self.test_loader = load_dataloader(train_data, test_data, device)
 
         self.num_samples = len(self.train_loader.dataset)

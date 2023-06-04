@@ -44,6 +44,10 @@ def read_options():
                         type=int,
                         choices=OPTIM_OPTIONS,
                         default=1)
+    parser.add_argument('--xi_factor',
+                        help='deadline of federated learning process;',
+                        type=float,
+                        default=1)
     
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))

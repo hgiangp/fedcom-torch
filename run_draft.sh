@@ -26,12 +26,13 @@ learning_rate=0.01
 optim=1
 gamma=2.0
 C_n=0.5
-# for sce_idx in 1 2 3 4
+xi_factor=1.2
+# for sce_idx in 1 2 3
 # do
 #     for tau in 20.0
 #     do
 #         if [ $optim -eq 1 ]; then
-#             log_file=logs/$dataset/s$sce_idx/system_model_tau"$tau"_gamma"$gamma"_cn"$C_n".log
+#             log_file=logs/$dataset/s$sce_idx/system_model_tau"$tau"_gamma"$gamma"_cn"$C_n"_xi"$xi_factor".log
 #         elif [ $optim -eq 2 ]; then 
 #             log_file=logs/$dataset/s$sce_idx/system_model_optim_freq.log
 #         elif [ $optim -eq 3 ]; then 
@@ -40,7 +41,7 @@ C_n=0.5
 #             log_file=logs/$dataset/s$sce_idx/system_model_unoptim.log
 #         fi
 
-#         python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee $log_file
+#         python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim --xi_factor=$xi_factor| tee $log_file
 #     done
 # done
-python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate
+python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --xi_factor=$xi_factor

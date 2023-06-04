@@ -6,7 +6,7 @@ rng = np.random.default_rng(seed=seed)
 
 from src.server_model import BaseFederated 
 from src.network_optim import NetworkOptim
-from src.network_params import epsilon_0, L_Lipschitz, gamma_cv, xi_factor
+from src.network_params import epsilon_0, L_Lipschitz, gamma_cv
 
 
 class SystemModel: 
@@ -14,16 +14,17 @@ class SystemModel:
         # transfer parameters to self
         for key, val in params.items(): setattr(self, key, val)
         self.fed_model = BaseFederated(model, params, dataset)
-        self.net_optim = self.init_netoptim(num_users, velocity, ts_duration, params['learning_rate'])
+        self.net_optim = self.init_netoptim(num_users, velocity, ts_duration, params['learning_rate'], params['xi_factor'])
+        self.xi_factor = params['xi_factor']
         print("SystemModel __init__!")
     
-    def init_netoptim(self, num_users, velocity, ts_duration, delta_lr): 
+    def init_netoptim(self, num_users, velocity, ts_duration, delta_lr, xi_factor): 
         r""" Network Optimization Model"""  
         num_samples = self.fed_model.get_num_samples()
         msize = self.fed_model.get_smodel()
         data_size = np.array([msize for _ in range(num_users)])
         
-        net_optim = NetworkOptim(num_users, num_samples, data_size, velocity, ts_duration, delta_lr)
+        net_optim = NetworkOptim(num_users, num_samples, data_size, velocity, ts_duration, delta_lr, xi_factor)
         return net_optim
     
     def save_model(self): 
@@ -76,7 +77,7 @@ class SystemModel:
             self.fed_model.train(int(num_lrounds), ground)
 
             # calculate instataneous global accuracy 
-            eps_n = 1 - (1 - eta_n) * (gamma_cv ** 2) * xi_factor / (2 * (L_Lipschitz ** 2))
+            eps_n = 1 - (1 - eta_n) * (gamma_cv ** 2) * self.xi_factor / (2 * (L_Lipschitz ** 2))
 
             # update epsilon_0, t_max
             remain_eps = remain_eps / eps_n 
