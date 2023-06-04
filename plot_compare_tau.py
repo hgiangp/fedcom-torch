@@ -1,6 +1,8 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 from parse_log import * 
+plt.rcParams["font.family"] = "Times New Roman"
+# plt.rcParams.update({'font.size': 10})
 
 def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     t_co, t_cp, t, e_co, e_cp, e = parse_net_tien(prefix_log + log_file)
@@ -13,7 +15,7 @@ def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     return t_co, t_cp, t, e_co, e_cp, e
 
 def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/comparison/'):
-    taus = [9.0, 10.0, 12.0, 15.0, 18.0, 20.0, 22.0, 25.0]
+    taus = [8.0, 9.0, 10.0, 12.0, 15.0, 18.0, 20.0]
     log_files = [f'system_model_tau{tau}.log' for tau in taus] 
     sce_idxes = [1, 2, 3, 4]
     prefixes = [prefix_log + f's{sce_idx}/' for sce_idx in sce_idxes]
@@ -55,14 +57,14 @@ def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/compar
 
     # plt.figure(2)
     fig, ax = plt.subplots()
-    ax.grid(True, axis='y', color = '0.6', linestyle = '-')
+    ax.grid(True, axis='both', color = '0.6', linestyle = '-')
 
     for i in range(len(sce_idxes)): 
-        ax.plot(taus, e_s[i], label=labels[i], marker=markers[i])
+        ax.plot(taus, e_s[i], label=labels[i], marker=markers[i], fillstyle='none')
     # ax.set_ylim(0, 2.2)
     ax.set_ylabel('Energy Consumption (J)')
     ax.set_xlabel(r'Required Latency $\tau_g$ (s)')
-    xsticks = [9.0, 10.0, 12.0, 15.0, 18.0, 20.0, 22.0, 25.0]
+    xsticks = [8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0]
     ax.set_xticks(xsticks)
     ax.set_xlim(xsticks[0], xsticks[-1])
     ax.legend()

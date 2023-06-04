@@ -72,6 +72,7 @@ class SystemModel:
             eta_n, t_n = self.net_optim.optimize_network(remain_eps, remain_tau, ground, is_uav, is_dynamic, optimize, optim_freq, optim_power)
 
             num_lrounds = self.net_optim.calc_num_lrounds(eta_n)
+            # num_lrounds = 2 * scenario_idx
             self.fed_model.train(int(num_lrounds), ground)
 
             # calculate instataneous global accuracy 
@@ -91,4 +92,3 @@ class SystemModel:
             
             # update location 
             self.net_optim.update_channel_gains()
-            

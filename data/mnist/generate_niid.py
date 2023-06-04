@@ -56,7 +56,7 @@ print(f"Number of samples of each label: {len_data}\t{np.asarray(len_data).sum()
 
 # CREATE USER DATA SPLIT 
 # Assign 90 samples to each users, 3 labels, 20 samples each
-sams_per_lab = 25
+sams_per_lab = 200
 X = [[] for _ in range(num_users)]
 y = [[] for _ in range(num_users)]
 idx = np.zeros(10, dtype=int) # 10 labels 0 - 9
@@ -73,7 +73,7 @@ print(f"idx = {idx}") #  90 * 10 / 10 = 60
 # Assign remaining samples by power law 
 allocated_samples = np.ceil(sams_per_lab*num_labels*10/num_users)
 
-props = rng.lognormal(0, 2.0, (10, 35, 3)) # 10 classes, 10 users, 3 labels
+props = rng.lognormal(0, 2.0, (10, 20, 3)) # 10 classes, 10 users, 3 labels
 props = np.array([[[len(v)-allocated_samples]] for v in mnist_data]) * props/np.sum(props, axis=(1, 2), keepdims=True)
 # print(f"props = {props}")
 

@@ -18,27 +18,29 @@
 # ./run_main.sh 4 100 cifar10 mclr 0.001
 
 # python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
-sce_idx=4
-tau=9.0
+sce_idx=3
+tau=20.0
 dataset=mnist 
 model=mclr 
 learning_rate=0.01
 optim=1
+gamma=3.0
+C_n=1
+# for sce_idx in 4
+# do
+#     for tau in 20.0
+#     do
+#         if [ $optim -eq 1 ]; then
+#             log_file=logs/$dataset/s$sce_idx/system_model_tau"$tau"_gamma"$gamma"_cn"$C_n".log
+#         elif [ $optim -eq 2 ]; then 
+#             log_file=logs/$dataset/s$sce_idx/system_model_optim_freq.log
+#         elif [ $optim -eq 3 ]; then 
+#             log_file=logs/$dataset/s$sce_idx/system_model_optim_power.log
+#         else
+#             log_file=logs/$dataset/s$sce_idx/system_model_unoptim.log
+#         fi
 
-for sce_idx in 1 2 3 4
-do
-    for tau in 12.0 18.0 22.0
-    do
-        if [ $optim -eq 1 ]; then
-            log_file=logs/$dataset/s$sce_idx/system_model_tau$tau.log
-        elif [ $optim -eq 2 ]; then 
-            log_file=logs/$dataset/s$sce_idx/system_model_optim_freq.log
-        elif [ $optim -eq 3 ]; then 
-            log_file=logs/$dataset/s$sce_idx/system_model_optim_power.log
-        else
-            log_file=logs/$dataset/s$sce_idx/system_model_unoptim.log
-        fi
-
-        python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee $log_file
-    done
-done
+#         python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim| tee $log_file
+#     done
+# done
+python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate

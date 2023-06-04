@@ -9,4 +9,5 @@ __pycache__/
 data/emnist/data/EMNIST/
 data/cifar10/data/cifar*
 data/cifar10/data
+data/mnist/data
 backup
