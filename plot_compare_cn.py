@@ -17,7 +17,7 @@ def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
 def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/comparison/'):
     tau = 20.0 
     gamma = 2.0 
-    c_ns = [0.1, 0.5, 1.0, 1.5, 1.75]
+    c_ns = [0.1, 0.25, 0.4, 0.5, 0.6, 0.8, 0.9, 0.95, 1.0]
     log_files = [f'system_model_tau{tau}_gamma{gamma}_cn{cn}.log' for cn in c_ns] 
     sce_idxes = [1, 2, 3, 4]
     prefixes = [prefix_log + f's{sce_idx}/' for sce_idx in sce_idxes]

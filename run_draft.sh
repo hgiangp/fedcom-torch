@@ -24,9 +24,9 @@ dataset=mnist
 model=mclr 
 learning_rate=0.01
 optim=1
-gamma=3.0
-C_n=1
-# for sce_idx in 4
+gamma=2.0
+C_n=0.5
+# for sce_idx in 1 2 3 4
 # do
 #     for tau in 20.0
 #     do

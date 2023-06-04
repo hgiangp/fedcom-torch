@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from parse_log import * 
 from main import read_options
+plt.rcParams["font.family"] = "Times New Roman"
 
 def plot_feld(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_file = 'system_model.log'):
     rounds, acc, loss, sim, tloss = [], [], [], [], []
@@ -113,41 +114,46 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_
     space = 0.03
 
     # plt.figure(1)
-    fig, ax = plt.subplots()
-    ax.grid(True, axis = 'y', color = '0.6', linestyle = '-')
     
     ti_s = np.array([[t_co_s[i], t_cp_s[i], t_s[i]] for i in range(len(sce_idxes))])
     en_s = np.array([[e_co_s[i], e_cp_s[i], e_s[i]] for i in range(len(sce_idxes))])
-    
+
     edgecolors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
     hatches = ['xx', '\\\\', '//', 'xx']
-    legends = ('bs-fixedi', 'bs-dyni', 'bs-uav-fixedi', 'bs-uav-dyni')
-    xsticks = ['co', 'cp', 'total']
+    legends = ('BSTA', 'BDYN', 'UBSTA', 'UBDYN')
+    xsticks = ['Communication', 'Computation', 'Total']
     ylabels = ['Time (s)', 'Energy (J)']
-    fignames = ['synthetic_time_bar.png', 'synthetic_ene_bar.png']
+    fignames = ['synthetic_time_bar', 'synthetic_ene_bar']
+    delta_ys = [0.25, 0.05]
 
     ys = [ti_s, en_s]
 
     for t in range(len(ys)): 
+        fig, ax = plt.subplots()
+        ax.grid(True, axis = 'y', color = '0.6', linestyle = '-')
         bars = []
         for i in range(len(sce_idxes)): 
             bars.append(ax.bar(space*i+ind+width*i, ys[t][i], width, color='none', hatch=hatches[i], edgecolor=edgecolors[i], linewidth=1))
         
-        ax.set_xticks(ind+width+space, xsticks)
-        ax.legend((bars[i] for i in range(len(bars))), legends, handlelength = 2, handleheight = 2, fontsize = 12)
-        ax.set_ylabel(ylabels[t], fontsize = 12)
+        ax.set_xticks(ind+1.5*width+1.5*space, xsticks)
+        # ax.legend((bars[i] for i in range(len(bars))), legends, handlelength = 2, handleheight = 2, fontsize = 12)
+        # ax.set_ylabel(ylabels[t], fontsize = 12)
+        ax.legend((bars[i] for i in range(len(bars))), legends, handlelength = 2, handleheight = 2)
+        ax.set_ylabel(ylabels[t])
         
         # Make some labels
         rects = ax.patches
-        ti_int_s = [np.around(ys[t][i], decimals=2) for i in range(len(sce_idxes))]
-        
-        labels = [x for x in itertools.chain(ti_int_s[i] for i in range(len(sce_idxes)))]
-        
+        ti_int_s = np.around(ys[t], decimals=2)
+        # print(ti_int_s)
+
+        labels = [x for x in itertools.chain(ti_int_s[0].tolist(), ti_int_s[1].tolist(), ti_int_s[2].tolist(),  ti_int_s[3].tolist())]
+        # print(labels)
         for rect, label in zip(rects, labels):
             height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width() / 2, height + 1, label, ha="center", va="bottom")
+            ax.text(rect.get_x() + rect.get_width() / 2, height + delta_ys[t], label, ha="center", va="bottom")
 
-        plt.savefig(prefix_fig + fignames[t], bbox_inches='tight')
+        plt.savefig(f'{prefix_fig}{fignames[t]}.png', bbox_inches='tight')
+        plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
         plt.close()
     
 def plot_lround(prefix_log='./logs/', prefix_fig='./figures/comparison/',  log_file = 'system_model.log'):
@@ -179,7 +185,7 @@ if __name__=='__main__':
 
     prefix_log = f'./logs/{dataset}/'
     prefix_fig = f'./figures/{dataset}/comparison/'
-    log_file = 'system_model_tau20.0_gamma2.0.log'
+    log_file = 'system_model_tau20.0_gamma2.0_cn0.5.log'
 
     plot_tien_performance(prefix_log, prefix_fig, log_file)
     plot_tien_bar(prefix_log, prefix_fig, log_file)
