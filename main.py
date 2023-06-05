@@ -48,6 +48,10 @@ def read_options():
                         help='deadline of federated learning process;',
                         type=float,
                         default=1)
+    parser.add_argument('--C_n',
+                        help='CPU cycles per sample;',
+                        type=float,
+                        default=0.2)
     
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))
@@ -60,10 +64,13 @@ def read_options():
     # load model parameters 
     parsed['model_params'] = MODEL_PARAMS['.'.join(model_path.split('.')[2:])]
 
+    # factor of C_n
+    parsed['C_n'] = parsed['C_n']*1e4
+
     # print and return 
     maxLen = max([len(i) for i in parsed.keys()])
     fmtString = '\t%' + str(maxLen) + 's : %s'
-
+        
     print('Arguments:')
     for keyPair in sorted(parsed.items()): print(fmtString % keyPair)
 

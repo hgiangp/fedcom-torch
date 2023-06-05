@@ -15,8 +15,10 @@ def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     return t_co, t_cp, t, e_co, e_cp, e
 
 def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/comparison/'):
+    gamma=2.0
+    C_n=0.2
     taus = [8.0, 9.0, 10.0, 12.0, 15.0, 18.0, 20.0]
-    log_files = [f'system_model_tau{tau}.log' for tau in taus] 
+    log_files = [f'system_model_tau{tau}_gamma{gamma}_cn{C_n}.log' for tau in taus] 
     sce_idxes = [1, 2, 3, 4]
     prefixes = [prefix_log + f's{sce_idx}/' for sce_idx in sce_idxes]
 
@@ -39,38 +41,29 @@ def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/compar
         e_cp_s.append(e_cp_tmp)
         e_s.append(e_tmp)
 
-    # plt.figure(1)
-    fig, ax = plt.subplots()
-    ax.grid(True, axis='both', color = '0.6', linestyle = '-')
-
     linestyles = ["solid", "dotted", "dashed", "dashdot"]
-    labels = ['bs-fixedi', 'bs-dyni', 'bs-uav-fixedi', 'bs-uav-dyni']
+    labels = ['BSTA', 'BDYN', 'UBSTA', 'UBDYN']
     markers = ['s', 'o', '^', '*']
-    for i in range(len(sce_idxes)): 
-        ax.plot(taus, t_s[i], label=labels[i], marker=markers[i])
-    ax.legend()
-    ax.set_ylabel('Completion time (s)')
-    ax.set_xlabel(r'Required latency $\tau_g$ (s)')
-    fig_file_time = 'tau_time.png'
-    plt.savefig(prefix_fig + fig_file_time, bbox_inches='tight')
-    plt.close()
+    ylabels = ['Completion time (s)', 'Energy Consumption (J)']
+    fignames = ['tau_time', 'tau_energy']
+    
+    ys = [t_s, e_s]
+    for t in range(len(ys)):
+        vals = ys[t]
 
-    # plt.figure(2)
-    fig, ax = plt.subplots()
-    ax.grid(True, axis='both', color = '0.6', linestyle = '-')
-
-    for i in range(len(sce_idxes)): 
-        ax.plot(taus, e_s[i], label=labels[i], marker=markers[i], fillstyle='none')
-    # ax.set_ylim(0, 2.2)
-    ax.set_ylabel('Energy Consumption (J)')
-    ax.set_xlabel(r'Required Latency $\tau_g$ (s)')
-    xsticks = [8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0]
-    ax.set_xticks(xsticks)
-    ax.set_xlim(xsticks[0], xsticks[-1])
-    ax.legend()
-    fig_file_energy = 'tau_energy.png'
-    plt.savefig(prefix_fig + fig_file_energy, bbox_inches='tight')
-    plt.close()
+        fig, ax = plt.subplots()
+        ax.grid(True, axis='both', color = '0.6', linestyle = '-')
+        for i in range(len(sce_idxes)): 
+            ax.plot(taus, vals[i], label=labels[i], marker=markers[i])
+        ax.legend()
+        xsticks = [8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0]
+        ax.set_xticks(xsticks)
+        ax.set_xlim(xsticks[0], xsticks[-1])
+        ax.set_ylabel(ylabels[t])
+        ax.set_xlabel(r'Required latency $\tau_g$ (s)')
+        plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
+        plt.savefig(f'{prefix_fig}{fignames[t]}.png', bbox_inches='tight')
+        plt.close()
 
 if __name__=='__main__': 
     plot_tien_bar()

@@ -18,30 +18,24 @@
 # ./run_main.sh 4 100 cifar10 mclr 0.001
 
 # python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
-sce_idx=3
-tau=20.0
+sce_idx=4
+tau=5.82
 dataset=mnist 
 model=mclr 
 learning_rate=0.01
 optim=1
 gamma=2.0
-C_n=0.5
-xi_factor=1.2
-# for sce_idx in 1 2 3
-# do
-#     for tau in 20.0
-#     do
-#         if [ $optim -eq 1 ]; then
-#             log_file=logs/$dataset/s$sce_idx/system_model_tau"$tau"_gamma"$gamma"_cn"$C_n"_xi"$xi_factor".log
-#         elif [ $optim -eq 2 ]; then 
-#             log_file=logs/$dataset/s$sce_idx/system_model_optim_freq.log
-#         elif [ $optim -eq 3 ]; then 
-#             log_file=logs/$dataset/s$sce_idx/system_model_optim_power.log
-#         else
-#             log_file=logs/$dataset/s$sce_idx/system_model_unoptim.log
-#         fi
+C_n=0.05
+xi_factor=1
+for tau in 5.82
+do
+    for optim in 1 2 3 4
+    do
+        log_file=logs/$dataset/s$sce_idx/system_model_tau"$tau"_gamma"$gamma"_cn"$C_n"_optim"$optim".log
+        python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model \
+                            --learning_rate=$learning_rate --optim=$optim \
+                            --xi_factor=$xi_factor --C_n=$C_n | tee $log_file
+    done
+done
 
-#         python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --optim=$optim --xi_factor=$xi_factor| tee $log_file
-#     done
-# done
-python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --xi_factor=$xi_factor
+# python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --xi_factor=$xi_factor

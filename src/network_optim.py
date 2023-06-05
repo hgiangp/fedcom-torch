@@ -7,7 +7,7 @@ from src.location_model import LocationModel
 from src.optimization import NewtonOptim
 
 class NetworkOptim:
-    def __init__(self, num_users, num_samples, data_size, velocity=11, ts_duration=0.4, delta_lr=1e-3, xi_factor=1):
+    def __init__(self, num_users, num_samples, data_size, params, velocity=11, ts_duration=0.4):
         # Location parameters
         self.loc_model = LocationModel(num_users, velocity=velocity, timeslot_duration=ts_duration)
         self.uav_gains, self.bs_gains = self.calc_channel_gains() # init channel gains
@@ -16,8 +16,9 @@ class NetworkOptim:
         self.num_users = num_users
         self.num_samples = num_samples # np.array (num_users, )
         self.data_size = data_size
-        self.xi_factor = xi_factor        
-        self.v, self.an = self.set_decay_params(delta_lr)
+        self.xi_factor = params['xi_factor']
+        self.C_n = params['C_n']        
+        self.v, self.an = self.set_decay_params(params['learning_rate'])
 
         # Optimal parameters 
         self.eta = 0.01
@@ -57,12 +58,12 @@ class NetworkOptim:
 
     def calc_comp_energy(self, num_rounds, freqs): 
         r""" Calculate local computation energy """
-        ene_cp = num_rounds * k_switch * C_n * self.num_samples * (freqs**2)
+        ene_cp = num_rounds * k_switch * self.C_n * self.num_samples * (freqs**2)
         return ene_cp 
 
     def calc_comp_time(self, num_rounds, freqs): 
         r""" Calculate local computation time """
-        time_cp = num_rounds * C_n * self.num_samples / freqs 
+        time_cp = num_rounds * self.C_n * self.num_samples / freqs 
         return time_cp 
 
     def calc_trans_time(self, decs, powers): 
@@ -168,7 +169,7 @@ class NetworkOptim:
         # Calculate opt coefficient for optimizer 
         opt_as = self.data_size / bw * math.log(2) # (N, )
         opt_bs = gains / N_0 # (N, )
-        opt_cs = num_lrounds * C_n * self.num_samples # (N, )
+        opt_cs = num_lrounds * self.C_n * self.num_samples # (N, )
         opt_tau = tau / num_grounds - penalty_time # (N, ) penalty time for chosing uav # broadcasting   
         print(f"opt_as = {opt_as}\nopt_bs = {opt_bs}\nopt_cs = {opt_cs}\nopt_tau = {opt_tau}")
         
@@ -334,7 +335,7 @@ class NetworkOptim:
         t_co = self.calc_trans_time(decs, powers)
         t_cp = tau/num_grounds - t_co
 
-        freqs = num_lrounds * C_n * self.num_samples / t_cp
+        freqs = num_lrounds * self.C_n * self.num_samples / t_cp
         
         return freqs, decs, powers
 

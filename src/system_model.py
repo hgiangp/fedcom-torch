@@ -14,17 +14,17 @@ class SystemModel:
         # transfer parameters to self
         for key, val in params.items(): setattr(self, key, val)
         self.fed_model = BaseFederated(model, params, dataset)
-        self.net_optim = self.init_netoptim(num_users, velocity, ts_duration, params['learning_rate'], params['xi_factor'])
+        self.net_optim = self.init_netoptim(num_users, velocity, ts_duration, params)
         self.xi_factor = params['xi_factor']
         print("SystemModel __init__!")
     
-    def init_netoptim(self, num_users, velocity, ts_duration, delta_lr, xi_factor): 
+    def init_netoptim(self, num_users, velocity, ts_duration, params): 
         r""" Network Optimization Model"""  
         num_samples = self.fed_model.get_num_samples()
         msize = self.fed_model.get_smodel()
         data_size = np.array([msize for _ in range(num_users)])
         
-        net_optim = NetworkOptim(num_users, num_samples, data_size, velocity, ts_duration, delta_lr, xi_factor)
+        net_optim = NetworkOptim(num_users, num_samples, data_size, params, velocity, ts_duration)
         return net_optim
     
     def save_model(self): 
