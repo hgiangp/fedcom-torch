@@ -6,21 +6,27 @@ plt.rcParams["font.family"] = "Times New Roman"
 
 def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     t_co, t_cp, t, e_co, e_cp, e = parse_net_tien(prefix_log + log_file)
-    t_co = t_co.sum()
-    t_cp = t_cp.sum()
-    e_co = e_co.sum()
-    e_cp = e_cp.sum()
-    t = t.sum()
-    e = e.sum()
+    t_co = t_co.mean()
+    t_cp = t_cp.mean()
+    e_co = e_co.mean()
+    e_cp = e_cp.mean()
+    t = t.mean()
+    e = e.mean()
     return t_co, t_cp, t, e_co, e_cp, e
 
 def plot_tien_bar(prefix_log='./logs/mnist/s4/', prefix_fig='./figures/mnist/comparison/'):
+    # gamma=2.0
+    # C_n=0.01
+    # tau=2.53
+
     gamma=2.0
     C_n=0.01
     tau=2.53
+
     optims = [1, 2, 3, 4]
     lognames = [f'system_model_tau{tau}_gamma{gamma}_cn{C_n}_optim{optim}.log' for optim in optims]
-    # postfix = f'tau{tau}_gamma{gamma}_cn{C_n}'
+    postfix = f'tau{tau}_gamma{gamma}_cn{C_n}'
+    # postfix = ''
     t_co_s, t_cp_s, t_s, e_co_s, e_cp_s, e_s = [], [], [], [], [], []
     for logname in lognames: 
         t_co, t_cp, t, e_co, e_cp, e = get_data(prefix_log, logname)
@@ -47,7 +53,7 @@ def plot_tien_bar(prefix_log='./logs/mnist/s4/', prefix_fig='./figures/mnist/com
     xsticks = ['Communication', 'Computation', 'Total']
     ylabels = ['Time (s)', 'Energy Comsumption (J)']
     fignames = ['unoptim_time', 'unoptim_ene']
-    delta_ys = [0.25, 0.05]
+    delta_ys = [0.001, 0.005]
 
     ys = [ti_s, en_s]
 
@@ -73,8 +79,8 @@ def plot_tien_bar(prefix_log='./logs/mnist/s4/', prefix_fig='./figures/mnist/com
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width() / 2, height + delta_ys[t], label, ha="center", va="bottom")
 
-        plt.savefig(f'{prefix_fig}{fignames[t]}.png', bbox_inches='tight')
-        plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
+        plt.savefig(f'{prefix_fig}{fignames[t]}{postfix}.png', bbox_inches='tight')
+        plt.savefig(f'{prefix_fig}{fignames[t]}{postfix}.eps', bbox_inches='tight')
         plt.close()
     
 

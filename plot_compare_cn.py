@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from parse_log import * 
 plt.rcParams["font.family"] = "Times New Roman"
-# plt.rcParams.update({'font.size': 10})
+plt.rcParams.update({'font.size': 22})
 
 def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     t_co, t_cp, t, e_co, e_cp, e = parse_net_tien(prefix_log + log_file)
@@ -62,7 +62,7 @@ def plot_cn_sep(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/comparis
         # xsticks = [9.0, 10.0, 12.0, 15.0, 18.0, 20.0, 22.0, 25.0]
         # ax.set_xticks(xsticks)
         # ax.set_xlim(xsticks[0], xsticks[-1])
-        ax.legend()
+        ax.legend(fontsize=10)
         plt.savefig(prefix_fig + fig_names[t], bbox_inches='tight')
         plt.close()
 
@@ -97,13 +97,13 @@ def plot_cn_join(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/compari
     fig, ax = plt.subplots()
     ax.grid(True, axis='both', color = '0.6', linestyle = '-')
 
-    ylabel=['Maximum Time (s)', 'Consumption Energy (J)']
+    ylabel=['Completion Time (s)', 'Consumption Energy (J)']
     ys = [[t_co_s, t_cp_s], [e_co_s,  e_cp_s]]
     linestyles = ["solid", "dotted", "dashed", "dashdot"]
-    labels = [['BUSTA, Communication', 'BUDYN, Communication'], ['BUSTA, Computation', 'BUDYN, Computation']]
-    markers = ['s', 'o', '^', '*']
+    labels = [['UBSTA, Communication', 'UBDYN, Communication'], ['UBSTA, Computation', 'UBDYN, Computation']]
+    markers = ['*', 's', 'o', '^']
     fig_names = ['cn_time', 'cn_energy']
-    colors = ['g', 'r']
+    colors = ['r', 'b']
 
     for t in range(len(ys)):
         fig, ax = plt.subplots()
@@ -111,13 +111,13 @@ def plot_cn_join(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/compari
         vals = ys[t]
         for k in range(len(vals)): 
             for i in range(len(sce_idxes)):
-                ax.plot(c_ns, vals[k][i], label=labels[k][i], marker=markers[k], fillstyle='none')
+                ax.plot(c_ns, vals[k][i], label=labels[k][i], linestyle=linestyles[k], fillstyle='none', linewidth=2, markersize=9, color=colors[i], marker=markers[k])
         ax.set_ylabel(ylabel[t])
         ax.set_xlabel(r'$C_n$ (cycles/sample)')
         xsticks = c_ns
         ax.set_xticks(xsticks)
         ax.set_xlim(xsticks[0], xsticks[-1])
-        ax.legend()
+        ax.legend(fontsize=12)
         plt.savefig(f'{prefix_fig}{fig_names[t]}.eps', bbox_inches='tight')
         plt.savefig(f'{prefix_fig}{fig_names[t]}.png', bbox_inches='tight')
         plt.close()

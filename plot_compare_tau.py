@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from parse_log import * 
 plt.rcParams["font.family"] = "Times New Roman"
-# plt.rcParams.update({'font.size': 10})
+plt.rcParams.update({'font.size': 22})
 
 def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     t_co, t_cp, t, e_co, e_cp, e = parse_net_tien(prefix_log + log_file)
@@ -44,7 +44,7 @@ def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/compar
     linestyles = ["solid", "dotted", "dashed", "dashdot"]
     labels = ['BSTA', 'BDYN', 'UBSTA', 'UBDYN']
     markers = ['s', 'o', '^', '*']
-    ylabels = ['Completion time (s)', 'Energy Consumption (J)']
+    ylabels = ['Completion Time (s)', 'Consumption Energy (J)']
     fignames = ['tau_time', 'tau_energy']
     
     ys = [t_s, e_s]
@@ -60,7 +60,7 @@ def plot_tien_bar(prefix_log='./logs/mnist/', prefix_fig='./figures/mnist/compar
         ax.set_xticks(xsticks)
         ax.set_xlim(xsticks[0], xsticks[-1])
         ax.set_ylabel(ylabels[t])
-        ax.set_xlabel(r'Required latency $\tau_g$ (s)')
+        ax.set_xlabel(r'Required Latency $\tau_g$ (s)')
         plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
         plt.savefig(f'{prefix_fig}{fignames[t]}.png', bbox_inches='tight')
         plt.close()
