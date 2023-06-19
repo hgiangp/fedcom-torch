@@ -52,6 +52,10 @@ def read_options():
                         help='CPU cycles per sample;',
                         type=float,
                         default=0.2)
+    parser.add_argument('--velocity',
+                        help='velocity of vehicle in km/h;',
+                        type=float,
+                        default=40)
     
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))
@@ -66,6 +70,7 @@ def read_options():
 
     # factor of C_n
     parsed['C_n'] = parsed['C_n']*1e4
+    parsed['velocity'] = parsed['velocity']*1000/3600
 
     # print and return 
     maxLen = max([len(i) for i in parsed.keys()])
@@ -84,7 +89,7 @@ def main():
     dataset = read_data(train_dir, test_dir)
     
     # call system model 
-    sys_mod = SystemModel(options, model, dataset)
+    sys_mod = SystemModel(options, model, dataset, velocity=options['velocity'])
     sys_mod.run()
     sys_mod.save_model()
 

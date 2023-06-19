@@ -6,9 +6,13 @@ data/mnist/data/sklearn/
 data/mnist/data/MNIST/
 flearn/models/synthetic/__pycache__/
 __pycache__/
-data/emnist/data/EMNIST/
+data/emnist/data
 data/cifar10/data/cifar*
 data/cifar10/data
 data/mnist/data
 backup
 logs_bk
+figures_bk
+figures
+models
+logs 

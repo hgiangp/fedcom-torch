@@ -33,7 +33,7 @@ print(len(emnist_byclass))
 # # Tranform data from Image to numpy array 
 # mnist_image = []
 # mnist_target = []
-# for image, target in mnist_train: 
+# for image, target in emnist_byclass: 
 #     mnist_image.append(np.asarray(image).reshape(-1))
 #     mnist_target.append(target)
 
