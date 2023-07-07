@@ -35,6 +35,41 @@ def parse_fedl(file_name):
         
     return rounds, acc, loss, sim, test_loss
 
+def parse_fedl_w_test_acc(file_name): 
+    rounds, train_acc, test_acc, train_loss, sim = [], [], [], [], []
+    test_loss = []
+    
+    for line in open(file_name, 'r'):
+        search_train_acc = re.search(r'At round (.*) training accuracy: (.*)', line, re.M|re.I)
+        if search_train_acc: 
+            rounds.append(int(search_train_acc.group(1)))
+            train_acc.append(float(search_train_acc.group(2)))
+        
+        search_test_acc = re.search(r'At round (.*) test accuracy: (.*)', line, re.M|re.I)
+        if search_test_acc: 
+            test_acc.append(float(search_test_acc.group(2)))
+        
+        search_loss = re.search(r'At round (.*) training loss: (.*)', line, re.M|re.I)
+        if search_loss: 
+            train_loss.append(float(search_loss.group(2)))
+
+        search_test_loss = re.search(r'At round (.*) test loss: (.*)', line, re.M|re.I)
+        if search_test_loss: 
+            test_loss.append(float(search_test_loss.group(2)))
+        
+        search_grad = re.search(r'gradient difference: (.*)', line, re.M|re.I)
+        if search_grad: 
+            sim.append(float(search_grad.group(1)))
+    
+    rounds = np.asarray(rounds)
+    train_acc = np.asarray(train_acc) * 100
+    test_acc = np.asarray(test_acc) * 100
+    train_loss = np.asarray(train_loss)
+    sim = np.asarray(sim)
+    test_loss = np.asarray(test_loss)
+        
+    return rounds, train_acc, test_acc, train_loss, test_loss, sim
+
 def parse_netopt(file_name):
     lrounds, grounds, ans, etas = [], [], [], []
 
@@ -78,12 +113,12 @@ def parse_net_tien(file_name):
             e_cp.append(float(search_ene.group(3)))
             e.append(float(search_ene.group(4))) 
 
-    t_co = np.asarray(t_co)
-    t_cp = np.asarray(t_cp)
-    t = np.asarray(t)
-    e_co = np.asarray(e_co)
-    e_cp = np.asarray(e_cp) 
-    e = np.asarray(e)
+    t_co = np.asarray(t_co)* 1000 # ms
+    t_cp = np.asarray(t_cp)* 1000 # ms
+    t = np.asarray(t)* 1000 # ms
+    e_co = np.asarray(e_co)* 1000 # mJ
+    e_cp = np.asarray(e_cp)* 1000 # mJ
+    e = np.asarray(e)* 1000 # mJ
     return t_co, t_cp, t, e_co, e_cp, e
 
 def parse_gains(file_name): 

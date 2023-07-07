@@ -5,9 +5,9 @@ num_users = 10 # number of participating vehicles
 max_uav = 5 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
-L_Lipschitz = 5 # Lipschitz constant of the loss function
+L_Lipschitz = 292.82 # Lipschitz constant of the loss function
 # delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
-gamma_cv = 3 # strongly convex constant of the loss function
+gamma_cv = 100 # 150 # 174.25 # strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 # C_n = 0.1*1e4 # TODO: testback # number of cpu cycles per sample 
@@ -19,7 +19,7 @@ xi_factor = 1 # global gradient factor
 epsilon_0 = 1e-2 # global accuracy 
 
 compression_ratio = 0.1 # 1-0.95
-s_n = 300240 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
+s_n = 50240 # 502400*compression_ratio=25120 bits # data transmission size TODO (784 * 10 + 10) * 2 * 32 = 502400 bits 
 bw_dB = 60 # 1MHz bandwidth
 bw = to_times(bw_dB)
 

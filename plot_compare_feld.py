@@ -38,24 +38,26 @@ def plot_feld(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_file
     fignames = ['test_acc', 'train_loss', 'test_loss']
     ys = [acc, loss, tloss]
 
-    ystick1 = [20, 40, 60, 80, 90]
-    ystick2 = [0.1, 0.5, 1, 1.5, 2.0, 2.5]
+    ystick1 = [0, 20, 40, 60, 80, 90]
+    ystick2 = [0, 0.5, 1, 1.5, 2.0, 2.5]
     ystick3 = [0.35, 0.5, 1, 1.5, 2.0, 2.5]
     ysticks = [ystick1, ystick2, ystick3]
-    
+    xstick = np.arange(0, 36, 5)
     for t in range(len(ys)): 
         fig, ax = plt.subplots()
         ax.grid(which='both')
         vals = ys[t]
         for k in range(num_logs): 
             for i in range(num_sces): 
-                ax.plot(rounds[k][i][:max_round], vals[k][i][:max_round], label=legends[i])
-            
+                # ax.plot(rounds[k][i][:max_round], vals[k][i][:max_round], label=legends[i])
+                ax.plot(vals[k][i], label=legends[i])
+
         ax.legend()
+        ax.set_ylim(ysticks[t][0], ysticks[t][-1])
         # ax.set_yticks(ysticks[t])
         ax.set_ylabel(ylabels[t])
-        # ax.set_xticks([10, 20, 30, 40, 50, 60, 70, 80])
-        ax.set_xlim(0, 35)
+        # ax.set_xticks(xstick)
+        # ax.set_xlim(0, 35)
         # ax.set_xlim(0, 20)
         ax.set_xlabel('Global Rounds')
         plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
@@ -78,39 +80,44 @@ def plot_tien_performance(prefix_log='./logs/', prefix_fig='./figures/comparison
     num_sces = len(sce_idxes)
     max_round = min(len(t_co[i]) for i in range(num_sces))
     rounds = np.arange(0, max_round, 1) 
-    ylabels = [["Communication time (s)", "Computation time (s)"], ["Communication energy (J)", "Computation energy (J)"]]
-    legends = ['bs-fixedi', 'bs-dyni', 'bs-uav-fixedi', 'bs-uav-dyni']
-    fignames = ['time_plot.png', 'energy_plot.png']
+    ylabels = [["Communication time (ms)", "Computation time (ms)"], ["Communication energy (mJ)", "Computation energy (mJ)"], ["Total time (ms)", "Total energy (mJ)"]]
+    legends = ['BSTA', 'BDYN', 'BUSTA', 'BUDYN']
+    fignames = [['time_comm.png', 'time_comp.png'], ['energy_comm.png', 'energy_comp.png'], ['total_time.png', 'total_energy.png']]
 
-    ys = [[t_co, t_cp], [e_co, e_cp]]
+    ys = [[t_co, t_cp], [e_co, e_cp], [t, e]]
 
     for t in range(len(fignames)): 
-        plt.figure(t, figsize=(10, 5))
-        plt.subplot(121)
+        # plt.figure(t, figsize=(10, 5))
+        plt.figure(1)
+        # plt.subplot(121)
         for i in range(len(sce_idxes)): 
-            plt.plot(rounds, ys[t][0][i][:max_round], label=legends[i])
+            # plt.plot(rounds, ys[t][0][i][:max_round], label=legends[i])
+            plt.plot(ys[t][0][i], label=legends[i])
         plt.grid(visible=True, which='both')
         plt.ylabel(ylabels[t][0])
         plt.legend()
+        plt.savefig(prefix_fig + fignames[t][0], bbox_inches='tight')
+        plt.close()
 
-        plt.subplot(122)
+        # plt.subplot(122)
+        plt.figure(2)
         for i in range(len(sce_idxes)): 
-            plt.plot(rounds, ys[t][1][i][:max_round], label=legends[i])
+            # plt.plot(rounds, ys[t][1][i][:max_round], label=legends[i])
+            plt.plot(ys[t][1][i], label=legends[i])
         plt.grid(visible=True, which='both')
         plt.ylabel(ylabels[t][1])
         plt.legend()
-
-        plt.savefig(prefix_fig + fignames[t], bbox_inches='tight')
+        plt.savefig(prefix_fig + fignames[t][1], bbox_inches='tight')
         plt.close()
 
 def get_data(prefix_log='./logs/mnist/s4/', log_file='system_model.log'):
     t_co, t_cp, t, e_co, e_cp, e = parse_net_tien(prefix_log + log_file)
-    t_co = t_co.sum()
-    t_cp = t_cp.sum()
-    e_co = e_co.sum()
-    e_cp = e_cp.sum()
-    t = t.sum()
-    e = e.sum()
+    t_co = t_co.sum()/1000 # s
+    t_cp = t_cp.sum()/1000 # s
+    e_co = e_co.sum()/1000 # J
+    e_cp = e_cp.sum()/1000 # J
+    t = t.sum()/1000 # s
+    e = e.sum()/1000 # J
     return t_co, t_cp, t, e_co, e_cp, e
 
 def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_file = 'system_model.log'):
@@ -147,7 +154,7 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_
     ylabels = ['Time (s)', 'Energy Comsumption (mJ)']
     fignames = ['bar_time', 'bar_ene']
     delta_ys = [0.25, 0.001]
-    ylims = [[12, 30], [0.015, 0.15]]
+    # ylims = [[12, 30], [0.015, 0.15]]
 
     ys = [ti_s, en_s]
 
@@ -172,7 +179,7 @@ def plot_tien_bar(prefix_log='./logs/', prefix_fig='./figures/comparison/', log_
         # print(labels)
         for rect, label in zip(rects, labels):
             height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width() / 2, height + delta_ys[t], label, ha="center", va="bottom", fontsize=16)
+            ax.text(rect.get_x() + rect.get_width() / 2, height + delta_ys[t], label, ha="center", va="bottom", fontsize=15)
 
         plt.savefig(f'{prefix_fig}{fignames[t]}.png', bbox_inches='tight')
         plt.savefig(f'{prefix_fig}{fignames[t]}.eps', bbox_inches='tight')
@@ -193,7 +200,8 @@ def plot_lround(prefix_log='./logs/', prefix_fig='./figures/comparison/',  log_f
     
     plt.figure(1)
     for i in range(len(sce_idxes)):     
-        plt.plot(rounds, lrounds[i][:max_round], label=legends[i])
+        # plt.plot(rounds, lrounds[i][:max_round], label=legends[i])
+        plt.plot(lrounds[i], label=legends[i])
     plt.ylabel("# Local Rounds")
     plt.grid(which='both')
     plt.legend()
@@ -206,7 +214,7 @@ if __name__=='__main__':
     prefix_log = f'./logs/{dataset}/'
     prefix_fig = f'./figures/{dataset}/comparison/'
     # log_file = 'system_model_tau20.0_gamma2.0_cn0.5.log'
-    log_file = 'system_model_tau30_gamma10_cn1.2_optim1.log'
+    log_file = 'tau30_gamma150_cn2_vec40_optim1.log'
 
     plot_tien_performance(prefix_log, prefix_fig, log_file)
     plot_tien_bar(prefix_log, prefix_fig, log_file)

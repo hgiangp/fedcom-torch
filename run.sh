@@ -19,18 +19,18 @@
 
 # python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate| tee logs/$dataset/s$sce_idx/system_model_unoptim.log
 sce_idx=4
-tau=15
+tau=30
 dataset=mnist 
 model=mclr 
-learning_rate=0.01
+learning_rate=0.0017
 optim=1
-gamma=3
-C_n=1 # 0.2 
+gamma=100
+C_n=0.7 # 0.2 
 xi_factor=1
 velocity=90
-for sce_idx in 1
+for sce_idx in 4
 do
-    for velocity in 40 70 90 100
+    for velocity in 40
     do
         log_file=logs/$dataset/s$sce_idx/tau"$tau"_gamma"$gamma"_cn"$C_n"_vec"$velocity"_optim"$optim".log
         python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model \

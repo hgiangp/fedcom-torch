@@ -63,7 +63,7 @@ class BaseFederated:
         # users test model
         stats = self.test() # (list num_samples, list total_correct)  
         stats_train = self.train_error_and_loss() # (list num_samples, list total_correct, list losses)
-        print("At round {} accuracy: {}".format(ground, np.sum(stats[1])*1.0/np.sum(stats[0])))
+        print("At round {} test accuracy: {}".format(ground, np.sum(stats[1])*1.0/np.sum(stats[0])))
         print("At round {} training accuracy: {}".format(ground, np.sum(stats_train[1])*1.0/np.sum(stats_train[0])))
         print("At round {} training loss: {}".format(ground, np.dot(stats_train[2], stats_train[0])*1.0/np.sum(stats_train[0])))
         print("At round {} test loss: {}".format(ground, np.dot(stats[2], stats[0])*1.0/np.sum(stats[0])))

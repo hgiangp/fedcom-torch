@@ -8,21 +8,27 @@ from main import read_options
 from parse_log import * 
 
 
-def plot_fedl(log_file, fig_file): 
-    rounds, acc, loss, sim, test_loss = parse_fedl(log_file)
+def plot_fedl(log_file, prefix_figure): 
+    rounds, train_acc, test_acc, train_loss, test_loss, sim = parse_fedl_w_test_acc(log_file)
 
-    ys = [acc, loss, test_loss, sim]
-    ylabels = ["Train Accuracy", "Train Loss", "Test Loss", "Dissimilarity"]
+    ys = [[train_acc, test_acc], [train_loss, test_loss], [sim]]
+    ylabels = ["Accuracy", "Loss", "Dissimilarity"]
+    fignames = ['accuracy.png', 'loss.png', 'dissimilarity.png']
+    legends = [['train_acc', 'test_acc'], ['train_loss', 'test_loss'], ['dissimilarity']]
     N = len(ys)
-    fig, ax = plt.subplots(ncols=1, nrows=N)
-    for t in range(N):
-        ax[t].grid('both')
-        ax[t].plot(rounds, ys[t])
-        ax[t].set_ylabel(ylabels[t]) 
-    
-    plt.savefig(fig_file) # plt.savefig('plot_mnist.png')
-    # plt.show()
-    plt.close()
+    for t in range(N): 
+        fig = plt.figure()
+        yvals = ys[t]
+        # print(f"len(yvals) = {len(yvals)}")
+        legend = legends[t]
+        plt.grid('both')
+        for j in range(len(yvals)): 
+            plt.plot(yvals[j], label=legend[j])
+        
+        plt.legend()
+        plt.ylabel(ylabels[t]) 
+        plt.savefig(prefix_figure+fignames[t]) # plt.savefig('plot_mnist.png')
+        plt.close()
 
 def plot_netopt(log_file, fig_file): 
     lrounds, grounds, ans, etas = parse_netopt(log_file)
@@ -157,7 +163,7 @@ def test_system_model(index=4, dataset='synthetic', tau=15, log_file='system_mod
     fig_file_gain = prefix_figure + 'channel_gains.png'
     fig_file_time = prefix_figure + 'plot_synthetic_time.png'
     fig_file_ene = prefix_figure + 'plot_synthetic_ene.png'
-    plot_fedl(log_file, fig_file_fedl)
+    plot_fedl(log_file, prefix_figure)
     plot_netopt(log_file, fig_file_netopt)
     plot_gains(log_file, fig_file_gain)
     plot_tien(log_file, fig_file_time, fig_file_ene)
@@ -168,9 +174,9 @@ def main():
     options = {
         'sce_idx': 4, 
         'dataset': 'mnist',
-        'tau': 2.9
+        'tau': 30
     }
-    logfile = 'system_model_tau2.9_gamma10_cn1_optim4.log'
+    logfile = 'tau30_gamma100_cn0.7_vec40_optim1.log'
     test_system_model(index=options['sce_idx'], dataset=options['dataset'], tau=options['tau'], log_file=logfile)
 
 if __name__=='__main__':
