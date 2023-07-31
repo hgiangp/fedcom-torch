@@ -1,13 +1,13 @@
 def to_times(x_dB): 
     return 10 ** (x_dB/10)
 
-num_users = 10 # number of participating vehicles 
-max_uav = 5 # maximum number of vehicles connecting to uav 
+num_users = 5 # number of participating vehicles 
+max_uav = 4 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
-L_Lipschitz = 292.82 # Lipschitz constant of the loss function
+L_Lipschitz = 292.82 # 5 Lipschitz constant of the loss function
 # delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
-gamma_cv = 100 # 150 # 174.25 # strongly convex constant of the loss function
+gamma_cv = 100 # 174.25 # 3 strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 # C_n = 0.1*1e4 # TODO: testback # number of cpu cycles per sample 
@@ -28,7 +28,7 @@ N_0 = to_times(-174+bw_dB-30) # -174 dBm?/Hz, noise density, should be multiplie
 power_max = 0.1 # W TODO  
 
 # base station propagation channel params 
-x_bs, y_bs = 0, -500 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
+x_bs, y_bs = 0, -200 # m (250/sqrt(2), cover radius = 500m, at the cell edge)
 A_d = 3 # attenna gain 
 f_c = 915 * 1e6 # MHz -> Hz, carrier frequency
 c = 3 * 1e8 # speed of light 
@@ -39,7 +39,7 @@ de_r = 2.65 # pathloss exponent, connect to bs
 
 # Params from: Dynamic Offloading and Trajectory Control for UAV-Enabled 
 # Mobile Edge Computing System With Energy Harvesting Devices
-x_uav, y_uav = 200, 220
+x_uav, y_uav = -250, 250
 z_uav = 100 # flighting height of uav 
 g_0 = 1e-5 # -50 dB reference channel gain (10**(x/10))
 alpha = 0.2 # < 1, attenuation effect of NLoS channel 

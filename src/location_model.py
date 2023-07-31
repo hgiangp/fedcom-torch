@@ -31,11 +31,11 @@ class LocationModel:
         ys_new = ys + self.updated_dist * np.sin(dirs)
 
         # calculate new direction and update current direction 
-        to_inter_x = xs_new - self.x_inter # (num_users, )
-        to_inter_y = ys_new - self.y_inter # (num_users, )
-        dist_inter = np.sqrt(to_inter_x ** 2 + to_inter_y ** 2)
-        in_inter = np.argwhere(dist_inter < self.wroad)
-        self.c_dir[in_inter] = 0
+        # to_inter_x = xs_new - self.x_inter # (num_users, )
+        # to_inter_y = ys_new - self.y_inter # (num_users, )
+        # dist_inter = np.sqrt(to_inter_x ** 2 + to_inter_y ** 2)
+        # in_inter = np.argwhere(dist_inter < self.wroad)
+        # self.c_dir[in_inter] = 0
 
         # update location 
         self.xs = xs_new 
