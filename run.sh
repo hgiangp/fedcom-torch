@@ -39,3 +39,4 @@ do
 done
 
 # python3 -u plot_comparison.py --tau=$tau --dataset=$dataset --model=$model --learning_rate=$learning_rate --xi_factor=$xi_factor
+# python3 ./flearn/models/mnist/mclr.py| tee logs/mclr.log
