@@ -56,9 +56,14 @@ class BaseFederated:
             num_rounds: number of global rounds 
         """
 
-        # send model parameters to users 
+        # 1. send model parameters to users 
         for c in self.clients: 
             c.set_params(self.model_dict)
+
+        # 2. calculate local gradient grad F_k (w(t))
+        wgrads = []
+        for c in self.clients: 
+            wgrads.append(c.get_wgrads(ground))
         
         # users test model
         stats = self.test() # (list num_samples, list total_correct)  
@@ -129,7 +134,7 @@ class BaseFederated:
         print(f"num_samples = {num_samples}")
         return num_samples 
     
-    def get_smodel(self): 
+    def get_model_size(self): 
         r""" Get model size"""
         msize = s_n # msize = self.client_model.get_model_size()
         print(f"msize = {msize}")

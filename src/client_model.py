@@ -1,4 +1,5 @@
-from src.custom_dataset import load_dataloader
+# from src.custom_dataset import load_dataloader
+from custom_dataset import load_dataloader
 import torch 
 
 class Client: 
@@ -15,6 +16,9 @@ class Client:
         self.num_samples = len(self.train_loader.dataset)
         self.test_samples = len(self.test_loader.dataset)
         print(f"id = {id}, model = {model}, device = {device}, num_samples = {self.num_samples}")
+
+        self.global_params = None # save w(t)
+        self.global_grad = None # save F_k (w(t))
 
     def check_device(self): 
         # setting device on GPU if available, else CPU
@@ -36,8 +40,16 @@ class Client:
     def set_params(self, params: dict):
         r"""Set initial params to model parameters()
         Args: params: dict {'state_dict': model.parameters().data} """
+        # save global params 
+        self.global_params = params # TODO: check detach memory between users 
+        print(f"id = {self.id}, global_params = {calculate_model_norm(self.global_params)}")
+        
+        # set w_k(t) = w(t)
         self.model.set_params(params)
-        # print(f"set_params arx_params = {self.arx_params}")
+        
+        # update F_k(w(t)) 
+        self.init_train(num_epochs=1)
+        self.global_grad = self.get_grads()
     
     def get_wgrads(self, ground: int): 
         r"""Get weighted model.parameters() gradients"""
@@ -51,7 +63,14 @@ class Client:
     
     def train(self, num_epochs: int, ggrads: dict):
         dataloader = self.train_loader
+        # 1. receive f, p, w(t) from server -> set_params + save global_params 
+        # 2. + calculate local gradient grad F_k (w(t))
+        # 3. train local model in num_epochs
         self.model.train_fed(num_epochs, dataloader, ggrads)
+        # 4. estimate L, gamma 
+        hess_est = self.estimate_second_gradient()
+        # 5. 
+
         wsoln = self.get_wparams()
         return wsoln
     
@@ -64,20 +83,72 @@ class Client:
         r"""Evaluate on the train dataset"""
         tot_correct, loss = self.model.test(self.train_loader)
         return self.num_samples, tot_correct, loss 
+    
+    def estimate_second_gradient(self): 
+        w = self.get_params()
+        grad = self.get_grads()
+
+        dgrad = calculate_model_diff(grad, self.global_grad)
+        dw = calculate_model_diff(w, self.global_params)
+        rs = calculate_model_norm(dgrad)/calculate_model_norm(dw)
+        print("estimate_second_gradient = ", rs)
+        return rs 
+
+def print_model(parameters: dict): 
+    for name, params in parameters.items():
+        print(name)
+        for param in params: 
+            print(param)
+
+def calculate_model_norm(parameters: dict):
+    total_norm = 0.0 
+    for name, p in parameters.items():
+        # print(name)
+        param_norm = p.norm(2)
+        total_norm += param_norm.item() ** 2
+        # print(total_norm)
+    total_norm = total_norm ** (1. / 2)
+    return total_norm
+
+def calculate_model_diff(parameters1: dict, parameters2: dict):
+    print("parameters1", calculate_model_norm(parameters1))
+    print("parameters2", calculate_model_norm(parameters2))
+    diff = {k: torch.zeros_like(v) for k, v in parameters1.items()}
+    for name, p1 in parameters1.items():
+        diff[name] = p1 - parameters2[name]
+    return diff
 
 def test():
     import torch
-    from flearn.models.synthetic.mclr import Model
+    import os, sys 
+
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    print(parent_dir)
+    sys.path.append(parent_dir)
+    
+    from flearn.models.mnist.mclr import Model
     from src.custom_dataset import test_load_data
-    model = Model(5, 3)
+    import importlib
+
+    train_data, test_data = test_load_data(user_id=1, dataset_name='mnist')
+
+    model_path = '%s.%s.%s.%s' % ('flearn', 'models', 'mnist', 'mclr')
+    mod = importlib.import_module(model_path)
+    model = getattr(mod, 'Model')
+
+    params = {}
+    params['model_params'] = (784, 10)
+    params['learning_rate'] = 0.01
+    params['xi_factor'] = 1 
 
     user_id = 1
-    train_data, test_data = test_load_data(user_id)
-    client = Client(user_id, train_data, test_data, model)
-    
-    lparams = client.model.get_params()
-    ggrads = {k: torch.zeros_like(v) for k, v in lparams.items()}
-    client.train(num_epochs = 30, ggrads=ggrads)
 
+    client = Client(user_id, model, params, train_data, test_data)
+
+    for rounds in [10, 50, 50, 50, 50, 50]:
+        gw = client.get_params()
+        client.set_params(gw)
+        client.train(rounds, None)
+    
 if __name__ == '__main__':
     test()
