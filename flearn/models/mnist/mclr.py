@@ -72,7 +72,7 @@ class Model:
                 # Back propagation
                 self.optimizer.zero_grad()
                 loss.backward()  # update gradients
-                self.optimizer.step()  # update model parameters
+                # self.optimizer.step()  # update model parameters
 
 
     def train_fed(self, num_epochs: int, train_loader: DataLoader, ggrads: dict):
@@ -86,10 +86,11 @@ class Model:
         """
         # print('train_fed is_cuda: ', next(self.model.parameters()).is_cuda)
         # Calculate delta grads at the begining of ground 
-        delta_grads = {}
-        lgrads = self.model.get_grads() # curent local grads 
-        for k in lgrads.keys(): 
-            delta_grads[k] = self.xi * ggrads[k] - lgrads[k]
+        if ggrads is not None: 
+            delta_grads = {}
+            lgrads = self.model.get_grads() # curent local grads 
+            for k in lgrads.keys(): 
+                delta_grads[k] = self.xi * ggrads[k] - lgrads[k]
 
         # Train the model 
         size = len(train_loader.dataset)
@@ -99,9 +100,11 @@ class Model:
                 output = self.model(X)
                 loss = self.loss_fn(output, y)
 
-                # Calculate surrogate term and update the loss https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
-                surr_term = self.calc_surrogate_term(delta_grads)
-                loss = loss + surr_term
+                if ggrads is not None: 
+                    # Calculate surrogate term and update the loss 
+                    # https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
+                    surr_term = self.calc_surrogate_term(delta_grads)
+                    loss = loss + surr_term
 
                 # Back propagation
                 self.optimizer.zero_grad()
@@ -202,12 +205,12 @@ def test():
     grad = model.get_grads()
     param = model.get_params()
     for rounds in [10, 50, 100, 100]: 
-        # print("param before train", calculate_model_norm(param))
+        print("param before train", calculate_model_norm(param))
         model.train(rounds, train_loader)
-        # print("param after train", calculate_model_norm(param))
+        print("param after train", calculate_model_norm(param))
         grad_new = model.get_grads()
         param_new = model.get_params()
-        # print("param after get param_new", calculate_model_norm(param))
+        print("param after get param_new", calculate_model_norm(param))
         dparam = calculate_model_diff(param, param_new)
         dgrad = calculate_model_diff(grad, grad_new)
 
@@ -215,9 +218,9 @@ def test():
         print("param_norm", param_norm)
         grad_norm = calculate_model_norm(dgrad)
         print("grad_norm", grad_norm)
+        grad = grad_new
+        param = param_new
 
-    # model.train_fed(30, train_loader, ggrads)
-    
     # model.test(train_loader) # train error and loss 
     # model.test(test_loader)  # test error and loss
 
