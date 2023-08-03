@@ -21,7 +21,7 @@ class SystemModel:
     def init_netoptim(self, num_users, velocity, ts_duration, params): 
         r""" Network Optimization Model"""  
         num_samples = self.fed_model.get_num_samples()
-        msize = self.fed_model.get_smodel()
+        msize = self.fed_model.get_model_size()
         data_size = np.array([msize for _ in range(num_users)])
         
         net_optim = NetworkOptim(num_users, num_samples, data_size, params, velocity, ts_duration)
@@ -162,6 +162,6 @@ class SystemModel:
                 break  
 
     def test(self): 
-        for ground in range(1000): 
-            self.fed_model.train(num_epochs=1, ground=ground)
+        for ground in range(500): 
+            self.fed_model.train(num_epochs=5, ground=ground)
     

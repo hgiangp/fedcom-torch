@@ -2,6 +2,36 @@ import re
 import numpy as np 
 from src.network_utils import to_dB
 
+def parse_Lipschitz_factor(file_name): 
+    avg_hess = []
+    for line in open(file_name, 'r'):
+        search_hess = re.search(r'At round (.*) average hessian: (.*)', line, re.M|re.I)
+        if search_hess: 
+            avg_hess.append(float(search_hess.group(2)))
+    avg_hess = np.asarray(avg_hess)
+    print(f"avg_hess = {avg_hess.mean()}")
+    return avg_hess
+
+def parse_convex_factor(file_name): 
+    avg_cv = []
+    for line in open(file_name, 'r'):
+        search_cv = re.search(r'At round (.*) average convex factor: (.*)', line, re.M|re.I)
+        if search_cv: 
+            avg_cv.append(float(search_cv.group(2)))
+    avg_cv = np.asarray(avg_cv)
+    print(f"avg_cv = {avg_cv.mean()}")
+    return avg_cv
+
+def parse_diversity_factor(file_name): 
+    avg_cv = []
+    for line in open(file_name, 'r'):
+        search_cv = re.search(r'At round (.*) rho factor: (.*)', line, re.M|re.I)
+        if search_cv: 
+            avg_cv.append(float(search_cv.group(2)))
+    avg_cv = np.asarray(avg_cv)
+    print(f"avg_cv = {avg_cv.mean()}")
+    return avg_cv
+
 def parse_epsilon(file_name): 
     eps_n, eps_req = [], []
     for line in open(file_name, 'r'):

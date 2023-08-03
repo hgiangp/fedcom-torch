@@ -43,6 +43,7 @@ mnist_target = np.asarray(mnist_target)
 mu = np.mean(mnist_image, axis=0) 
 sigma = np.std(mnist_image, axis=0)
 mnist_image = (mnist_image - mu)/(sigma + 0.001)
+print(f"mu = {mu}, sigma = {sigma}")
 # print(mnist_data.shape, max(mnist_data[0]), min(mnist_data[0]))
 
 # Categorize the image data

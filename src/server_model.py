@@ -10,7 +10,8 @@ class BaseFederated:
         r"""Federated Learning Model
         Args: dim = (in_dim, out_dim) # input, output dimension
         """
-        self.client_model = model(params['model_params'], params['learning_rate']) # (5, 3) # (784, 10)
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.client_model = model(params['model_params'], params['learning_rate'], device=device) # (5, 3) # (784, 10)
         self.clients = self.setup_clients(model, params, dataset)
         self.model_dict = self.client_model.get_params() # TODO: latest_model updated 
         print("BaseFederated generated!")
@@ -39,6 +40,16 @@ class BaseFederated:
         
         return averaged_soln
     
+    def aggregate_factors(self, wfactors): 
+        total_weight = 0.0
+        factor = 0.0 
+        for w, fac in wfactors: 
+            total_weight += w 
+            factor += fac * w
+         
+        avg_factor = factor/total_weight 
+        return avg_factor
+
     def calc_dissimilarity(self, agrads, wgrads):
         difference = 0
         for _, grads in wgrads: 
@@ -94,11 +105,49 @@ class BaseFederated:
 
         # aggregate the global parameters and broadcast to all uses 
         self.model_dict = self.aggregate(wsolns)
-    
+
+        # collect second gradient 
+        est_hessian = []
+        for c in self.clients: 
+            est_hessian.append(c.estimate_second_gradient())
+
+        avg_hess = self.aggregate_factors(est_hessian)
+        print("At round {} average hessian: {}".format(ground, avg_hess))
+
+        est_stronly_convex = []
+        for c in self.clients: 
+            est_stronly_convex.append(c.estimate_convex_factor())
+
+        avg_strongly_convex = self.aggregate_factors(est_stronly_convex)
+        print("At round {} average convex factor: {}".format(ground, avg_strongly_convex))
+
+        # collect global grads to estimate diversity factor rho 
+        wggrads = []
+        for c in self.clients: 
+            wggrads.append(c.get_global_grad())
+        
+        rho = self.estimate_rho_factor(wggrads)
+        print("At round {} rho factor: {}".format(ground, rho))
+
         # update global model 
         self.client_model.set_params(self.model_dict)
 
         return train_loss
+    
+    def estimate_rho_factor(self, wggrads): 
+        aggrads = self.aggregate(wggrads)
+        aggrads_norm = calculate_model_norm(aggrads)
+        
+        total_weight = 0.0
+        grads_norms = []
+        for w, grads in wggrads: 
+            total_weight += w
+            grads_norms.append(w * calculate_model_norm(grads) / aggrads_norm)
+
+        grads_norms = np.asarray(grads_norms) / total_weight
+        print("grads_norms", grads_norms)
+        rho = grads_norms.min()
+        return rho 
     
     def test(self):
         num_samples = []
@@ -139,6 +188,16 @@ class BaseFederated:
         msize = s_n # msize = self.client_model.get_model_size()
         print(f"msize = {msize}")
         return msize
+    
+def calculate_model_norm(parameters: dict):
+    total_norm = 0.0 
+    for name, p in parameters.items():
+        # print(name)
+        param_norm = p.norm(2)
+        total_norm += param_norm.item() ** 2
+        # print(total_norm)
+    total_norm = total_norm ** (1. / 2)
+    return total_norm
     
 def test_aggregate(server: BaseFederated):
     soln1 = {k: torch.ones_like(v) for k, v in server.latest_model.items()} 

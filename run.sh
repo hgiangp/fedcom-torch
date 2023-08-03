@@ -23,15 +23,16 @@ sce_idx=4
 tau=40
 dataset=mnist 
 model=mclr 
-learning_rate=0.0017
+learning_rate=0.1
 optim=1
-gamma=100
+gamma=5
 C_n=0.7 # 0.2 
-xi_factor=1
+xi_factor=0.26
 velocity=40
 for sce_idx in 4
 do
     log_file=logs/$dataset/s$sce_idx/tau"$tau"_gamma"$gamma"_cn"$C_n"_vec"$velocity"_optim"$optim"_check_offline.log
+    # log_file=logs/server_model.log
     python3 -u main.py --sce_idx=$sce_idx --tau=$tau --dataset=$dataset --model=$model \
         --learning_rate=$learning_rate --optim=$optim \
         --xi_factor=$xi_factor --C_n=$C_n --velocity=$velocity\

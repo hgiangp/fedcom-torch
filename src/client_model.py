@@ -1,5 +1,5 @@
-# from src.custom_dataset import load_dataloader
-from custom_dataset import load_dataloader
+from src.custom_dataset import load_dataloader
+# from custom_dataset import load_dataloader
 import torch 
 
 class Client: 
@@ -70,7 +70,6 @@ class Client:
         # 3. train local model in num_epochs
         self.model.train_fed(num_epochs, dataloader, ggrads)
         # 4. estimate L, gamma 
-        hess_est = self.estimate_second_gradient()
         # 5. 
 
         wsoln = self.get_wparams()
@@ -94,15 +93,19 @@ class Client:
         dw = calculate_model_diff(w, self.global_params)
         rs = calculate_model_norm(dgrad)/calculate_model_norm(dw)
         print("estimate_second_gradient = ", rs)
-        return rs
+        return (self.num_samples, rs)
     
     def estimate_convex_factor(self):
         grad = self.get_grads()
-        loss = self.model.test(self.train_loader)
-        loss_final = 0.005 
+        _, loss = self.model.test(self.train_loader)
+        loss_final = 0.0 
 
-        gamma = calculate_model_norm(grad)/(loss - loss_final)
+        gamma = calculate_model_norm(grad)/2/(loss - loss_final)
         print("estimate_convex_factor: ", gamma)
+        return (self.num_samples, gamma)
+    
+    def get_global_grad(self): 
+        return (self.num_samples, self.global_grad)
 
 def print_model(parameters: dict): 
     for name, params in parameters.items():

@@ -5,9 +5,9 @@ num_users = 5 # number of participating vehicles
 max_uav = 4 # maximum number of vehicles connecting to uav 
 
 # Local computation params 
-L_Lipschitz = 292.82 # 5 Lipschitz constant of the loss function
+L_Lipschitz = 7 # 5 Lipschitz constant of the loss function
 # delta_lr = 5*1e-3 # TODO Learning rate of local surrogate function 
-gamma_cv = 100 # 174.25 # 3 strongly convex constant of the loss function
+gamma_cv = 5 # 174.25 # 3 strongly convex constant of the loss function
 
 k_switch = 1e-28 # switch capacity, depends on chip's architecture 
 # C_n = 0.1*1e4 # TODO: testback # number of cpu cycles per sample 

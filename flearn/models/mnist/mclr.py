@@ -4,6 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import functorch
 from torch.nn.utils import _stateless
+torch.set_default_dtype(torch.float64)
 
 class Net(nn.Module): 
     def __init__(self, model_dim=(5, 3)): 
@@ -152,8 +153,9 @@ class Model:
     
     def calculate_jacobian(self, train_data): 
         model = self.model 
-        y = torch.tensor(train_data['y'], dtype=torch.long) 
-        X = torch.tensor(train_data['x'])
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        y = torch.tensor(train_data['y'], dtype=torch.long, device=device) 
+        X = torch.tensor(train_data['x'], device=device)
 
         names = list(n for n, _ in model.named_parameters())
 
@@ -172,11 +174,10 @@ class Model:
         import time
 
         start = time.time()
-
         model = self.model 
-        hmin = 0.0; hmax = 0.0
+
         y = torch.tensor(train_data['y'], dtype=torch.long) 
-        X = torch.tensor(train_data['x'])
+        X = torch.tensor(train_data['x'], dtype=torch.float64)
 
         def loss(params):
             out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
@@ -184,7 +185,6 @@ class Model:
 
         names = list(n for n, _ in model.named_parameters())
         hess = functorch.hessian(loss)(tuple(model.parameters())) 
-        # print(hess)
         hess = torch.cat([e.flatten() for h in hess for e in h]) # flatten
         print(f"torch.max(hess), torch.min(hess) = {torch.max(hess)} {torch.min(hess)}")
         end = time.time()
@@ -275,7 +275,7 @@ def test():
 
     grad = model.get_grads()
     param = model.get_params()
-    for rounds in [10, 50, 100, 100, 100]: 
+    for rounds in [10, 50, 100, 100, 100, 100, 100]: 
         print("param before train", calculate_model_norm(param))
         model.train(rounds, train_loader)
         print("param after train", calculate_model_norm(param))
