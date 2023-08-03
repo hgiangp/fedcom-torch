@@ -37,7 +37,7 @@ class Client:
         r"""Get model.parameters()"""
         return self.model.get_params()
 
-    def set_params(self, params: dict):
+    def set_params(self, params: dict, train_data=None):
         r"""Set initial params to model parameters()
         Args: params: dict {'state_dict': model.parameters().data} """
         # save global params 
@@ -50,7 +50,9 @@ class Client:
         # update F_k(w(t)) 
         self.init_train(num_epochs=1)
         self.global_grad = self.get_grads()
-    
+        if train_data is not None: 
+            self.model.calculate_jacobian(train_data)
+
     def get_wgrads(self, ground: int): 
         r"""Get weighted model.parameters() gradients"""
         if ground == 0:
@@ -145,10 +147,11 @@ def test():
 
     client = Client(user_id, model, params, train_data, test_data)
 
-    for rounds in [10, 50, 50, 50, 50, 50]:
+    for _ in range(200) :
         gw = client.get_params()
-        client.set_params(gw)
-        client.train(rounds, None)
+        print("gw", calculate_model_norm(gw))
+        client.set_params(gw, train_data)
+        client.train(5, None)
     
 if __name__ == '__main__':
     test()

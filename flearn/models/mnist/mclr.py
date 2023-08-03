@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+import functorch
+from torch.nn.utils import _stateless
 
 class Net(nn.Module): 
     def __init__(self, model_dim=(5, 3)): 
@@ -118,7 +120,76 @@ class Model:
         # print("Done!")
         # soln = self.get_params()
         # return soln 
+        
+    def calculate_hessian(self, dataloader: DataLoader): 
+        import functorch
+        from torch.nn.utils import _stateless
+        import time
+
+        start = time.time()
+
+        model = self.model 
+        hmin = 0.0; hmax = 0.0
+
+        for batch, (X, y) in enumerate(dataloader):
+            def loss(params):
+                out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
+                return self.loss_fn(out, y)
+
+            names = list(n for n, _ in model.named_parameters())
+            hess = functorch.hessian(loss)(tuple(model.parameters())) 
+            # print(hess)
+            hess = torch.cat([e.flatten() for h in hess for e in h]) # flatten
+            print(f"torch.max(hess), torch.min(hess) = {torch.max(hess)} {torch.min(hess)}")
+            hmin += torch.min(hess)
+            hmax += torch.max(hess)
+            # break 
+        hmin = hmin/len(dataloader)
+        hmax = hmax/len(dataloader)
+        print(f"max(hess), min(hess) = {hmax} {hmin}")
+        end = time.time()
+        print(end - start)
     
+    def calculate_jacobian(self, train_data): 
+        model = self.model 
+        y = torch.tensor(train_data['y'], dtype=torch.long) 
+        X = torch.tensor(train_data['x'])
+
+        names = list(n for n, _ in model.named_parameters())
+
+        def loss(params): 
+            out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
+            return self.loss_fn(out, y)
+        
+        J = torch.autograd.grad(loss(model.parameters()), tuple(model.parameters()))
+        J = torch.cat([e.flatten() for e in J]) # flatten
+        
+        print("J.norm(2) = ", J.norm(2).item())
+
+    def calculate_hessian2(self, train_data): 
+        import functorch
+        from torch.nn.utils import _stateless
+        import time
+
+        start = time.time()
+
+        model = self.model 
+        hmin = 0.0; hmax = 0.0
+        y = torch.tensor(train_data['y'], dtype=torch.long) 
+        X = torch.tensor(train_data['x'])
+
+        def loss(params):
+            out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
+            return self.loss_fn(out, y)
+
+        names = list(n for n, _ in model.named_parameters())
+        hess = functorch.hessian(loss)(tuple(model.parameters())) 
+        # print(hess)
+        hess = torch.cat([e.flatten() for h in hess for e in h]) # flatten
+        print(f"torch.max(hess), torch.min(hess) = {torch.max(hess)} {torch.min(hess)}")
+        end = time.time()
+        print(end - start)    
+
     def test(self, dataloader: DataLoader, debug=False): 
         # print('test is_cuda: ', next(self.model.parameters()).is_cuda)
         size = len(dataloader.dataset) # number of samples of train set or test set 
@@ -204,7 +275,7 @@ def test():
 
     grad = model.get_grads()
     param = model.get_params()
-    for rounds in [10, 50, 100, 100]: 
+    for rounds in [10, 50, 100, 100, 100]: 
         print("param before train", calculate_model_norm(param))
         model.train(rounds, train_loader)
         print("param after train", calculate_model_norm(param))
@@ -221,6 +292,8 @@ def test():
         grad = grad_new
         param = param_new
 
+    model.calculate_hessian(train_loader)
+    model.calculate_hessian2(train_data)
     # model.test(train_loader) # train error and loss 
     # model.test(test_loader)  # test error and loss
 
