@@ -94,7 +94,15 @@ class Client:
         dw = calculate_model_diff(w, self.global_params)
         rs = calculate_model_norm(dgrad)/calculate_model_norm(dw)
         print("estimate_second_gradient = ", rs)
-        return rs 
+        return rs
+    
+    def estimate_convex_factor(self):
+        grad = self.get_grads()
+        loss = self.model.test(self.train_loader)
+        loss_final = 0.005 
+
+        gamma = calculate_model_norm(grad)/(loss - loss_final)
+        print("estimate_convex_factor: ", gamma)
 
 def print_model(parameters: dict): 
     for name, params in parameters.items():
