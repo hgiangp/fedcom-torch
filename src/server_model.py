@@ -101,7 +101,9 @@ class BaseFederated:
         # clients train the local surrogate models
         wsolns = [] # buffer for receiving clients' solution
         for c in self.clients:
-            wsolns.append(c.train(num_epochs, agrads)) 
+            # wsolns.append(c.train(num_epochs, agrads)) 
+            wsolns.append(c.train(num_epochs, None)) 
+
 
         # aggregate the global parameters and broadcast to all uses 
         self.model_dict = self.aggregate(wsolns)
