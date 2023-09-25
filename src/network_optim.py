@@ -71,6 +71,11 @@ class NetworkOptim:
         gains = decs * self.uav_gains + (1 - decs) * self.bs_gains # (N, )
         ti_penalty = decs * delta_t # (N, )
 
+        print("self.data_size", self.data_size)
+        print("powers", powers)
+        print("gains", gains)
+        print("ti_penalty", ti_penalty)
+
         time_co = (self.data_size / (bw * np.log2(1 + (powers * gains / N_0)))) + ti_penalty 
         return time_co
 

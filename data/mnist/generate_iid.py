@@ -8,8 +8,8 @@ np.set_printoptions(precision=3, linewidth=np.inf)
 seed=0
 rng = np.random.default_rng(seed=seed)
 
-num_users = 10
-num_labels = 3
+num_users = 5
+num_labels = 4
 
 # Setup directory for train/test data 
 train_file = 'data_niid_seed_0_train_8.json'
@@ -43,6 +43,7 @@ mnist_target = np.asarray(mnist_target)
 mu = np.mean(mnist_image, axis=0) 
 sigma = np.std(mnist_image, axis=0)
 mnist_image = (mnist_image - mu)/(sigma + 0.001)
+print(f"mu = {mu}, sigma = {sigma}")
 # print(mnist_data.shape, max(mnist_data[0]), min(mnist_data[0]))
 
 # Categorize the image data

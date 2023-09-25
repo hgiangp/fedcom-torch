@@ -2,6 +2,49 @@ import re
 import numpy as np 
 from src.network_utils import to_dB
 
+def parse_Lipschitz_factor(file_name): 
+    avg_hess = []
+    for line in open(file_name, 'r'):
+        search_hess = re.search(r'At round (.*) average hessian: (.*)', line, re.M|re.I)
+        if search_hess: 
+            avg_hess.append(float(search_hess.group(2)))
+    avg_hess = np.asarray(avg_hess)
+    print(f"avg_hess = {avg_hess.mean()}")
+    return avg_hess
+
+def parse_convex_factor(file_name): 
+    avg_cv = []
+    for line in open(file_name, 'r'):
+        search_cv = re.search(r'At round (.*) average convex factor: (.*)', line, re.M|re.I)
+        if search_cv: 
+            avg_cv.append(float(search_cv.group(2)))
+    avg_cv = np.asarray(avg_cv)
+    print(f"avg_cv = {avg_cv.mean()}")
+    return avg_cv
+
+def parse_diversity_factor(file_name): 
+    avg_cv = []
+    for line in open(file_name, 'r'):
+        search_cv = re.search(r'At round (.*) rho factor: (.*)', line, re.M|re.I)
+        if search_cv: 
+            avg_cv.append(float(search_cv.group(2)))
+    avg_cv = np.asarray(avg_cv)
+    print(f"avg_cv = {avg_cv.mean()}")
+    return avg_cv
+
+def parse_epsilon(file_name): 
+    eps_n, eps_req = [], []
+    for line in open(file_name, 'r'):
+        search_eps = re.search(r'ground = (.*) eps_n = (.*)', line, re.M|re.I)
+        if search_eps: 
+            eps_n.append(float(search_eps.group(2)))
+        search_eps_req = re.search(r'ground = (.*) remain_eps = (.*)\tremain_tau = (.*)', line, re.M|re.I)
+        if search_eps_req: 
+            eps_req.append(float(search_eps_req.group(2)))
+    eps_n = np.asarray(eps_n)
+    eps_req = np.asarray(eps_req)
+    return eps_n, eps_req
+
 def parse_fedl(file_name): 
     rounds, acc, loss, sim = [], [], [], []
     test_loss = []
@@ -127,14 +170,18 @@ def parse_gains(file_name):
         search_uav = re.search(r'uav_gains = \[(.*)\]$', line, re.M|re.I)
         if search_uav:
             gain = np.fromstring(search_uav.group(1), sep=' ')
-            gain_db_mean = 10 * np.log10(gain).mean()
-            uav_gains.append(gain_db_mean)
+            # gain_db_mean = 10 * np.log10(gain).mean()
+            gain_db = 10 * np.log10(gain)
+            uav_gains.append(gain_db)
         
         search_bs = re.search(r'bs_gains = \[(.*)\]$', line, re.M|re.I)
         if search_bs: 
             gain = np.fromstring(search_bs.group(1), sep=' ')
-            gain_db_mean = 10 * np.log10(gain).mean()
-            bs_gains.append(gain_db_mean)  
+            gain_db = 10 * np.log10(gain)
+            bs_gains.append(gain_db)  
+    
+    uav_gains = np.asarray(uav_gains).T # transpose # (num_users, num_rounds)
+    bs_gains = np.asarray(bs_gains).T # transpose # (num_users, num_rounds)
     
     return uav_gains, bs_gains
 
@@ -167,7 +214,7 @@ def parse_solutions(file_name):
             freq = np.fromstring(search_freqs.group(2), sep=' ')
             freqs.append(freq) # [num_rounds, (num_users)]
 
-        search_decs = re.search(r'At round (.*) optimal decs: (.*)', line, re.M|re.I)
+        search_decs = re.search(r'At round (.*) optimal decs: \[(.*)\]', line, re.M|re.I)
         if search_decs: 
             dec = np.fromstring(search_decs.group(2), sep=' ', dtype=int)
             decs.append(dec) # [num_rounds, (num_users)]
@@ -175,10 +222,10 @@ def parse_solutions(file_name):
         search_powers = re.search(r'At round (.*) optimal powers: \[(.*)\]', line, re.M|re.I)
         if search_powers: 
             power = np.fromstring(search_powers.group(2), sep=' ')
-            powers.append(to_dB(power)) # [num_rounds, (num_users)] # dBm
+            powers.append(to_dB(power)) # [num_rounds, (num_users)] # dBW
     
     freqs = np.asarray(freqs).T # transpose # (num_users, num_rounds)
-    powers = np.asarray(powers).T # transpose # (num_users, num_rounds)
+    powers = np.asarray(powers).T + 30 # dBm transpose # (num_users, num_rounds)
     decs = np.asarray(decs).T # transpose # (num_users, num_rounds)
     
     return freqs, decs, powers

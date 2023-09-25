@@ -27,7 +27,7 @@ def read_data(file_name='location_data.txt'):
     
     # shuffle the location 
     combined = list(zip(xs, ys, dirs_1, dirs_2))
-    rng.shuffle(combined)
+    # rng.shuffle(combined)
     xs, ys, dirs_1, dirs_2 = zip(*combined)
 
     # convert to numpy array 

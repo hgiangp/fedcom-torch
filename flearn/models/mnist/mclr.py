@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+import functorch
+from torch.nn.utils import _stateless
+torch.set_default_dtype(torch.float64)
 
 class Net(nn.Module): 
     def __init__(self, model_dim=(5, 3)): 
@@ -13,14 +16,15 @@ class Net(nn.Module):
         return outputs
     
     def get_params(self): 
-        return {k: v.data for k, v in zip(self.state_dict(), self.parameters())}
+        # https://discuss.pytorch.org/t/difference-between-detach-clone-and-clone-detach/34173
+        return {k: v.data.detach().clone() for k, v in zip(self.state_dict(), self.parameters())}
 
     def set_params(self, params: dict): 
         r"https://medium.com/@mrityu.jha/understanding-the-grad-of-autograd-fc8d266fd6cf"
         self.load_state_dict(params)
     
     def get_grads(self): 
-        return {k: v.grad for k, v in zip(self.state_dict(), self.parameters())}
+        return {k: v.grad.detach().clone() for k, v in zip(self.state_dict(), self.parameters())}
     
     def get_model_size(self):  
         torch_float = 32 
@@ -71,7 +75,7 @@ class Model:
                 # Back propagation
                 self.optimizer.zero_grad()
                 loss.backward()  # update gradients
-                self.optimizer.step()  # update model parameters
+                # self.optimizer.step()  # update model parameters
 
 
     def train_fed(self, num_epochs: int, train_loader: DataLoader, ggrads: dict):
@@ -85,10 +89,11 @@ class Model:
         """
         # print('train_fed is_cuda: ', next(self.model.parameters()).is_cuda)
         # Calculate delta grads at the begining of ground 
-        delta_grads = {}
-        lgrads = self.model.get_grads() # curent local grads 
-        for k in lgrads.keys(): 
-            delta_grads[k] = self.xi * ggrads[k] - lgrads[k]
+        if ggrads is not None: 
+            delta_grads = {}
+            lgrads = self.model.get_grads() # curent local grads 
+            for k in lgrads.keys(): 
+                delta_grads[k] = self.xi * ggrads[k] - lgrads[k]
 
         # Train the model 
         size = len(train_loader.dataset)
@@ -98,9 +103,11 @@ class Model:
                 output = self.model(X)
                 loss = self.loss_fn(output, y)
 
-                # Calculate surrogate term and update the loss https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
-                surr_term = self.calc_surrogate_term(delta_grads)
-                loss = loss + surr_term
+                if ggrads is not None: 
+                    # Calculate surrogate term and update the loss 
+                    # https://discuss.pytorch.org/t/how-to-add-a-loss-term-from-hidden-layers/47804
+                    surr_term = self.calc_surrogate_term(delta_grads)
+                    loss = loss + surr_term
 
                 # Back propagation
                 self.optimizer.zero_grad()
@@ -114,7 +121,75 @@ class Model:
         # print("Done!")
         # soln = self.get_params()
         # return soln 
+        
+    def calculate_hessian(self, dataloader: DataLoader): 
+        import functorch
+        from torch.nn.utils import _stateless
+        import time
+
+        start = time.time()
+
+        model = self.model 
+        hmin = 0.0; hmax = 0.0
+
+        for batch, (X, y) in enumerate(dataloader):
+            def loss(params):
+                out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
+                return self.loss_fn(out, y)
+
+            names = list(n for n, _ in model.named_parameters())
+            hess = functorch.hessian(loss)(tuple(model.parameters())) 
+            # print(hess)
+            hess = torch.cat([e.flatten() for h in hess for e in h]) # flatten
+            print(f"torch.max(hess), torch.min(hess) = {torch.max(hess)} {torch.min(hess)}")
+            hmin += torch.min(hess)
+            hmax += torch.max(hess)
+            # break 
+        hmin = hmin/len(dataloader)
+        hmax = hmax/len(dataloader)
+        print(f"max(hess), min(hess) = {hmax} {hmin}")
+        end = time.time()
+        print(end - start)
     
+    def calculate_jacobian(self, train_data): 
+        model = self.model 
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        y = torch.tensor(train_data['y'], dtype=torch.long, device=device) 
+        X = torch.tensor(train_data['x'], device=device)
+
+        names = list(n for n, _ in model.named_parameters())
+
+        def loss(params): 
+            out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
+            return self.loss_fn(out, y)
+        
+        J = torch.autograd.grad(loss(model.parameters()), tuple(model.parameters()))
+        J = torch.cat([e.flatten() for e in J]) # flatten
+        
+        print("J.norm(2) = ", J.norm(2).item())
+
+    def calculate_hessian2(self, train_data): 
+        import functorch
+        from torch.nn.utils import _stateless
+        import time
+
+        start = time.time()
+        model = self.model 
+
+        y = torch.tensor(train_data['y'], dtype=torch.long) 
+        X = torch.tensor(train_data['x'], dtype=torch.float64)
+
+        def loss(params):
+            out: torch.Tensor = _stateless.functional_call(model, {n: p for n, p in zip(names, params)}, X)
+            return self.loss_fn(out, y)
+
+        names = list(n for n, _ in model.named_parameters())
+        hess = functorch.hessian(loss)(tuple(model.parameters())) 
+        hess = torch.cat([e.flatten() for h in hess for e in h]) # flatten
+        print(f"torch.max(hess), torch.min(hess) = {torch.max(hess)} {torch.min(hess)}")
+        end = time.time()
+        print(end - start)    
+
     def test(self, dataloader: DataLoader, debug=False): 
         # print('test is_cuda: ', next(self.model.parameters()).is_cuda)
         size = len(dataloader.dataset) # number of samples of train set or test set 
@@ -157,6 +232,30 @@ class Model:
     def save(self, save_dir):
         torch.save(self.model.state_dict(), f'{save_dir}/model_weights.pth') 
 
+def print_model(parameters: dict): 
+    for name, params in parameters.items():
+        print(name)
+        for param in params: 
+            print(param)
+
+def calculate_model_norm(parameters: dict):
+    total_norm = 0.0 
+    for name, p in parameters.items():
+        # print(name)
+        param_norm = p.norm(2)
+        total_norm += param_norm.item() ** 2
+        # print(total_norm)
+    total_norm = total_norm ** (1. / 2)
+    return total_norm
+
+def calculate_model_diff(parameters1: dict, parameters2: dict):
+    print("parameters1", calculate_model_norm(parameters1))
+    print("parameters2", calculate_model_norm(parameters2))
+    diff = {k: torch.zeros_like(v) for k, v in parameters1.items()}
+    for name, p1 in parameters1.items():
+        diff[name] = p1 - parameters2[name]
+    return diff 
+
 def test():
     import torch
     import os, sys 
@@ -165,19 +264,38 @@ def test():
     sys.path.append(parent_dir)
     from src.custom_dataset import test_load_data, load_dataloader
     
-    train_data, test_data = test_load_data(user_id=1)
+    train_data, test_data = test_load_data(user_id=1, dataset_name='mnist')
     train_loader, test_loader = load_dataloader(train_data, test_data)
     
-    model = Model(5, 3)
+    model = Model(model_dim=(784, 10), lr=0.1)
     lparams = model.get_params()
     ggrads = {k: torch.zeros_like(v) for k, v in lparams.items()}
-    # pretrain 
-    model.train(5, train_loader)
-    model.train_fed(30, train_loader, ggrads)
-    # train error and loss 
-    model.test(train_loader)
-    # test error and loss
-    model.test(test_loader)
+    
+    model.train(10, train_loader)
+
+    grad = model.get_grads()
+    param = model.get_params()
+    for rounds in [10, 50, 100, 100, 100, 100, 100]: 
+        print("param before train", calculate_model_norm(param))
+        model.train(rounds, train_loader)
+        print("param after train", calculate_model_norm(param))
+        grad_new = model.get_grads()
+        param_new = model.get_params()
+        print("param after get param_new", calculate_model_norm(param))
+        dparam = calculate_model_diff(param, param_new)
+        dgrad = calculate_model_diff(grad, grad_new)
+
+        param_norm = calculate_model_norm(dparam)
+        print("param_norm", param_norm)
+        grad_norm = calculate_model_norm(dgrad)
+        print("grad_norm", grad_norm)
+        grad = grad_new
+        param = param_new
+
+    model.calculate_hessian(train_loader)
+    model.calculate_hessian2(train_data)
+    # model.test(train_loader) # train error and loss 
+    # model.test(test_loader)  # test error and loss
 
 if __name__=='__main__': 
     test()

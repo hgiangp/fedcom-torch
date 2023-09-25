@@ -4,6 +4,7 @@ import os
 
 from src.custom_dataset import read_data
 from src.system_model import SystemModel
+from src.network_params import num_users
 
 # GLOBAL PARAMETERS
 SCENARIO_IDXES = [1, 2, 3, 4]
@@ -89,8 +90,9 @@ def main():
     dataset = read_data(train_dir, test_dir)
     
     # call system model 
-    sys_mod = SystemModel(options, model, dataset, velocity=options['velocity'])
+    sys_mod = SystemModel(params=options, model=model, dataset=dataset, num_users=num_users, velocity=options['velocity'])
     sys_mod.run()
+    # sys_mod.test()
     sys_mod.save_model()
 
 if __name__=='__main__':

@@ -8,8 +8,8 @@ np.set_printoptions(precision=3, linewidth=np.inf)
 seed=0
 rng = np.random.default_rng(seed=seed)
 
-num_users = 10
-num_labels = 3
+num_users = 20
+num_labels = 10
 
 # Setup directory for train/test data 
 train_file = 'data_niid_seed_0_train_8.json'
@@ -31,14 +31,17 @@ print(len(emnist_byclass))
 # mnist_test = datasets.MNIST(root='./data', train=False, download=True)
 
 # # Tranform data from Image to numpy array 
-# mnist_image = []
-# mnist_target = []
-# for image, target in emnist_byclass: 
-#     mnist_image.append(np.asarray(image).reshape(-1))
-#     mnist_target.append(target)
+mnist_image = []
+mnist_target = []
 
-# mnist_image = np.asarray(mnist_image)
-# mnist_target = np.asarray(mnist_target)
+for image, target in emnist_byclass: 
+    mnist_image.append(np.asarray(image).reshape(-1))
+    mnist_target.append(target)
+
+targets = set(mnist_target) # sorted 
+mnist_image = np.asarray(mnist_image)
+mnist_target = np.asarray(mnist_target)
+
 
 # # Normalize the image data
 # mu = np.mean(mnist_image, axis=0) 
@@ -47,75 +50,59 @@ print(len(emnist_byclass))
 # # print(mnist_data.shape, max(mnist_data[0]), min(mnist_data[0]))
 
 # # Categorize the image data
-# mnist_data = []
-# for i in range(10):
-#     idx = mnist_target==i
-#     mnist_data.append(mnist_image[idx])
+mnist_data = []
+for i in targets:
+    idx = mnist_target==i
+    mnist_data.append(mnist_image[idx])
 
-# len_data = [len(v) for v in mnist_data]
-# print(f"Number of samples of each label: {len_data}\t{np.asarray(len_data).sum()}")
+len_data = [len(v) for v in mnist_data]
+print(f"Number of samples of each label: {len_data}\n{np.asarray(len_data).sum()}")
+print(targets)
 
 # # CREATE USER DATA SPLIT 
 # # Assign 90 samples to each users, 3 labels, 20 samples each
-# sams_per_lab = 120
-# X = [[] for _ in range(num_users)]
-# y = [[] for _ in range(num_users)]
-# idx = np.zeros(10, dtype=int) # 10 labels 0 - 9
+sams_per_lab = 30
+X = [[] for _ in range(num_users)]
+y = [[] for _ in range(num_users)]
 
-# for user in range(num_users): 
-#     for j in range(num_labels): 
-#         l = (user + j)%10 
-#         X[user] += mnist_data[l][idx[l]:idx[l]+sams_per_lab].tolist()
-#         y[user] += (l*np.ones(sams_per_lab)).tolist()
-#         idx[l] += sams_per_lab
+num_classes = len(targets)
+idx = np.zeros(num_classes, dtype=int) # 10 labels 0 - 9
+
+for user in range(num_users): 
+    for j in range(num_labels): 
+        l = (user + j)%num_classes 
+        X[user] += mnist_data[l][idx[l]:idx[l]+sams_per_lab].tolist()
+        y[user] += (l*np.ones(sams_per_lab)).tolist()
+        idx[l] += sams_per_lab
  
-# print(f"idx = {idx}") #  90 * 10 / 10 = 60 
+print(f"idx = {idx}") #  90 * 10 / 10 = 60 
 
-# # Assign remaining samples by power law 
-# allocated_samples = np.ceil(sams_per_lab*num_labels*10/num_users)
+# Create data structure 
+train_data = {'users': [], 'user_data': {}, 'num_samples': []}
+test_data = {'users': [], 'user_data': {}, 'num_samples': []}
 
-# props = rng.lognormal(0, 2.0, (10, 35, 3)) # 10 classes, 10 users, 3 labels
-# props = np.array([[[len(v)-allocated_samples]] for v in mnist_data]) * props/np.sum(props, axis=(1, 2), keepdims=True)
-# # print(f"props = {props}")
+# Setup 10 users 
+for i in range(num_users): 
+    uname = 'f_{0:05d}'.format(i)
 
-# for user in range(num_users): 
-#     for j in range(num_labels): 
-#         l = (user + j)%10
-#         n_samples = int(props[l, user, j])
-#         # print(n_samples)
-#         if idx[l] + n_samples < len(mnist_data[l]):   
-#             X[user] += mnist_data[l][idx[l]:idx[l]+n_samples].tolist()
-#             y[user] += (l*np.ones(n_samples)).tolist()
-#             idx[l] += n_samples
+    combined = list(zip(X[i], y[i]))
+    rng.shuffle(combined)
+    X[i][:], y[i][:] = zip(*combined)
+    num_samples = len(X[i])
+    train_len = int(0.8*num_samples)
+    test_len = num_samples - train_len
 
-# print(f"idx = {idx}") 
+    train_data['users'].append(uname)
+    train_data['user_data'][uname] = {'x': X[i][:train_len], 'y': y[i][:train_len]}
+    train_data['num_samples'].append(train_len)
+    test_data['users'].append(uname)
+    test_data['user_data'][uname] = {'x': X[i][train_len:], 'y': y[i][train_len:]}
+    test_data['num_samples'].append(test_len)
 
-# # Create data structure 
-# train_data = {'users': [], 'user_data': {}, 'num_samples': []}
-# test_data = {'users': [], 'user_data': {}, 'num_samples': []}
+print(f"train_data['num_samples'] = {train_data['num_samples']}, sum = {sum(train_data['num_samples'])}")
+print(f"test_data['num_samples'] = {test_data['num_samples']}, sum = {sum(test_data['num_samples'])}")
 
-# # Setup 10 users 
-# for i in range(num_users): 
-#     uname = 'f_{0:05d}'.format(i)
-
-#     combined = list(zip(X[i], y[i]))
-#     rng.shuffle(combined)
-#     X[i][:], y[i][:] = zip(*combined)
-#     num_samples = len(X[i])
-#     train_len = int(0.8*num_samples)
-#     test_len = num_samples - train_len
-
-#     train_data['users'].append(uname)
-#     train_data['user_data'][uname] = {'x': X[i][:train_len], 'y': y[i][:train_len]}
-#     train_data['num_samples'].append(train_len)
-#     test_data['users'].append(uname)
-#     test_data['user_data'][uname] = {'x': X[i][train_len:], 'y': y[i][train_len:]}
-#     test_data['num_samples'].append(test_len)
-
-# print(f"train_data['num_samples'] = {train_data['num_samples']}, sum = {sum(train_data['num_samples'])}")
-# print(f"test_data['num_samples'] = {test_data['num_samples']}, sum = {sum(test_data['num_samples'])}")
-
-# with open(train_path, 'w') as outfile: 
-#     json.dump(train_data, outfile)
-# with open(test_path, 'w') as outfile: 
-#     json.dump(test_data, outfile)
+with open(train_path, 'w') as outfile: 
+    json.dump(train_data, outfile)
+with open(test_path, 'w') as outfile: 
+    json.dump(test_data, outfile)
