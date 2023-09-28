@@ -6,6 +6,11 @@ from src.custom_dataset import read_data
 from src.system_model import SystemModel
 
 # GLOBAL PARAMETERS
+# 4 simulation scenarios are considered. 
+# (1) Base station, without UAV, and static optimization  
+# (2) Base station, without UAV, and dynamic optimization 
+# (3) Base station, with UAV, and static optimization 
+# (4) Base station, with UAV, and dyanamic optimization 
 SCENARIO_IDXES = [1, 2, 3, 4]
 DATASETS = ['synthetic', 'mnist', 'cifar10']
 MODEL_PARAMS = {
@@ -13,6 +18,11 @@ MODEL_PARAMS = {
     'mnist.mclr': (784, 10), # num_classes
     'cifar10.mclr': (3, 32, 32) # 32x32x3 color channel
 }
+# 4 optimization approaches are considered. 
+# 
+# 
+# 
+# 
 OPTIM_OPTIONS = [1, 2, 3, 4]
 
 def read_options(): 

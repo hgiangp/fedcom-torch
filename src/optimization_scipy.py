@@ -70,26 +70,13 @@ def test(a, b, c, kappa, tau, norm_factor, z_min, t_min):
 if __name__=='__main__':
     ## Normalized parameters 
 
-    # opt_as = self.data_size / bw * math.log(2) # (N, )
-    # opt_bs = gains / N_0 # (N, )
-    # opt_cs = num_lrounds * C_n * self.num_samples # (N, )
-    # opt_tau = tau * (1-eta)/self.an - penalty_time # (N, )  
-
     print("Normalized parameters") 
     norm_factor = 1e9 
-
-    # a, b, c = 0.0348, 120, 1*1e8 
-    # a = 0.03482371435133165
-    # b = 16.717536192138855
-    # c = 0.03362095304577377 * norm_factor
-    # power = 0.066290        freq = 1.279e+08 obj = 0.002248790683097171
 
     a = 0.03482371435133165	
     b = 9863.430506596913	
     c = 0.05116275624731778 * norm_factor
     tau = 0.8098728122557564
-    # taumin = 0.030631940230047387	z_min = 0.14503226322827228	t_min = 0.5
-    # iter = 14 converged! (z, t) = (-0.6456984132273457, 16.26883480107134)
     kappa = 1e-28 
 
     import math 
@@ -99,8 +86,3 @@ if __name__=='__main__':
     
 
     test(a, b, c, kappa, tau, norm_factor, z_min, t_min)
-
-    ## Non-normalized parameters
-    # print("Non-normalized parameters") 
-    # norm_factor = 1 
-    # test(a, b, c, kappa, tau, norm_factor)
