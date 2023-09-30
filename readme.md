@@ -1,6 +1,6 @@
 # Energy-Efficient Federated Learning-enabled Digital Twin for UAV-aided Vehicular Networks 
 This repository implements all the experiments in the paper 
-> Energy-Efficient Federated Learning (FL)-enabled Digital Twin (DT) for UAV-aided Vehicular Networks 
+> [Energy-Efficient Federated Learning (FL)-enabled Digital Twin (DT) for UAV-aided Vehicular Networks](https://drive.google.com/file/d/1UBU8bYQHr2nrY5Qr7OyiOp6gEJwR7Aye/view?usp=sharing) 
 
 Federated Learning-enabled Digital Twin has recently attracted research attention to enable applications of intelligent transportation systems. Considering the accuracy and latency requirements of DT applications under the vehicle mobility impact, we propose a dynamic optimization framework to minimize energy consumption given the accuracy and latency constraints. 
 
